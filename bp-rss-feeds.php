@@ -198,6 +198,7 @@ function bprf_record_profile_new_feed_item_activity($args){
         'hide_sitewide'     => false
     );
 
+    // I hate those 2 lines of code below
     $r = wp_parse_args( $args, $defaults );
     extract( $r, EXTR_SKIP );
 
