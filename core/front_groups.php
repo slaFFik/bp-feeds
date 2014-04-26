@@ -43,19 +43,51 @@ class BPRF_Groups extends BP_Group_Extension {
         }
 
         add_filter('bp_ajax_querystring', array($this, 'filter_rss_output'), 10, 2);
+        add_filter('bp_get_activity_avatar_object_groups', array($this, 'filter_rss_activity_avatar_type'));
+        add_filter('bp_get_activity_avatar_item_id', array($this, 'filter_rss_activity_avatar_id'));
 
         parent::init( $args );
     }
 
+    /**
+     * Alter the group activity stream to display
+     *
+     * @param $bp_ajax_querystring string
+     * @param $object string
+     * @return string
+     */
     function filter_rss_output($bp_ajax_querystring, $object){
         $bp    = buddypress();
         $query = '';
 
         if( bp_is_group() && bp_current_action() == $this->slug && $object == $bp->activity->id ){
-            $query = 'per_page='.get_option('posts_per_page', 10).'&action=groups_rss_item&primary_id=' . $this->get_group_id();
         }
 
         return trim($bp_ajax_querystring . '&' . $query, '&');
+    }
+
+    function filter_rss_activity_avatar_type($type){
+        global $activities_template;
+
+        $current_activity_item = isset( $activities_template->activity->current_comment ) ? $activities_template->activity->current_comment : $activities_template->activity;
+
+        if ( $current_activity_item->type == 'groups_rss_item' ){
+            return 'group';
+        }
+
+        return $type;
+    }
+
+    function filter_rss_activity_avatar_id($item_id){
+        global $activities_template;
+
+        $current_activity_item = isset( $activities_template->activity->current_comment ) ? $activities_template->activity->current_comment : $activities_template->activity;
+
+        if ( $current_activity_item->type == 'groups_rss_item' ){
+            return $current_activity_item->item_id;
+        }
+
+        return $item_id;
     }
 
     /**

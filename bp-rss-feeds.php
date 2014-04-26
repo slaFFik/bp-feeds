@@ -134,14 +134,30 @@ function bprf_register_activity_actions() {
     do_action( 'bprf_register_activity_actions' );
 }
 
+/**
+ * Format the activity stream output using BuddyPress 2.0 style.
+ * Thanks, Boone!
+ *
+ * @param $action
+ * @param $activity
+ * @return mixed|void
+ */
 function bprf_format_activity_action_new_rss_item( $action, $activity ) {
     $links = bp_activity_get_meta( $activity->id, 'bprf_title_links' );
 
-    $action = sprintf(
-        __( '%1$s shared a new RSS post %2$s', 'bprf' ),
-        $links['source'],
-        $links['item']
-    );
+    if( $activity->type == 'groups_rss_item') {
+        $action = sprintf(
+            __( 'New RSS post %1$s was shared in the group %2$s', 'bprf' ),
+            $links['item'],
+            $links['source']
+        );
+    }else{
+        $action = sprintf(
+            __( '%1$s shared a new RSS post %2$s', 'bprf' ),
+            $links['source'],
+            $links['item']
+        );
+    }
 
     return apply_filters( 'bprf_format_activity_action_new_rss_item', $action, $activity );
 }
