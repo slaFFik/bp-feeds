@@ -108,6 +108,8 @@ function bprf_feed_cache_lifetime($time, $url){
 
 /**
  * Register activity actions for the plguin
+ *
+ * @return void
  */
 add_action( 'bp_register_activity_actions', 'bprf_register_activity_actions' );
 function bprf_register_activity_actions() {
@@ -146,20 +148,20 @@ function bprf_format_activity_action_new_rss_item( $action, $activity ) {
     $links = bp_activity_get_meta( $activity->id, 'bprf_title_links' );
 
     if( $activity->type == 'groups_rss_item') {
-        $action = sprintf(
+        return sprintf(
             __( 'New RSS post %1$s was shared in the group %2$s', 'bprf' ),
             $links['item'],
             $links['source']
         );
-    }else{
-        $action = sprintf(
+    }else if($activity->type == 'xprofiles_rss_item') {
+        return sprintf(
             __( '%1$s shared a new RSS post %2$s', 'bprf' ),
             $links['source'],
             $links['item']
         );
     }
 
-    return apply_filters( 'bprf_format_activity_action_new_rss_item', $action, $activity );
+    return $action;
 }
 
 

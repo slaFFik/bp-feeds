@@ -58,14 +58,21 @@ class BPRF_Groups extends BP_Group_Extension {
      */
     function filter_rss_output($bp_ajax_querystring, $object){
         $bp    = buddypress();
-        $query = '';
+        $query = 'action=groups_rss_item&primary_id=' . $this->get_group_id();
 
         if( bp_is_group() && bp_current_action() == $this->slug && $object == $bp->activity->id ){
+            return trim($bp_ajax_querystring . '&' . $query, '&');
         }
 
-        return trim($bp_ajax_querystring . '&' . $query, '&');
+        return $bp_ajax_querystring;
     }
 
+    /**
+     * For groups RSS items we need to change the avatar type to group one, and not user
+     *
+     * @param string $type Default is 'user'
+     * @return string Tweaked to 'group'
+     */
     function filter_rss_activity_avatar_type($type){
         global $activities_template;
 
@@ -78,6 +85,12 @@ class BPRF_Groups extends BP_Group_Extension {
         return $type;
     }
 
+    /**
+     * For groups RSS items avatars we need group ID, and not user ID
+     *
+     * @param int $item_id Default is user_id
+     * @return int Tweaked to group_id
+     */
     function filter_rss_activity_avatar_id($item_id){
         global $activities_template;
 
@@ -92,6 +105,7 @@ class BPRF_Groups extends BP_Group_Extension {
 
     /**
      * Display the RSS feed data
+     * Loads BuddyPress activity feed
      */
     function display() {
         // Get a SimplePie feed object from the specified feed source.
@@ -121,7 +135,7 @@ class BPRF_Groups extends BP_Group_Extension {
     function settings_screen( $group_id = null ) {
         $bprf_rss_feed = groups_get_groupmeta( $group_id, 'bprf_rss_feed' ); ?>
         <label for="bprf_rss_feed">
-            <?php _e('Custom RSS Feed Url', 'bprf'); ?>
+            <?php _e('Link to an external RSS feed', 'bprf'); ?>
         </label>
         <input type="text" aria-required="true"
                id="bprf_rss_feed"
@@ -132,7 +146,7 @@ class BPRF_Groups extends BP_Group_Extension {
     }
 
     function settings_screen_save( $group_id = null ) {
-        $bprf_rss_feed = isset( $_POST['bprf_rss_feed'] ) ? $_POST['bprf_rss_feed'] : '';
+        $bprf_rss_feed = isset( $_POST['bprf_rss_feed'] ) ? wp_strip_all_tags($_POST['bprf_rss_feed']) : '';
 
         groups_update_groupmeta( $group_id, 'bprf_rss_feed', $bprf_rss_feed );
     }
@@ -150,49 +164,18 @@ class BPRF_Groups extends BP_Group_Extension {
      *   * admin_screen_save()
      */
     function create_screen( $group_id = null ) { ?>
-        <p><?php _e('If you want to attach some 3rd-party site RSS feed to your group, just provide the link to the feed below.') ;?></p>
-        <p><input type="text" name="bprf_rss_feed" value="" /></p>
+        <div>
+            <p><?php _e('If you want to attach some 3rd-party site RSS feed to your group, just provide the link to the feed below.') ;?></p>
+            <label for="bprf_rss_feed_create"><?php _e('Link to an external RSS feed', 'bprf'); ?></label>
+            <input type="text" id="bprf_rss_feed_create" name="bprf_rss_feed" value="" />
+        </div>
     <?php
     }
 
     function create_screen_save($group_id = null){
-        $bprf_rss_feed = isset( $_POST['bprf_rss_feed'] ) ? $_POST['bprf_rss_feed'] : '';
+        $bprf_rss_feed = isset( $_POST['bprf_rss_feed'] ) ? wp_strip_all_tags($_POST['bprf_rss_feed']) : '';
 
         groups_update_groupmeta( $group_id, 'bprf_rss_feed', $bprf_rss_feed );
-    }
-
-    /**
-     * Deprecated
-     */
-    function old_school_feed_content(){
-        $bprf = bp_get_option('bprf');
-        ?>
-        <ul class="bprf_feed_items" style="display: none">
-            <?php if ( $this->rss->maxitems == 0 ) : ?>
-                <li class="bprf_feed_no_items"><?php _e( 'No items', 'bprf' ); ?></li>
-            <?php else : ?>
-                <?php
-                foreach ( $this->rss->items as $item ) :
-                    $feedDescription = $item->get_description();
-                    $image_src       = $this->rss->get_item_image( $feedDescription );
-                    ?>
-                    <li class="bprf_feed_item" style="padding: 5px;border: 1px dashed #cccccc;margin-bottom: 5px;">
-                        <?php if ( !empty($image_src) ) { ?>
-                            <a href="<?php echo esc_url( $item->get_permalink() ); ?>" class="bprf_feed_item_image" style="float: left;margin-right:5px">
-                                <img src="<?php echo $image_src; ?>" width="100" alt="<?php echo esc_html( $item->get_title() ); ?>" />
-                            </a>
-                        <?php } ?>
-                        <a href="<?php echo esc_url( $item->get_permalink() ); ?>"
-                           title="<?php printf( __( 'Posted on %s', 'bprf' ), $item->get_date($rss->get_item_date_format()) ); ?>"
-                           class="bprf_feed_item_title">
-                            <?php echo esc_html( $item->get_title() ); ?>
-                        </a> <br/><cite><?php echo $item->get_date(); ?></cite>
-                        <p><?php echo wp_trim_words($feedDescription, $bprf['rss']['excerpt']); ?></p>
-                    </li>
-                <?php endforeach; ?>
-            <?php endif; ?>
-        </ul>
-        <?php
     }
 }
 
