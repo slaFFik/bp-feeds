@@ -7,6 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  */
 class BPRF_Feed {
 
+    public $source = 'groups';
     public $rss = null;
     // list of items in RSS
     public $items = array();
@@ -15,11 +16,17 @@ class BPRF_Feed {
     public $title = '';
     // RSS Feed link
     public $link  = '';
+    // RSS images upload dir
+    public $upload_dir = '';
 
     function __construct($url){
+        $this->upload_dir = BPRF_UPLOAD.'/'.$this->source.'/'.bp_get_current_group_id();
+
         include_once( ABSPATH . WPINC . '/feed.php' );
 
+        add_filter( 'wp_feed_cache_transient_lifetime', 'bprf_feed_cache_lifetime', 10, 2 );
         $this->rss = fetch_feed( $url );
+        remove_filter( 'wp_feed_cache_transient_lifetime', 'bprf_feed_cache_lifetime', 10, 2 );
 
         $this->save();
 
@@ -83,13 +90,26 @@ class BPRF_Feed {
 
                 // prepare content to be stored in activity feed
                 $bp_link   = '';
+                $image_src = '';
+
                 $item_link = '<a href="'. esc_url( $item->get_permalink() ) .'" class="bprf_feed_item_title">'. $item->get_title() . '</a>';
-                $image_src = $this->get_item_image( $item->get_description() );
+
                 $content = wp_trim_words($item->get_description(), $bprf['rss']['excerpt']);
-                if ( !empty($image_src) ) {
-                    $content  = '<a href="'. esc_url( $item->get_permalink() ) .'" class="bprf_feed_item_image">' .
-                                '<img src="'. $image_src .'" alt="'. esc_html( $item->get_title() ) .'" />' .
-                                '</a>' . $content;
+
+                if ($bprf['rss']['image'] == 'display_remote' || $bprf['rss']['image'] == 'display_local') {
+                    switch($bprf['rss']['image']){
+                        case 'display_local':
+                            $image_src = $this->get_save_item_image( $item );
+                            break;
+                        case 'display_remote':
+                            $image_src = $this->get_item_image( $item->get_description() );
+                            break;
+                    }
+                    if ( !empty($image_src) ) {
+                        $content = '<a href="'. esc_url( $item->get_permalink() ) .'" class="bprf_feed_item_image">' .
+                            '<img src="'. $image_src .'" alt="'. esc_html( $item->get_title() ) .'" />' .
+                            '</a>' . $content;
+                    }
                 }
 
                 if ( bp_current_component() == $bp->groups->id ) {
@@ -121,6 +141,9 @@ class BPRF_Feed {
         }
     }
 
+    /**
+     * Parse the text and find the first image which is basically a featured image in most cases
+     */
     function returnImage ($text) {
         $text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
         $pattern = '/<img[^>]+\>/i';
@@ -141,6 +164,42 @@ class BPRF_Feed {
             return $link;
         }
         return false;
+    }
+
+    /**
+     * We need to parse the text, find the image and save it locally, so no hotlinking will be used
+     * If we have error on saving - revert back to the original image, silently
+     *
+     * @param  object $item
+     * @return string Url of an image
+     */
+    function get_save_item_image($item){
+        $remote_img_url = $this->get_item_image($item->get_description());
+        if(empty($remote_img_url)){
+            return false;
+        }
+
+        $ext            = ltrim(strrchr($remote_img_url, '.'), '.');
+        $file_name      = sanitize_file_name($item->get_title()).'_'.time();
+        $upload_dir     = wp_upload_dir();
+
+        $uploaded_dir     = $upload_dir['basedir'] . '/' . $this->upload_dir;
+        // create folders if we don't have them
+        if ( ! wp_mkdir_p($uploaded_dir) ) {
+            // failed creating a dir - permissions?
+            return $remote_img_url;
+        }
+
+        $uploaded_file    = '/' . $file_name . '.' . $ext;
+        $upload_file_path = $uploaded_dir . $uploaded_file;
+
+        $image = file_get_contents($remote_img_url);
+        if ( ! file_put_contents($upload_file_path, $image) ) {
+            // we have an error, role back to the hotlinking
+            return $remote_img_url;
+        }
+
+        return $upload_dir['baseurl'] .  '/' . $this->upload_dir . '/' . $uploaded_file;
     }
 
     function get_item_date_format($delimiter = ' @ '){

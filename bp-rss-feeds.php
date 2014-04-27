@@ -44,11 +44,22 @@ register_deactivation_hook( __FILE__, 'bprf_deactivation');
 function bprf_deactivation() {
     $bprf = bp_get_option('bprf');
 
-    if($bprf['uninstall'] == 'all'){
-        bp_delete_option('bprf');
-    }
+    require_once(BPRF_PATH .'uninstall.php');
 
-    bp_delete_option('bprf');
+    switch($bprf['uninstall']){
+        case 'all':
+            bprf_delete_options();
+            bprf_delete_data();
+            break;
+
+        case 'data':
+            bprf_delete_data();
+            break;
+
+        case 'leave':
+            // do nothing
+            break;
+    }
 }
 
 /**
@@ -69,7 +80,9 @@ include_once(dirname(__FILE__) . '/core/constants.php');
  * Admin area
  */
 
-include_once(dirname(__FILE__) . '/core/admin.php');
+if ( is_admin() ) {
+    include_once( dirname( __FILE__ ) . '/core/admin.php' );
+}
 
 /**
  * Helpers
@@ -95,7 +108,13 @@ function bprf_front_init() {
     }
 }
 
-add_filter('wp_feed_cache_transient_lifetime', 'bprf_feed_cache_lifetime', 10, 2);
+/**
+ * Modify the caching period to the specified by admin
+ *
+ * @param $time
+ * @param $url
+ * @return mixed
+ */
 function bprf_feed_cache_lifetime($time, $url){
     $bprf = bp_get_option('bprf');
 
@@ -164,9 +183,8 @@ function bprf_format_activity_action_new_rss_item( $action, $activity ) {
     return $action;
 }
 
-
 /**
- *
+ * Just in case adding to activity stream will be modified in the future
  *
  * @param $args array Possible keys:
  *      user_id             - who added the feed
@@ -216,4 +234,31 @@ function bprf_record_profile_new_feed_item_activity($args){
         'recorded_time'     => $recorded_time,
         'hide_sitewide'     => $hide_sitewide
     ) );
+}
+
+/**
+ * Count the size of custom RSS images
+ *
+ * @uses size_format()
+ */
+function bprf_count_folder_size(){
+    echo bprf_get_count_folder_size();
+}
+function bprf_get_count_folder_size(){
+    $bytestotal = 0;
+
+    $upload_dir = wp_upload_dir();
+    $path = $upload_dir['basedir'] . '/' . BPRF_UPLOAD;
+    $path = realpath($path);
+
+    if($path!==false) {
+        foreach ( new RecursiveIteratorIterator( new RecursiveDirectoryIterator( $path, FilesystemIterator::SKIP_DOTS ) )
+                  as
+                  $object )
+        {
+            $bytestotal += $object->getSize();
+        }
+    }
+
+    return ($bytestotal > 0 ) ? size_format($bytestotal, 2) : '';
 }

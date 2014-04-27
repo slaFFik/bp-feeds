@@ -56,7 +56,6 @@ $checked = 'checked="checked"';
             </label>
             <p class="description option_desc">
                 <?php _e('This will create a copy of an image on your server. <br/>
-                            In case that image will be deleted from the RSS source site you will still be able to display it. <br/>
                             If that image is deleted from the RSS source site, you will still be able to display it.', 'bprf'); ?>
             </p>
             <label>
@@ -66,7 +65,7 @@ $checked = 'checked="checked"';
             <p class="description option_desc">
                 <?php _e('Image won\'t be downloaded to your server, saving you some bandwith. <br/>
                             If on RSS source site the image is deleted, it won\'t be displayed on your site. <br/>
-                            Generally it\'s a bad practice and you should avoid doing this.', 'bprf'); ?>
+                            Generally it\'s a bad practice and you should avoid doing this, because you area creating a server load for external site.', 'bprf'); ?>
             </p>
             <label>
                 <input name="bprf[rss][image]" type="radio" value="none" <?php checked('none', $bprf['rss']['image']); ?> />&nbsp;
@@ -101,7 +100,14 @@ $checked = 'checked="checked"';
 
     <!-- Deactivation -->
     <tr valign="top">
-        <th scope="row"><?php _e('What to do on plugin deactivation?', 'bprf'); ?></th>
+        <th scope="row">
+            <?php _e('What to do on plugin deactivation?', 'bprf'); ?><br/><br/>
+            <?php
+            $data = bprf_get_count_folder_size();
+            if( !empty($data) ) {
+                printf( __( 'More than %s of files stored', 'bprf' ), $data );
+            } ?>
+        </th>
         <td>
             <label>
                 <input name="bprf[uninstall]" type="radio" value="leave" <?php checked('leave', $bprf['uninstall']); ?>>&nbsp;

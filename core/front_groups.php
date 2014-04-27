@@ -17,9 +17,11 @@ class BPRF_Groups extends BP_Group_Extension {
      * Here you can see more customization of the config options
      */
     function __construct() {
+        $this->bprf = bp_get_option('bprf');
+
         $args = array(
             'slug' => 'rss-feed',
-            'name' => __('RSS Feed', 'bprf'),
+            'name' => $this->bprf['tabs']['groups'],
             'nav_item_position' => 45,
             'screens' => array(
                 'edit' => array(
@@ -33,8 +35,6 @@ class BPRF_Groups extends BP_Group_Extension {
         );
 
         $this->rss = new Stdclass;
-
-        $this->bprf = bp_get_option('bprf');
 
         $bprf_rss_feed = groups_get_groupmeta( bp_get_current_group_id(), 'bprf_rss_feed' );
         if (!empty($bprf_rss_feed)) {
@@ -112,11 +112,11 @@ class BPRF_Groups extends BP_Group_Extension {
         $rss = new BPRF_Feed( $this->rss->url );
 
         if( !empty($rss->title) ) {
-            echo '<p style="margin: 10px 0 20px">';
+            echo '<p class="bprf_rss_feed_title">';
             echo '<img src="' . BPRF_URL . '/images/rss.png" alt=""/>&nbsp;';
-            echo '<a href="' . $rss->link . '" target="_blank">';
-            echo $rss->title;
-            echo '</a>';
+            if(!empty($rss->link)){ echo '<a href="' . $rss->link . '" target="_blank">'; }
+                echo $rss->title;
+            if(!empty($rss->link)) { echo '</a>'; }
             echo '</p>';
         }
 
