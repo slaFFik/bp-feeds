@@ -248,14 +248,11 @@ function bprf_get_count_folder_size(){
     $bytestotal = 0;
 
     $upload_dir = wp_upload_dir();
-    $path = $upload_dir['basedir'] . '/' . BPRF_UPLOAD;
-    $path = realpath($path);
+    $path       = $upload_dir['basedir'] . '/' . BPRF_UPLOAD;
+    $path       = realpath($path);
 
-    if($path!==false) {
-        foreach ( new RecursiveIteratorIterator( new RecursiveDirectoryIterator( $path, FilesystemIterator::SKIP_DOTS ) )
-                  as
-                  $object )
-        {
+    if($path !== false) {
+        foreach ( new RecursiveIteratorIterator( new RecursiveDirectoryIterator( $path, FilesystemIterator::SKIP_DOTS ) ) as $object ) {
             $bytestotal += $object->getSize();
         }
     }

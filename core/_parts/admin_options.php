@@ -65,7 +65,7 @@ $checked = 'checked="checked"';
             <p class="description option_desc">
                 <?php _e('Image won\'t be downloaded to your server, saving you some bandwith. <br/>
                             If on RSS source site the image is deleted, it won\'t be displayed on your site. <br/>
-                            Generally it\'s a bad practice and you should avoid doing this, because you area creating a server load for external site.', 'bprf'); ?>
+                            Generally it\'s a bad practice and you should avoid doing this, because you are creating a server load for external site.', 'bprf'); ?>
             </p>
             <label>
                 <input name="bprf[rss][image]" type="radio" value="none" <?php checked('none', $bprf['rss']['image']); ?> />&nbsp;
