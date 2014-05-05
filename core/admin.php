@@ -41,7 +41,7 @@ function bprf_admin_page_content() {
             <p><?php _e( 'Below are several options that you can use to change the plugin behaviour.', 'bprf' ); ?></p>
 
             <?php
-            bpef_the_template_part('admin_options', array(
+            bprf_the_template_part('admin_options', array(
                 'bprf' => $bprf
             )); ?>
 
