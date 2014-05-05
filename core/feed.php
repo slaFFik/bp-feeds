@@ -134,8 +134,6 @@ class BPRF_Feed {
                     'action'            => sprintf(__( '%1$s shared a new RSS post %2$s', 'bprf' ), $bp_link, $item_link), // for backward compatibility
                     'content'           => $content,
                     'primary_link'      => $item->get_permalink(),
-                    'component'         => bp_current_component(),
-                    'type'              => bp_current_component().'_rss_item',
                     'item_id'           => $this->source_id,
                     'secondary_item_id' => $item_time,
                     'recorded_time'     => date('Y-m-d h:i:s', $item_time),

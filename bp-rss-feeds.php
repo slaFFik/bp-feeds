@@ -203,8 +203,8 @@ function bprf_record_profile_new_feed_item_activity($args){
         'action'            => '',
         'content'           => '',
         'primary_link'      => '',
-        'component'         => $bp->profile->id,
-        'type'              => false,
+        'component'         => bp_current_component(),
+        'type'              => bp_current_component().'_rss_item',
         'item_id'           => false,
         'secondary_item_id' => false,
         'recorded_time'     => bp_core_current_time(),
@@ -277,14 +277,12 @@ function bprf_the_template_part($template, $options = array()){
  * @return string
  */
 function bprf_filter_rss_output($bp_ajax_querystring, $object){
-    $bp = buddypress();
-
-    if( (bp_is_group() || bp_is_user()) && bp_current_action() === BPRF_SLUG && $object == $bp->activity->id ){
+    if( (bp_is_group() || bp_is_user()) && bp_current_action() === BPRF_SLUG && $object == buddypress()->activity->id ){
         $query = '';
         if ( bp_is_group() ) {
             $query = 'object=groups&action=groups_rss_item&primary_id=' . bp_get_current_group_id();
         } else if( bp_is_user() ) {
-            $query = 'object=profile&action=xprofile_rss_item&user_id='.bp_displayed_user_id();
+            $query = 'object=profile&action=xprofile_rss_item&user_id=' . bp_displayed_user_id();
         }
 
         return $query;
