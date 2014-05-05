@@ -20,7 +20,7 @@ class BPRF_Groups extends BP_Group_Extension {
         $this->bprf = bp_get_option('bprf');
 
         $args = array(
-            'slug' => 'rss-feed',
+            'slug' => BPRF_SLUG,
             'name' => $this->bprf['tabs']['groups'],
             'nav_item_position' => 45,
             'screens' => array(
@@ -42,29 +42,10 @@ class BPRF_Groups extends BP_Group_Extension {
             $this->enable_nav_item = true;
         }
 
-        add_filter('bp_ajax_querystring', array($this, 'filter_rss_output'), 10, 2);
         add_filter('bp_get_activity_avatar_object_groups', array($this, 'filter_rss_activity_avatar_type'));
         add_filter('bp_get_activity_avatar_item_id', array($this, 'filter_rss_activity_avatar_id'));
 
         parent::init( $args );
-    }
-
-    /**
-     * Alter the group activity stream to display
-     *
-     * @param $bp_ajax_querystring string
-     * @param $object string
-     * @return string
-     */
-    function filter_rss_output($bp_ajax_querystring, $object){
-        $bp    = buddypress();
-        $query = 'action=groups_rss_item&primary_id=' . $this->get_group_id();
-
-        if( bp_is_group() && bp_current_action() == $this->slug && $object == $bp->activity->id ){
-            return trim($bp_ajax_querystring . '&' . $query, '&');
-        }
-
-        return $bp_ajax_querystring;
     }
 
     /**
@@ -109,7 +90,7 @@ class BPRF_Groups extends BP_Group_Extension {
      */
     function display() {
         // Get a SimplePie feed object from the specified feed source.
-        $rss = new BPRF_Feed( $this->rss->url );
+        $rss = new BPRF_Feed( $this->rss->url, 'groups' );
 
         if( !empty($rss->title) ) {
             echo '<div class="item-list-tabs no-ajax" id="subnav">
@@ -125,7 +106,7 @@ class BPRF_Groups extends BP_Group_Extension {
 
         echo '<div class="activity" role="main">';
 
-		bp_get_template_part( 'activity/activity-loop' );
+		    bp_get_template_part( apply_filters( 'bprf_groups_submenu_page', 'activity/activity-loop' ) );
 
 	    echo '</div>';
     }

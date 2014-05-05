@@ -1,26 +1,42 @@
 <?php
 // Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) ) exit;
+if ( ! defined( 'WPINC' ) ) exit;
 
 /**
  * Get the rss feed data and display it
  */
 class BPRF_Feed {
 
-    public $source = 'groups';
-    public $rss = null;
-    // list of items in RSS
+    public $source;
+    public $source_id;
+
+    // Some RSS data
+    public $rss;
     public $items = array();
     public $maxitems = 0;
-    // RSS Feed title
-    public $title = '';
-    // RSS Feed link
-    public $link  = '';
-    // RSS images upload dir
-    public $upload_dir = '';
 
-    function __construct($url){
-        $this->upload_dir = BPRF_UPLOAD.'/'.$this->source.'/'.bp_get_current_group_id();
+    public $title;
+    public $link;
+
+    // RSS images upload dir
+    public $upload_dir;
+
+    function __construct($url, $source){
+        $bp = buddypress();
+
+        switch($source){
+            case $bp->groups->id:
+                $this->source = $bp->groups->id;
+                $this->source_id = bp_get_current_group_id();
+                break;
+
+            case $bp->members->id:
+                $this->source = $bp->members->id;
+                $this->source_id = bp_displayed_user_id();
+                break;
+        }
+
+        $this->upload_dir = BPRF_UPLOAD.'/'.$this->source.'/'.$this->source_id;
 
         include_once( ABSPATH . WPINC . '/feed.php' );
 
@@ -80,14 +96,6 @@ class BPRF_Feed {
                     continue;
                 }
 
-                // need to store group or user profile ID for later use
-                $item_id = 0;
-                if ( bp_is_profile_component() ) {
-                    $item_id = bp_loggedin_user_id();
-                } elseif ( bp_is_group() ) {
-                    $item_id = bp_get_current_group_id();
-                }
-
                 // prepare content to be stored in activity feed
                 $bp_link   = '';
                 $image_src = '';
@@ -112,21 +120,23 @@ class BPRF_Feed {
                     }
                 }
 
+                $user_id = false;
                 if ( bp_current_component() == $bp->groups->id ) {
                     $bp_link = '<a href="' . bp_get_group_permalink( $bp->groups->current_group ) . '" class="bprf_feed_group_title">' . esc_attr( $bp->groups->current_group->name ) . '</a>';
                 } else if ( bp_current_component() == $bp->groups->id ) {
+                    $user_id = bp_displayed_user_id();
                     $bp_link = bp_core_get_userlink( bp_displayed_user_id() );
                 }
 
                 // save all the results with resulting activity ID
                 $activity_id = bprf_record_profile_new_feed_item_activity( array(
-                    'user_id'           => bp_loggedin_user_id(),
+                    'user_id'           => $user_id,
                     'action'            => sprintf(__( '%1$s shared a new RSS post %2$s', 'bprf' ), $bp_link, $item_link), // for backward compatibility
                     'content'           => $content,
                     'primary_link'      => $item->get_permalink(),
                     'component'         => bp_current_component(),
                     'type'              => bp_current_component().'_rss_item',
-                    'item_id'           => $item_id,
+                    'item_id'           => $this->source_id,
                     'secondary_item_id' => $item_time,
                     'recorded_time'     => date('Y-m-d h:i:s', $item_time),
                     'hide_sitewide'     => false
