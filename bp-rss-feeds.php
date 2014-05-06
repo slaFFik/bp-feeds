@@ -97,7 +97,7 @@ function bprf_front_init() {
 
     require_once( BPRF_PATH . '/feed.php');
 
-    if ( in_array('members', $bprf['rss_for']) ) {
+    if ( in_array('members', $bprf['rss_for']) && bp_is_active('settings') ) {
         require_once( BPRF_PATH . '/front_members.php');
     }
 
@@ -145,13 +145,27 @@ function bprf_register_activity_actions() {
 
     bp_activity_set_action(
         $bp->profile->id,
-        'xprofile_rss_item',
+        'activity_rss_item',
         __( 'New RSS feed item', 'bprf' ),
         'bprf_format_activity_action_new_rss_item'
     );
 
     do_action( 'bprf_register_activity_actions' );
 }
+
+/**
+ * Display additional Activity filters
+ */
+function bprf_activity_filter_options(){
+    if ( bp_is_active( 'settings' ) ) {
+        echo '<option value="activity_rss_item">'. __( 'Members RSS Items', 'bprf' ) . '</option>';
+    }
+    if ( bp_is_active( 'groups' ) ) {
+        echo '<option value="groups_rss_item">'. __( 'Groups RSS Items', 'bprf' ) . '</option>';
+    }
+}
+add_action('bp_activity_filter_options', 'bprf_activity_filter_options');
+add_action('bp_member_activity_filter_options', 'bprf_activity_filter_options');
 
 /**
  * Format the activity stream output using BuddyPress 2.0 style.
@@ -287,12 +301,36 @@ function bprf_filter_rss_output($bp_ajax_querystring, $object){
         if ( bp_is_group() ) {
             $query = 'object=groups&action=groups_rss_item&primary_id=' . bp_get_current_group_id();
         } else if( bp_is_user() ) {
-            $query = 'object=profile&action=xprofile_rss_item&user_id=' . bp_displayed_user_id();
+            $query = 'object=activity&action=activity_rss_item&user_id=' . bp_displayed_user_id();
         }
 
-        return $query;
+        return trim($bp_ajax_querystring . '&' . $query, '&');
     }
 
     return $bp_ajax_querystring;
 }
 add_filter( 'bp_ajax_querystring', 'bprf_filter_rss_output', 999, 2 );
+
+function bprf_get_file_extension_by_type($type){
+    $extensions = array(
+        IMAGETYPE_GIF => "gif",
+        IMAGETYPE_JPEG => "jpg",
+        IMAGETYPE_PNG => "png",
+        IMAGETYPE_SWF => "swf",
+        IMAGETYPE_PSD => "psd",
+        IMAGETYPE_BMP => "bmp",
+        IMAGETYPE_TIFF_II => "tiff",
+        IMAGETYPE_TIFF_MM => "tiff",
+        IMAGETYPE_JPC => "jpc",
+        IMAGETYPE_JP2 => "jp2",
+        IMAGETYPE_JPX => "jpx",
+        IMAGETYPE_JB2 => "jb2",
+        IMAGETYPE_SWC => "swc",
+        IMAGETYPE_IFF => "iff",
+        IMAGETYPE_WBMP => "wbmp",
+        IMAGETYPE_XBM => "xbm",
+        IMAGETYPE_ICO => "ico"
+    );
+
+    return isset($extensions[$type]) ? $extensions[$type] : IMAGETYPE_JPEG;
+}
