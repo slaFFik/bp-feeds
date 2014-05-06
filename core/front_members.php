@@ -30,13 +30,43 @@ add_action('bp_init', 'bprf_profile_activity_submenu');
  * Display the activity feed
  */
 function bprf_profile_activity_submenu_page() {
+    if ( bp_is_user() && bp_current_action() == BPRF_SLUG) {
+
+        // Get a SimplePie feed object from the specified feed source.
+        $feed_url = bprf_get_user_rss_feed_url();
+
+        if ( !empty( $feed_url ) ) {
+            new BPRF_Feed( $feed_url, 'members' );
+
+            echo '<style>#activity-filter-select{display:none}</style>';
+        }
+    }
 
     do_action( 'bprf_profile_activity_submenu_page' );
 
-    echo '<style>#activity-filter-select{display:none}</style>';
-
     bp_core_load_template( apply_filters( 'bprf_profile_activity_submenu_page', 'activity/activity-loop' ) );
 }
+
+/**
+ * Now we need to get the feeds and save them
+ */
+function bprf_profile_activity_submenu_page_title(){
+
+}
+add_action('bp_template_title', 'bprf_profile_activity_submenu_page_title');
+
+function bprf_profile_activity_submenu_page_content(){
+    if ( !(bp_is_user() && bp_current_component() == buddypress()->activity->id) ) {
+        return false;
+    }
+
+    echo '<div class="activity" role="main">';
+
+        bp_get_template_part( apply_filters( 'bprf_members_activity_submenu_page', 'activity/activity-loop' ) );
+
+    echo '</div>';
+}
+add_action('bp_template_content', 'bprf_profile_activity_submenu_page_content');
 
 /**
  * Add a user settings submenu BPRF_SLUG
@@ -122,7 +152,7 @@ function bprf_profile_settings_submenu_page_title(){
 
 function bprf_get_user_rss_feed_url($user_id = false){
     if ( empty($user_id) ) {
-        $user_id = bp_loggedin_user_id();
+        $user_id = bp_displayed_user_id();
     }
 
     return bp_get_user_meta($user_id, 'bprf_rss_feed', true);
