@@ -25,7 +25,7 @@ class BPRF_Groups extends BP_Group_Extension {
             'nav_item_position' => 45,
             'screens' => array(
                 'edit' => array(
-                    'name'        => __('RSS Feed', 'bprf'),
+                    'name'        => $this->bprf['tabs']['groups'],
                     'submit_text' => __('Save', 'bprf')
                 ),
                 'create' => array(
@@ -119,7 +119,7 @@ class BPRF_Groups extends BP_Group_Extension {
     function settings_screen( $group_id = null ) {
         $bprf_rss_feed = groups_get_groupmeta( $group_id, 'bprf_rss_feed' ); ?>
         <label for="bprf_rss_feed">
-            <?php _e('Link to an external RSS feed', 'bprf'); ?>
+            <?php _e('External RSS Feed URL', 'bprf'); ?>
         </label>
         <input type="text" aria-required="true"
                id="bprf_rss_feed"
