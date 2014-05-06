@@ -18,7 +18,7 @@ function bprf_delete_data(){
         'type' => 'groups_rss_item'
     ));
     bp_activity_delete(array(
-        'type' => 'xprofile_rss_item'
+        'type' => 'activity_rss_item'
     ));
 }
 
