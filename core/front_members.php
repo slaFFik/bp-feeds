@@ -48,27 +48,6 @@ function bprf_profile_activity_submenu_page() {
 }
 
 /**
- * Now we need to get the feeds and save them
- */
-function bprf_profile_activity_submenu_page_title(){
-
-}
-add_action('bp_template_title', 'bprf_profile_activity_submenu_page_title');
-
-function bprf_profile_activity_submenu_page_content(){
-    if ( !(bp_is_user() && bp_current_component() == buddypress()->activity->id) ) {
-        return false;
-    }
-
-    echo '<div class="activity" role="main">';
-
-        bp_get_template_part( apply_filters( 'bprf_members_activity_submenu_page', 'activity/activity-loop' ) );
-
-    echo '</div>';
-}
-add_action('bp_template_content', 'bprf_profile_activity_submenu_page_content');
-
-/**
  * Add a user settings submenu BPRF_SLUG
  */
 function bprf_profile_settings_submenu(){
@@ -93,7 +72,7 @@ function bprf_profile_settings_submenu(){
 add_action('bp_init', 'bprf_profile_settings_submenu');
 
 /**
- * Display settings page
+ * Display settings page + save feed url on form submit
  */
 function bprf_profile_settings_submenu_page() {
     do_action( 'bprf_profile_settings_submenu_page' );
@@ -120,7 +99,9 @@ function bprf_profile_settings_submenu_page() {
     bp_core_load_template( apply_filters( 'bprf_profile_settings_submenu_page', 'members/single/plugins' ) );
 }
 
-add_action('bp_template_content', 'bprf_profile_settings_submenu_page_title');
+/**
+ * Display settings title
+ */
 function bprf_profile_settings_submenu_page_title(){
     if ( !bp_is_settings_component() && bp_current_action() == BPRF_SLUG ) {
         return false;
@@ -149,7 +130,14 @@ function bprf_profile_settings_submenu_page_title(){
     <?php do_action( 'bprf_after_member_settings_template' ); ?>
 <?php
 }
+add_action('bp_template_content', 'bprf_profile_settings_submenu_page_title');
 
+/**
+ * Get the Feed URL of a particular user
+ *
+ * @param bool|integer $user_id
+ * @return string Feed URL
+ */
 function bprf_get_user_rss_feed_url($user_id = false){
     if ( empty($user_id) ) {
         $user_id = bp_displayed_user_id();

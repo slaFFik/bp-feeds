@@ -179,7 +179,7 @@ class BPRF_Feed {
      * If we have error on saving - revert back to the original image, silently
      *
      * @param  object $item
-     * @return string Url of an image
+     * @return string URL of an image
      */
     function get_save_item_image($item){
         $remote_img_url = $this->get_item_image($item->get_description());
