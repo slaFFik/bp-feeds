@@ -12,4 +12,4 @@ Plugin requires:
 * PHP 5.3 and above
 * BuddyPress Settings Component activated (for members RSS feeds)
 * BuddyPress Groups Component activated (for groups RSS feeds)
-* Writable /wp-content/uploads/ directory properly registered if changed (for storing images)
+* Writable `/wp-content/uploads/` directory, that is properly registered if the path was changed (for storing images)
