@@ -118,21 +118,37 @@ class BPRF_Groups extends BP_Group_Extension {
      */
     function settings_screen( $group_id = null ) {
         $bprf_rss_feed = groups_get_groupmeta( $group_id, 'bprf_rss_feed' ); ?>
-        <label for="bprf_rss_feed">
-            <?php _e('External RSS Feed URL', 'bprf'); ?>
-        </label>
-        <input type="text" aria-required="true"
-               id="bprf_rss_feed"
-               placeholder="http://buddypress.org/blog/feed/"
-               name="bprf_rss_feed"
-               value="<?php echo esc_attr( $bprf_rss_feed ) ?>" />
+        <p>
+            <label for="bprf_rss_feed">
+                <?php _e('External RSS Feed URL', 'bprf'); ?>
+            </label>
+            <input type="text" aria-required="true"
+                   id="bprf_rss_feed"
+                   placeholder="http://buddypress.org/blog/feed/"
+                   name="bprf_rss_feed"
+                   value="<?php echo esc_attr( $bprf_rss_feed ) ?>" />
+        </p>
     <?php
     }
 
     function settings_screen_save( $group_id = null ) {
         $bprf_rss_feed = isset( $_POST['bprf_rss_feed'] ) ? wp_strip_all_tags($_POST['bprf_rss_feed']) : '';
 
-        groups_update_groupmeta( $group_id, 'bprf_rss_feed', $bprf_rss_feed );
+        if ( groups_update_groupmeta( $group_id, 'bprf_rss_feed', $bprf_rss_feed ) ){
+            $message = __('Your RSS Feed URL has been saved.', 'bprf');
+            $type    = 'success';
+        } else {
+            $message = __('Nothing has changed.', 'bprf');
+            $type    = 'updated';
+        }
+
+        bp_core_add_message($message, $type);
+
+        // Execute additional code
+        do_action( 'bprf_groups_rss_feed_settings_after_save' );
+
+        // Redirect to prevent issues with browser back button
+        bp_core_redirect( trailingslashit( $_POST['_wp_http_referer'] ) );
     }
 
     /**
