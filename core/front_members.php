@@ -82,7 +82,7 @@ function bprf_profile_settings_submenu_page() {
             $message = __('Your RSS Feed URL has been saved.', 'bprf');
             $type    = 'success';
         } else {
-            $message = __('Nothing has changed.', 'bprf');
+            $message = __('No changes were made.', 'bprf');
             $type    = 'updated';
         }
 
