@@ -212,8 +212,6 @@ function bprf_format_activity_action_new_rss_item( $action, $activity ) {
  * @return int|bool The ID of the activity on success. False on error.
  */
 function bprf_record_profile_new_feed_item_activity($args){
-    global $bp;
-
     if ( !bp_is_active( 'activity' ) )
         return false;
 
@@ -313,23 +311,23 @@ add_filter( 'bp_ajax_querystring', 'bprf_filter_rss_output', 999, 2 );
 
 function bprf_get_file_extension_by_type($type){
     $extensions = array(
-        IMAGETYPE_GIF => "gif",
-        IMAGETYPE_JPEG => "jpg",
-        IMAGETYPE_PNG => "png",
-        IMAGETYPE_SWF => "swf",
-        IMAGETYPE_PSD => "psd",
-        IMAGETYPE_BMP => "bmp",
+        IMAGETYPE_GIF     => "gif",
+        IMAGETYPE_JPEG    => "jpg",
+        IMAGETYPE_PNG     => "png",
+        IMAGETYPE_SWF     => "swf",
+        IMAGETYPE_PSD     => "psd",
+        IMAGETYPE_BMP     => "bmp",
         IMAGETYPE_TIFF_II => "tiff",
         IMAGETYPE_TIFF_MM => "tiff",
-        IMAGETYPE_JPC => "jpc",
-        IMAGETYPE_JP2 => "jp2",
-        IMAGETYPE_JPX => "jpx",
-        IMAGETYPE_JB2 => "jb2",
-        IMAGETYPE_SWC => "swc",
-        IMAGETYPE_IFF => "iff",
-        IMAGETYPE_WBMP => "wbmp",
-        IMAGETYPE_XBM => "xbm",
-        IMAGETYPE_ICO => "ico"
+        IMAGETYPE_JPC     => "jpc",
+        IMAGETYPE_JP2     => "jp2",
+        IMAGETYPE_JPX     => "jpx",
+        IMAGETYPE_JB2     => "jb2",
+        IMAGETYPE_SWC     => "swc",
+        IMAGETYPE_IFF     => "iff",
+        IMAGETYPE_WBMP    => "wbmp",
+        IMAGETYPE_XBM     => "xbm",
+        IMAGETYPE_ICO     => "ico"
     );
 
     return isset($extensions[$type]) ? $extensions[$type] : IMAGETYPE_JPEG;
