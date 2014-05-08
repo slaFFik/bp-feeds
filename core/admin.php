@@ -13,11 +13,12 @@ function bprf_admin_page() {
 
     bprf_admin_page_save();
 
-    add_options_page(
+    add_submenu_page(
+        bp_core_do_network_admin() ? 'settings.php' : 'options-general.php',
         __( 'BuddyPress RSS Feeds', 'bprf' ),
         __( 'BP RSS Feeds', 'bprf' ),
         'manage_options',
-        'bprf-setup',
+        'bprf-admin',
         'bprf_admin_page_content'
     );
 }
