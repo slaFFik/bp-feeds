@@ -41,7 +41,9 @@ class BPRF_Feed {
         include_once( ABSPATH . WPINC . '/feed.php' );
 
         add_filter( 'wp_feed_cache_transient_lifetime', 'bprf_feed_cache_lifetime', 10, 2 );
-        $this->rss = fetch_feed( $url );
+
+            $this->rss = fetch_feed( $url );
+
         remove_filter( 'wp_feed_cache_transient_lifetime', 'bprf_feed_cache_lifetime', 10, 2 );
 
         $this->save();
@@ -65,8 +67,27 @@ class BPRF_Feed {
 
             return $this->rss;
         } else {
-            return false;
+            return $this->get_feed_meta();
         }
+    }
+
+    /**
+     * In case we are our of source - display local feed
+     * @return object
+     */
+    function get_feed_meta(){
+        $meta = groups_get_groupmeta(bp_get_current_group_id(), 'bprf_feed_meta');
+
+        if(!isset($meta['title'])){
+            $meta['title'] = '';
+        }
+        if(!isset($meta['link'])){
+            $meta['link'] = '';
+        }
+
+        $meta['local'] = true;
+
+        return (object) $meta;
     }
 
     /**
@@ -76,6 +97,12 @@ class BPRF_Feed {
         global $bp;
 
         if ( ! is_wp_error( $this->rss ) ) {
+
+            // save feed title and link
+            groups_update_groupmeta($bp->groups->current_group->id, 'bprf_feed_meta', array(
+                'title' => $this->rss->get_title(),
+                'link'  => $this->rss->get_link()
+            ));
 
             $bprf = bp_get_option('bprf');
 

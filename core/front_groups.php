@@ -93,15 +93,9 @@ class BPRF_Groups extends BP_Group_Extension {
         $rss = new BPRF_Feed( $this->rss->url, 'groups' );
 
         if( !empty($rss->title) ) {
-            echo '<div class="item-list-tabs no-ajax" id="subnav">
-                    <ul class="bprf_rss_feed_title">
-                        <li class="feed">';
-                            if(!empty($rss->link)){ echo '<a href="' . $rss->link . '" target="_blank">'; }
-                                echo $rss->title;
-                            if(!empty($rss->link)) { echo '</a>'; }
-                        echo '</li>
-                    </ul>
-                </div>';
+            bprf_the_template_part('group_feed_title', array(
+                'rss' => $rss
+            ));
         }
 
         echo '<div class="activity" role="main">';
@@ -117,18 +111,7 @@ class BPRF_Groups extends BP_Group_Extension {
      * @param null $group_id
      */
     function settings_screen( $group_id = null ) {
-        $bprf_rss_feed = groups_get_groupmeta( $group_id, 'bprf_rss_feed' ); ?>
-        <p>
-            <label for="bprf_rss_feed">
-                <?php _e('External RSS Feed URL', 'bprf'); ?>
-            </label>
-            <input type="text" aria-required="true"
-                   id="bprf_rss_feed"
-                   placeholder="http://buddypress.org/blog/feed/"
-                   name="bprf_rss_feed"
-                   value="<?php echo esc_attr( $bprf_rss_feed ) ?>" />
-        </p>
-    <?php
+        bprf_the_template_part('group_settings');
     }
 
     function settings_screen_save( $group_id = null ) {
@@ -163,17 +146,16 @@ class BPRF_Groups extends BP_Group_Extension {
      *   * admin_screen()
      *   * admin_screen_save()
      */
-    function create_screen( $group_id = null ) { ?>
-        <div>
-            <p><?php _e('If you want to attach some 3rd-party site RSS feed to your group, just provide the link to the feed below.') ;?></p>
-            <label for="bprf_rss_feed_create"><?php _e('Link to an external RSS feed', 'bprf'); ?></label>
-            <input type="text" id="bprf_rss_feed_create" name="bprf_rss_feed" value="" />
-        </div>
-    <?php
+    function create_screen( $group_id = null ) {
+        bprf_the_template_part('group_create_rss');
     }
 
     function create_screen_save($group_id = null){
         $bprf_rss_feed = isset( $_POST['bprf_rss_feed'] ) ? wp_strip_all_tags($_POST['bprf_rss_feed']) : '';
+
+        if ( empty($group_id) ) {
+            $group_id = bp_get_current_group_id();
+        }
 
         groups_update_groupmeta( $group_id, 'bprf_rss_feed', $bprf_rss_feed );
     }
