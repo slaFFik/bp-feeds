@@ -39,9 +39,10 @@ function bprf_activation() {
                             'groups'  => __('RSS Feed', 'bprf')
                         ),
         'rss'       => array(
-                            'excerpt'   => '25',     // words
-                            'frequency' => '43200',  // 12 hours
-                            'image'     => 'none'
+                            'excerpt'     => '25',     // words
+                            'frequency'   => '43200',  // 12 hours
+                            'image'       => 'none',   // do not dislay it all
+                            'placeholder' => 'http://buddypress.org/blog/feed'
                         )
     );
 
@@ -332,3 +333,12 @@ function bprf_get_file_extension_by_type($type){
 
     return isset($extensions[$type]) ? $extensions[$type] : IMAGETYPE_JPEG;
 }
+
+function bprf_the_rss_placeholder(){
+    echo bprf_get_rss_placeholder();
+}
+    function bprf_get_rss_placeholder(){
+        $bprf = bp_get_option('bprf');
+
+        return isset($bprf['rss']['placeholder']) ? apply_filters('bprf_get_rss_placeholder', $bprf['rss']['placeholder'], $bprf) : '';
+    }

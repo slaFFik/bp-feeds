@@ -46,6 +46,15 @@ $checked = 'checked="checked"';
         </td>
     </tr>
 
+    <!-- Placeholder for RSS feed URL -->
+    <tr valign="top">
+        <th scope="row"><label for="bprf_rss_placeholder"><?php _e('Placeholder URL', 'bprf'); ?></label></th>
+        <td>
+            <input name="bprf[rss][placeholder]" id="bprf_rss_placeholder" type="text" class="regular-text" value="<?php esc_attr_e($bprf['rss']['placeholder']); ?>">
+            <p class="description"><?php _e('That is the URL users will see as an example of what is needed from them. Plugin will not parse it.', 'bprf' ); ?></p>
+        </td>
+    </tr>
+
     <!-- RSS first iamge -->
     <tr valign="top">
         <th scope="row"><?php _e('RSS item first image', 'bprf'); ?></th>
