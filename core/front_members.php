@@ -39,7 +39,7 @@ function bprf_profile_admin_bar_activity_menu($wp_admin_nav){
         'parent' => 'my-account-activity',
         'id'     => 'my-account-activity-' . BPRF_SLUG,
         'title'  => $bprf['tabs']['members'],
-        'href'   => trailingslashit(  bp_displayed_user_domain() . bp_get_activity_slug() . '/' . BPRF_SLUG )
+        'href'   => trailingslashit(  bp_loggedin_user_domain() . bp_get_activity_slug() . '/' . BPRF_SLUG )
     );
 
     $new_nav = array();
@@ -68,7 +68,7 @@ function bprf_profile_admin_bar_settings_menu($wp_admin_nav){
         'parent' => 'my-account-settings',
         'id'     => 'my-account-settings-' . BPRF_SLUG,
         'title'  => $bprf['tabs']['members'],
-        'href'   => trailingslashit(  bp_displayed_user_domain() . bp_get_settings_slug() . '/' . BPRF_SLUG )
+        'href'   => trailingslashit(  bp_loggedin_user_domain() . bp_get_settings_slug() . '/' . BPRF_SLUG )
     );
 
     $new_nav = array();
