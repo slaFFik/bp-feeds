@@ -342,3 +342,7 @@ function bprf_the_rss_placeholder(){
 
         return isset($bprf['rss']['placeholder']) ? apply_filters('bprf_get_rss_placeholder', $bprf['rss']['placeholder'], $bprf) : '';
     }
+
+function bprf_is_moderated(){
+    return false;
+}
