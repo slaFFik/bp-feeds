@@ -129,7 +129,7 @@ class BPRF_Feed {
 
                 $item_link = '<a href="'. esc_url( $item->get_permalink() ) .'" class="bprf_feed_item_title">'. $item->get_title() . '</a>';
 
-                $content = wp_trim_words($item->get_description(), $bprf['rss']['excerpt']);
+                $content = wp_trim_words($item->get_content(), $bprf['rss']['excerpt']);
 
                 if ($bprf['rss']['image'] == 'display_remote' || $bprf['rss']['image'] == 'display_local') {
                     switch($bprf['rss']['image']){
@@ -137,7 +137,7 @@ class BPRF_Feed {
                             $image_src = $this->get_save_item_image( $item );
                             break;
                         case 'display_remote':
-                            $image_src = $this->get_item_image( $item->get_description() );
+                            $image_src = $this->get_item_image( $item->get_content() );
                             break;
                     }
                     if ( !empty($image_src) ) {
@@ -209,7 +209,7 @@ class BPRF_Feed {
      * @return string URL of an image
      */
     function get_save_item_image($item){
-        $remote_img_url = $this->get_item_image($item->get_description());
+        $remote_img_url = $this->get_item_image($item->get_content());
         if(empty($remote_img_url)){
             return false;
         }
