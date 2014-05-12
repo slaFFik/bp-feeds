@@ -121,8 +121,8 @@ class BPRF_Feed {
 
             $bprf = bp_get_option('bprf');
 
-            // Figure out how many total items are there, but pass no limit
-            $this->maxitems = $this->rss->get_item_quantity( 0 );
+            // retrieve only defined amount of RSS items
+            $this->maxitems = $this->rss->get_item_quantity( $bprf['rss']['posts'] );
 
             // Build an array of all the items, starting with element 0 (first element).
             $this->items = $this->rss->get_items( 0, $this->maxitems );

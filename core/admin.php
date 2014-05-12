@@ -83,7 +83,12 @@ function bprf_admin_page_save(){
 
         $bprf['rss']['excerpt']   = (int) $bprf['rss']['excerpt'];
         if ( empty($bprf['rss']['excerpt']) ) {
-            $bprf['rss']['excerpt'] = '25';
+            $bprf['rss']['excerpt'] = '45';
+        }
+
+        $bprf['rss']['posts']   = (int) $bprf['rss']['posts'];
+        if ( empty($bprf['rss']['posts']) ) {
+            $bprf['rss']['posts'] = '5';
         }
 
         $bprf['rss']['frequency'] = (int) $bprf['rss']['frequency'];

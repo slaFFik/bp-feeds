@@ -40,6 +40,7 @@ function bprf_activation() {
                         ),
         'rss'       => array(
                             'excerpt'     => '45',     // words
+                            'posts'       => '5',      // number of latest posts to import
                             'frequency'   => '43200',  // 12 hours
                             'image'       => 'none',   // do not dislay it all
                             'nofollow'    => 'yes',    // add rel="nofollow"

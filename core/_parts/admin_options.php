@@ -55,7 +55,7 @@ $checked = 'checked="checked"';
         </td>
     </tr>
 
-    <!-- RSS first iamge -->
+    <!-- RSS first image -->
     <tr valign="top">
         <th scope="row"><?php _e('RSS item first image', 'bprf'); ?></th>
         <td>
@@ -112,6 +112,19 @@ $checked = 'checked="checked"';
             <input name="bprf[rss][excerpt]" id="bprf_rss_excerpts_length" type="text" required="required" value="<?php esc_attr_e($bprf['rss']['excerpt']); ?>"> <?php _e('words', 'bprf'); ?>
             <p class="description"><?php _e('Three dots <code>...</code> will be used to identify the end of excerpt.', 'bprf'); ?></p>
             <p class="description"><?php _e('Words will stay intact, sentences may be cut in the middle.', 'bprf'); ?></p>
+        </td>
+    </tr>
+
+    <!-- RSS Imported Posts -->
+    <tr valign="top">
+        <th scope="row"><label for="bprf_rss_posts"><?php _e('Maximum amount of posts to import', 'bprf'); ?></label></th>
+        <td>
+            <input name="bprf[rss][posts]" id="bprf_rss_posts" type="text" required="required" value="<?php esc_attr_e($bprf['rss']['posts']); ?>"> <?php _e('posts', 'bprf'); ?>
+            <p class="description">
+                <?php _e('How many posts would you like to import when a RSS feed is added?', 'bprf');?><br/>
+                <?php _e('This is useful if you don\'t want to fill the activity stream with older posts.', 'bprf');?><br/>
+                <?php _e('By default this is set to only import the last 5 published posts.', 'bprf'); ?>
+            </p>
         </td>
     </tr>
 
