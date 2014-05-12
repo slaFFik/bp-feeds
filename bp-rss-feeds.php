@@ -39,7 +39,7 @@ function bprf_activation() {
                             'groups'  => __('RSS Feed', 'bprf')
                         ),
         'rss'       => array(
-                            'excerpt'     => '25',     // words
+                            'excerpt'     => '45',     // words
                             'frequency'   => '43200',  // 12 hours
                             'image'       => 'none',   // do not dislay it all
                             'placeholder' => 'http://buddypress.org/blog/feed'

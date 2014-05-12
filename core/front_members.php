@@ -136,8 +136,8 @@ add_action('bp_init', 'bprf_profile_settings_submenu');
 function bprf_profile_settings_submenu_page() {
     do_action( 'bprf_profile_settings_submenu_page' );
 
-    if ( wp_verify_nonce( $_POST['_wpnonce'], 'bp_settings_bprf' ) ) {
-        if ( bp_update_user_meta(bp_loggedin_user_id(), 'bprf_rss_feed', wp_strip_all_tags($_POST['bprf_rss_feed'])) ){
+    if ( isset($_POST['_wpnonce']) && wp_verify_nonce( $_POST['_wpnonce'], 'bp_settings_bprf' ) ) {
+        if ( bp_update_user_meta(bp_displayed_user_id(), 'bprf_rss_feed', wp_strip_all_tags($_POST['bprf_rss_feed'])) ){
             $message = __('Your RSS Feed URL has been saved.', 'bprf');
             $type    = 'success';
         } else {

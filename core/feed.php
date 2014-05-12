@@ -91,7 +91,7 @@ class BPRF_Feed {
     }
 
     /**
-     * We need to save all the RSS ites into the activity feed
+     * We need to save all the RSS items into the activity feed
      */
     function save(){
         global $bp;
@@ -99,10 +99,25 @@ class BPRF_Feed {
         if ( ! is_wp_error( $this->rss ) ) {
 
             // save feed title and link
-            groups_update_groupmeta($bp->groups->current_group->id, 'bprf_feed_meta', array(
-                'title' => $this->rss->get_title(),
-                'link'  => $this->rss->get_link()
-            ));
+            if ( bp_is_group() ) {
+                groups_update_groupmeta(
+                    $bp->groups->current_group->id,
+                    'bprf_feed_meta',
+                    array(
+                        'title' => $this->rss->get_title(),
+                        'link'  => $this->rss->get_link()
+                    )
+                );
+            }else if( bp_is_user() ) {
+                bp_update_user_meta(
+                    bp_displayed_user_id(),
+                    'bprf_feed_meta',
+                    array(
+                        'title' => $this->rss->get_title(),
+                        'link'  => $this->rss->get_link()
+                    )
+                );
+            }
 
             $bprf = bp_get_option('bprf');
 
@@ -123,10 +138,8 @@ class BPRF_Feed {
                 }
 
                 // prepare content to be stored in activity feed
-                $bp_link   = '';
-                $image_src = '';
 
-                $item_link = '<a href="'. esc_url( $item->get_permalink() ) .'" class="bprf_feed_item_title">'. $item->get_title() . '</a>';
+                $image_src = '';
 
                 $content = wp_trim_words($item->get_content(), $bprf['rss']['excerpt']);
 
@@ -146,18 +159,22 @@ class BPRF_Feed {
                     }
                 }
 
+                $item_link = '<a href="'. esc_url( $item->get_permalink() ) .'" class="bprf_feed_item_title">'. $item->get_title() . '</a>';
                 $user_id = false;
+                $action  = $bp_link = '';
                 if ( bp_is_group() ) {
                     $bp_link = '<a href="' . bp_get_group_permalink( $bp->groups->current_group ) . '" class="bprf_feed_group_title">' . esc_attr( $bp->groups->current_group->name ) . '</a>';
+                    $action  = sprintf(__( 'New RSS post %1$s was shared in %1$s', 'bprf' ), $item_link, $bp_link);
                 } else if ( bp_is_user() ) {
                     $user_id = bp_displayed_user_id();
                     $bp_link = bp_core_get_userlink( bp_displayed_user_id() );
+                    $action  = sprintf(__( '%1$s shared a new RSS post %2$s', 'bprf' ), $bp_link, $item_link);
                 }
 
                 // save all the results with resulting activity ID
                 $activity_id = bprf_record_profile_new_feed_item_activity( array(
                     'user_id'           => $user_id,
-                    'action'            => sprintf(__( '%1$s shared a new RSS post %2$s', 'bprf' ), $bp_link, $item_link), // for backward compatibility
+                    'action'            => $action, // for backward compatibility
                     'content'           => $content,
                     'primary_link'      => $item->get_permalink(),
                     'item_id'           => $this->source_id,
