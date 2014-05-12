@@ -96,6 +96,8 @@ function bprf_admin_page_save(){
             $bprf['rss']['frequency'] = '43200';
         }
 
+        $bprf = apply_filters('bprf_admin_page_save', $bprf);
+
         bp_update_option('bprf', $bprf);
 
         wp_redirect( add_query_arg( 'status', 'saved' ) );

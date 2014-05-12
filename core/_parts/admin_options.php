@@ -55,6 +55,8 @@ $checked = 'checked="checked"';
         </td>
     </tr>
 
+    <?php do_action('bprf_admin_options_before_rss', $bprf); ?>
+
     <!-- RSS first image -->
     <tr valign="top">
         <th scope="row"><?php _e('RSS item first image', 'bprf'); ?></th>
@@ -139,7 +141,7 @@ $checked = 'checked="checked"';
         </td>
     </tr>
 
-    <?php do_action('bprf_admin_options', $bprf); ?>
+    <?php do_action('bprf_admin_options_after_rss', $bprf); ?>
 
     <!-- Deactivation -->
     <tr valign="top">
