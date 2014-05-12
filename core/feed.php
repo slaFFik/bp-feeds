@@ -159,7 +159,7 @@ class BPRF_Feed {
                     }
                 }
 
-                $item_link = '<a href="'. esc_url( $item->get_permalink() ) .'" class="bprf_feed_item_title">'. $item->get_title() . '</a>';
+                $item_link = '<a href="'. esc_url( $item->get_permalink() ) .'" '. ($bprf['rss']['nofollow'] == 'yes' ? 'rel="nofollow"' : '') .' class="bprf_feed_item_title">'. $item->get_title() . '</a>';
                 $user_id = false;
                 $action  = $bp_link = '';
                 if ( bp_is_group() ) {

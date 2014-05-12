@@ -42,6 +42,7 @@ function bprf_activation() {
                             'excerpt'     => '45',     // words
                             'frequency'   => '43200',  // 12 hours
                             'image'       => 'none',   // do not dislay it all
+                            'nofollow'    => 'yes',    // add rel="nofollow"
                             'placeholder' => 'http://buddypress.org/blog/feed'
                         )
     );

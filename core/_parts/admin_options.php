@@ -84,6 +84,27 @@ $checked = 'checked="checked"';
         </td>
     </tr>
 
+    <!-- RSS Nofollow link -->
+    <tr valign="top">
+        <th scope="row"><label for="bprf_rss_nofollow_link"><?php _e('RSS item: add nofollow', 'bprf'); ?></label></th>
+        <td>
+            <label>
+                <input name="bprf[rss][nofollow]" type="radio" value="yes" <?php checked('yes', $bprf['rss']['nofollow']); ?>>&nbsp;
+                <?php _e('Yes', 'bprf'); ?>
+            </label>
+            <p class="description option_desc">
+                <?php _e('Link to a RSS item will have an attribute <code>rel="nofollow"</code>, so search engines should not open it and index.', 'bprf'); ?>
+            </p>
+            <label>
+                <input name="bprf[rss][nofollow]" type="radio" value="no" <?php checked('no', $bprf['rss']['nofollow']); ?>>&nbsp;
+                <?php _e('No', 'bprf'); ?>
+            </label>
+            <p class="description option_desc">
+                <?php _e('Search engines will open that link and may index it.', 'bprf'); ?>
+            </p>
+        </td>
+    </tr>
+
     <!-- RSS Excerpt Length -->
     <tr valign="top">
         <th scope="row"><label for="bprf_rss_excerpts_length"><?php _e('RSS posts excerpt length', 'bprf'); ?></label></th>
