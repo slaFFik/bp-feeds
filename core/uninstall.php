@@ -10,7 +10,7 @@ function bprf_delete_data(){
 
     // remove files
     $upload_dir = wp_upload_dir();
-    $path = $upload_dir['basedir'] . '/' . BPRF_UPLOAD;
+    $path = $upload_dir['basedir'] . '/' . BPRF_UPLOAD_DIR;
     bprf_empty_dir($path);
 
     // remove activity database entries

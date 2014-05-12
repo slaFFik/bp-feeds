@@ -36,7 +36,7 @@ class BPRF_Feed {
                 break;
         }
 
-        $this->upload_dir = BPRF_UPLOAD.'/'.$this->source.'/'.$this->source_id;
+        $this->upload_dir = BPRF_UPLOAD_DIR.'/'.$this->source.'/'.$this->source_id;
 
         include_once( ABSPATH . WPINC . '/feed.php' );
 
@@ -113,13 +113,12 @@ class BPRF_Feed {
             $this->items = $this->rss->get_items( 0, $this->maxitems );
 
             foreach($this->items as $item){
+                /** @var $item SimplePie_Item */
                 $item_time = strtotime($item->get_date());
 
                 // ignore already saved items based on time published
                 // dunno better solution
-                if(bp_activity_get_activity_id(array(
-                    'secondary_item_id' => $item_time
-                ))){
+                if ( bp_activity_get_activity_id( array( 'secondary_item_id' => $item_time ) ) ) {
                     continue;
                 }
 

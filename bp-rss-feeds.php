@@ -16,8 +16,8 @@ define( 'BPRF_URL',     plugins_url('_inc', dirname(__FILE__) )); // link to all
 define( 'BPRF_PATH',    dirname(__FILE__) . '/core'); // without /
 
 // Give ability to change this variables in bp-custom.php or functions.php
-if (!defined('BPRF_UPLOAD'))
-    define( 'BPRF_UPLOAD', 'bp-rss-feeds' );
+if (!defined('BPRF_UPLOAD_DIR'))
+    define( 'BPRF_UPLOAD_DIR', 'bp-rss-feeds' );
 
 if (!defined('BPRF_SLUG'))
     define( 'BPRF_SLUG', 'rss-feed');
@@ -82,17 +82,18 @@ function bprf_load_textdomain() {
     load_plugin_textdomain( 'bprf', false, dirname( plugin_basename( __FILE__ ) ) . '/langs/' );
 }
 
+
+/**
+ * All the helpers functions used everywhere
+ */
+include_once( BPRF_PATH . '/helpers.php' );
+
 /**
  * Admin area
  */
 if ( is_admin() ) {
     include_once( BPRF_PATH . '/admin.php' );
 }
-
-/**
- * All the helpers functions used everywhere
- */
-include_once( BPRF_PATH . '/helpers.php' );
 
 /**
  * Include the front-end things
@@ -113,16 +114,16 @@ function bprf_front_init() {
 }
 
 /**
- * Modify the caching period to the specified by admin
+ * Modify the caching period to the specified value in seconds by admin
  *
  * @param $time
  * @param $url
- * @return mixed
+ * @return int
  */
 function bprf_feed_cache_lifetime($time, $url){
     $bprf = bp_get_option('bprf');
 
-    if ( isset($bprf['rss']['frequency']) && !empty($bprf['rss']['frequency']) && $bprf['rss']['frequency'] > 0 ){
+    if ( isset($bprf['rss']['frequency']) && !empty($bprf['rss']['frequency']) && is_numeric($bprf['rss']['frequency']) && $bprf['rss']['frequency'] > 0 ){
         return $bprf['rss']['frequency'];
     }
 
@@ -136,7 +137,7 @@ function bprf_feed_cache_lifetime($time, $url){
  */
 add_action( 'bp_register_activity_actions', 'bprf_register_activity_actions' );
 function bprf_register_activity_actions() {
-    global $bp;
+    $bp = buddypress();
 
     if ( ! bp_is_active( 'activity' ) ) {
         return false;
@@ -238,6 +239,16 @@ function bprf_record_profile_new_feed_item_activity($args){
     $r = wp_parse_args( $args, $defaults );
     extract( $r, EXTR_SKIP );
 
+    /** @var $user_id */
+    /** @var $action */
+    /** @var $content */
+    /** @var $primary_link */
+    /** @var $component */
+    /** @var $type */
+    /** @var $item_id */
+    /** @var $secondary_item_id */
+    /** @var $recorded_time */
+    /** @var $hide_sitewide */
     return bp_activity_add( array(
         'user_id'           => $user_id,
         'action'            => $action,
