@@ -4,10 +4,6 @@
  * Delete all generated content (DB and FS)
  */
 function bprf_delete_data(){
-    /** @var $wpdb WPDB */
-    global $wpdb;
-    $bp = buddypress();
-
     // remove files
     $upload_dir = wp_upload_dir();
     $path = $upload_dir['basedir'] . '/' . BPRF_UPLOAD_DIR;
@@ -34,20 +30,10 @@ function bprf_delete_options(){
     bp_delete_option('bprf');
 
     // groups feeds urls
-    $wpdb->delete(
-        $bp->groups->table_name_groupmeta,
-        array(
-            'meta_key' => 'bprf_rss_feed'
-        )
-    );
+    $wpdb->query("DELETE FROM {$bp->groups->table_name_groupmeta} WHERE `meta_key` LIKE 'bprf_%'");
 
     // users feeds urls
-    $wpdb->delete(
-        $wpdb->usermeta,
-        array(
-            'meta_key' => 'bprf_rss_feed'
-        )
-    );
+    $wpdb->query("DELETE FROM {$wpdb->usermeta} WHERE `meta_key` LIKE 'bprf_%'");
 }
 
 function bprf_empty_dir($dir){
