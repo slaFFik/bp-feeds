@@ -55,6 +55,31 @@ $checked = 'checked="checked"';
         </td>
     </tr>
 
+    <!-- Sites Directory Integration -->
+    <tr valign="top">
+        <th scope="row">
+            <label for="bprf_rss_nofollow_link"><?php _e('List external feeds on the sites directory as blogs', 'bprf'); ?></label><br/>
+            <label for="bprf_rss_nofollow_link" style="font-weight: normal"><?php _e('WordPress MultiSite only', 'bprf'); ?></label>
+        </th>
+        <td>
+            <label>
+                <input name="bprf[sites]" type="radio" value="yes" <?php checked('yes', $bprf['sites']); ?>>&nbsp;
+                <?php _e('Yes', 'bprf'); ?>
+            </label>
+            <p class="description option_desc">
+                <?php _e('On Sites Directory page all RSS feeds (groups and members) will be displayed as Blogs.', 'bprf'); ?><br/>
+                <?php _e('Appropriate avatars (groups and members) will be used as blogs avatars.', 'bprf'); ?>
+            </p>
+            <label>
+                <input name="bprf[sites]" type="radio" value="no" <?php checked('no', $bprf['sites']); ?>>&nbsp;
+                <?php _e('No', 'bprf'); ?>
+            </label>
+            <p class="description option_desc">
+                <?php _e('Do not display them on Sites Directory page.', 'bprf'); ?>
+            </p>
+        </td>
+    </tr>
+
     <?php do_action('bprf_admin_options_before_rss', $bprf); ?>
 
     <!-- RSS first image -->

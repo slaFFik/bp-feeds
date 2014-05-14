@@ -32,6 +32,9 @@ function bprf_delete_options(){
     // groups feeds urls
     $wpdb->query("DELETE FROM {$bp->groups->table_name_groupmeta} WHERE `meta_key` LIKE 'bprf_%'");
 
+    // activity feed meta
+    $wpdb->query("DELETE FROM {$bp->activity->table_name_meta} WHERE `meta_key` LIKE 'bprf_%'");
+
     // users feeds urls
     $wpdb->query("DELETE FROM {$wpdb->usermeta} WHERE `meta_key` LIKE 'bprf_%'");
 }

@@ -34,6 +34,7 @@ function bprf_activation() {
                         'groups'
                     ),
         'uninstall' => 'leave',
+        'sites'     => 'yes',
         'tabs'      => array(
                             'members' => __('RSS Feed', 'bprf'),
                             'groups'  => __('RSS Feed', 'bprf')
