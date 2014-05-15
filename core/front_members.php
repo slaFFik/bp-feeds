@@ -162,7 +162,7 @@ function bprf_profile_settings_submenu_page() {
  * Display settings title
  */
 function bprf_profile_settings_submenu_page_title(){
-    if ( !bp_is_settings_component() && bp_current_action() == BPRF_SLUG ) {
+    if ( !bp_is_settings_component() && bp_current_action() !== BPRF_SLUG ) {
         return false;
     }
 

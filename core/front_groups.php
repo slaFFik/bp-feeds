@@ -111,7 +111,9 @@ class BPRF_Groups extends BP_Group_Extension {
      * @param null $group_id
      */
     function settings_screen( $group_id = null ) {
-        bprf_the_template_part('group_settings');
+        if( bp_current_action() == BPRF_SLUG) {
+            bprf_the_template_part( 'group_settings' );
+        }
     }
 
     function settings_screen_save( $group_id = null ) {
@@ -147,7 +149,9 @@ class BPRF_Groups extends BP_Group_Extension {
      *   * admin_screen_save()
      */
     function create_screen( $group_id = null ) {
-        bprf_the_template_part('group_create_rss');
+        if( bp_current_action() == BPRF_SLUG) {
+            bprf_the_template_part( 'group_create_rss' );
+        }
     }
 
     function create_screen_save($group_id = null){
