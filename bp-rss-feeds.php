@@ -114,6 +114,10 @@ function bprf_front_init() {
     if ( in_array('groups', $bprf['rss_for']) && bp_is_active('groups') ) {
         require_once( BPRF_PATH . '/front_groups.php');
     }
+
+    if ( $bprf['sites'] == 'yes' && bp_is_active('blogs') ) {
+        require_once( BPRF_PATH . '/front_blogs.php');
+    }
 }
 
 /**

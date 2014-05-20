@@ -162,7 +162,18 @@ function bprf_profile_settings_submenu_page() {
  * Display settings title
  */
 function bprf_profile_settings_submenu_page_title(){
-    if ( !bp_is_settings_component() && bp_current_action() !== BPRF_SLUG ) {
+    // should be a user
+    if( ! bp_is_user() ) {
+        return false;
+    }
+
+    // should be Settings page
+    if ( ! bp_is_settings_component() ) {
+        return false;
+    }
+
+    // should be RSS Feeds page
+    if ( bp_current_action() !== BPRF_SLUG ) {
         return false;
     }
 

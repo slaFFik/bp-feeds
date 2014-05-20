@@ -87,3 +87,12 @@ function bprf_get_rss_placeholder(){
 function bprf_is_moderated(){
     return false;
 }
+
+/**
+ * Get href from a string
+ */
+function bprf_get_href($link){
+    preg_match('~(?i)\b((?:[a-z][\w-]+:(?:/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:\'".,<>?«»“”‘’]))~', $link, $url);
+
+    return $url[0];
+}
