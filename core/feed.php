@@ -171,6 +171,7 @@ class BPRF_Feed {
                     $action  = sprintf(__( '%1$s shared a new RSS post %2$s', 'bprf' ), $bp_link, $item_link);
                 }
 
+                // TODO: clear cache for counter
                 // save all the results with resulting activity ID
                 $activity_id = bprf_record_profile_new_feed_item_activity( array(
                     'user_id'           => $user_id,

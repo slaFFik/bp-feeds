@@ -27,7 +27,6 @@ add_action('bp_blogs_directory_blog_types', 'bprf_blogs_direcory_rss_type');
 
 /**
  * Overal number of RSS feed
- * TODO: fix RSS feeds count
  *
  * @return int
  */
