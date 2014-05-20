@@ -140,6 +140,7 @@ function bprf_profile_settings_submenu_page() {
         if ( bp_update_user_meta(bp_displayed_user_id(), 'bprf_rss_feed', wp_strip_all_tags($_POST['bprf_rss_feed'])) ){
             $message = __('Your RSS Feed URL has been saved.', 'bprf');
             $type    = 'success';
+            wp_cache_delete( 'bprf_blogs_get_blogs_count', 'bprf' );
         } else {
             $message = __('No changes were made.', 'bprf');
             $type    = 'updated';

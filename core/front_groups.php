@@ -122,6 +122,7 @@ class BPRF_Groups extends BP_Group_Extension {
         if ( groups_update_groupmeta( $group_id, 'bprf_rss_feed', $bprf_rss_feed ) ){
             $message = __('Your RSS Feed URL has been saved.', 'bprf');
             $type    = 'success';
+            wp_cache_delete( 'bprf_blogs_get_blogs_count', 'bprf' );
         } else {
             $message = __('No changes were made.', 'bprf');
             $type    = 'updated';
@@ -160,6 +161,7 @@ class BPRF_Groups extends BP_Group_Extension {
         }
 
         groups_update_groupmeta( $group_id, 'bprf_rss_feed', $bprf_rss_feed );
+        wp_cache_delete( 'bprf_blogs_get_blogs_count', 'bprf' );
     }
 }
 

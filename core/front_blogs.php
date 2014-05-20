@@ -278,23 +278,20 @@ function bprf_blogs_get_avatar($avatar, $blog_id, $params){
         (isset($_POST['scope']) && $_POST['scope'] === 'rss') ||
         (bp_is_blogs_directory() && $_COOKIE['bp-blogs-scope'] === 'rss')
     ) {
+        $object = 'user';
 
         // retrieve the source type of an avatar: user or group
         if ( stristr( $params['email'], '@', true ) == 'group_' . $blog_id ) {
-            // this is group
-            return bp_core_fetch_avatar( array(
-                'item_id' => $blog_id,
-                'object'  => 'group',
-                'type'    => 'thumb'
-            ) );
+            $object = 'group';
         } else if ( stristr( $params['email'], '@', true ) == 'user_' . $blog_id ) {
-            return bp_core_fetch_avatar( array(
-                'item_id' => $blog_id,
-                'object'  => 'user',
-                'type'    => 'thumb',
-                'email'   => $params['email']
-            ) );
+            $object = 'user';
         }
+
+        return bp_core_fetch_avatar( array(
+            'item_id' => $blog_id,
+            'object'  => $object,
+            'type'    => 'thumb'
+        ) );
     }
 
     return $avatar;
