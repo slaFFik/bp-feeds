@@ -33,10 +33,19 @@ function bprf_blogs_get_blogs_count(){
                                   AND `meta_value` <> ''");
 
         // get groups rss count
-        $groups = $wpdb->get_var("SELECT COUNT(*)
-                                FROM {$bp->groups->table_name_groupmeta}
-                                WHERE `meta_key` = 'bprf_rss_feed'
-                                  AND `meta_value` <> ''");
+        $groups_to_check = $wpdb->get_results("SELECT gm.group_id, g.status
+                                FROM {$bp->groups->table_name_groupmeta} AS gm
+                                LEFT JOIN {$bp->groups->table_name} AS g ON g.id = gm.group_id
+                                WHERE gm.`meta_key` = 'bprf_rss_feed'
+                                  AND gm.`meta_value` <> ''");
+
+        $groups = 0;
+        foreach ( $groups_to_check as $group ) {
+            // check group accessibility - admins should always have access
+            if ( $group->status == 'public' || is_super_admin() || groups_is_user_member( bp_loggedin_user_id(), $group->group_id ) ) {
+                $groups++;
+            }
+        }
 
         $count = apply_filters( 'bprf_blogs_get_blogs_count', (int) $profiles + (int) $groups );
 
@@ -73,7 +82,7 @@ function bprf_blogs_get_blogs_count(){
 function bprf_blogs_get_blogs($blogs, $params){
     if(
         (isset($_POST['scope']) && $_POST['scope'] === 'rss') ||
-        (bp_is_blogs_directory() && $_COOKIE['bp-blogs-scope'] === 'rss')
+        (bp_is_blogs_directory() && isset($_COOKIE['bp-blogs-scope']) && $_COOKIE['bp-blogs-scope'] === 'rss')
     ) {
         $rss = array();
 
@@ -140,14 +149,20 @@ function bprf_blogs_get_groups_blogs($params){
 
     // TODO: take care of group visibility
     // get Feeds
-    $sites_raw = $wpdb->get_results( "SELECT group_id AS item_id, meta_value AS site_meta
-        FROM {$bp->groups->table_name_groupmeta}
-        WHERE `meta_key` = 'bprf_feed_meta'
-          AND `meta_value` <> ''
+    $sites_raw = $wpdb->get_results( "SELECT gm.group_id AS item_id, g.status AS status, gm.meta_value AS site_meta
+        FROM {$bp->groups->table_name_groupmeta} AS gm
+        LEFT JOIN {$bp->groups->table_name} AS g ON gm.group_id = g.id
+        WHERE gm.`meta_key` = 'bprf_feed_meta'
+          AND gm.`meta_value` <> ''
         LIMIT {$page}, {$params['per_page']}" );
 
-    // get the latest item imported
+    // prepare data for the blog-loop.php
     foreach ( $sites_raw as $site ) {
+        // check group accessibility - admins should always have access
+        if ( $site->status !== 'public' && ! is_super_admin() && ! groups_is_user_member( bp_loggedin_user_id(), $site->item_id ) ) {
+            continue;
+        }
+
         $site->site_meta = maybe_unserialize( $site->site_meta );
         // for each group select the latest rss item title and link
         $latest_post = $wpdb->get_row( "SELECT am.meta_value AS links, a.date_recorded AS last_activity, a.secondary_item_id AS last_activity_unix
@@ -274,7 +289,7 @@ function bprf_blogs_get_members_blogs($params){
 function bprf_blogs_get_avatar($avatar, $blog_id, $params){
     if(
         (isset($_POST['scope']) && $_POST['scope'] === 'rss') ||
-        (bp_is_blogs_directory() && $_COOKIE['bp-blogs-scope'] === 'rss')
+        (bp_is_blogs_directory() && isset($_COOKIE['bp-blogs-scope']) && $_COOKIE['bp-blogs-scope'] === 'rss')
     ) {
         $object = 'user';
 
