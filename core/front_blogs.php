@@ -3,17 +3,8 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 /**
- * Alter the user/group activity stream to display RSS feed items only
- *
- * @param $bp_ajax_querystring string
- * @param $object string
- * @return string
+ * New tab on Sites Directory page
  */
-function bprf_filter_blogs_loop($bp_ajax_querystring, $object){
-    return $bp_ajax_querystring;
-}
-add_filter( 'bp_ajax_querystring', 'bprf_filter_blogs_loop', 999, 2 );
-
 function bprf_blogs_direcory_rss_type(){ ?>
     <li id="blogs-rss">
         <a href="<?php echo bp_loggedin_user_domain() . bp_get_blogs_slug(); ?>">
@@ -47,7 +38,7 @@ function bprf_blogs_get_blogs_count(){
                                 WHERE `meta_key` = 'bprf_rss_feed'
                                   AND `meta_value` <> ''");
 
-        $count = $profiles + $groups;
+        $count = apply_filters( 'bprf_blogs_get_blogs_count', (int) $profiles + (int) $groups );
 
         wp_cache_set( 'bprf_blogs_get_blogs_count', $count, 'bprf' );
     }
@@ -88,7 +79,7 @@ function bprf_blogs_get_blogs($blogs, $params){
 
         // get all rss feeds metas
         $rss_to_sort  = bprf_blogs_get_groups_blogs($params);
-        $members = bprf_blogs_get_members_blogs($params);
+        $members      = bprf_blogs_get_members_blogs($params);
 
         foreach($members as $site){
             array_push($rss_to_sort, $site);
@@ -107,7 +98,7 @@ function bprf_blogs_get_blogs($blogs, $params){
             krsort( $rss, SORT_NUMERIC );
         }
 
-        $rss = array_values( $rss );
+        $rss = apply_filters('bprf_blogs_get_blogs', array_values( $rss ), $rss, $params);
 
         return array(
             'blogs' => $rss,
@@ -192,7 +183,7 @@ function bprf_blogs_get_groups_blogs($params){
         $sites[] = $site;
     }
 
-    return $sites;
+    return apply_filters('bprf_blogs_get_groups_blogs', $sites, $params);
 }
 
 /**
@@ -267,11 +258,18 @@ function bprf_blogs_get_members_blogs($params){
         $sites[] = $site;
     }
 
-    return $sites;
+    return apply_filters('bprf_blogs_get_members_blogs', $sites, $params);
 }
 
 /**
- * And now filters to override what we are going to display on "Sites Directory pages => External Sites" tab
+ * Override the blog avatar
+ * It should have group or user avatar of the corresponding RSS feed
+ *
+ * @param $avatar  string
+ * @param $blog_id int
+ * @param $params  array
+ *
+ * @return string
  */
 function bprf_blogs_get_avatar($avatar, $blog_id, $params){
     if(
