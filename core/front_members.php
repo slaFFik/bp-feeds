@@ -33,6 +33,10 @@ add_action('bp_init', 'bprf_profile_activity_submenu', 100);
  * @return array Modified admin nav
  */
 function bprf_profile_admin_bar_activity_menu($wp_admin_nav){
+    if ( empty( $wp_admin_nav ) ) {
+        return $wp_admin_nav;
+    }
+
     $bprf = bp_get_option('bprf');
 
     $feed = array(
