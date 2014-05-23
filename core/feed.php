@@ -161,14 +161,16 @@ class BPRF_Feed {
 
                 $item_link = '<a href="'. esc_url( $item->get_permalink() ) .'" '. ($bprf['rss']['nofollow'] == 'yes' ? 'rel="nofollow"' : '') .' class="bprf_feed_item_title">'. $item->get_title() . '</a>';
                 $user_id = false;
-                $action  = $bp_link = '';
+                $action  = $bp_link = $component = '';
                 if ( bp_is_group() ) {
+                    $component = buddypress()->groups->id;
                     $bp_link = '<a href="' . bp_get_group_permalink( $bp->groups->current_group ) . '" class="bprf_feed_group_title">' . esc_attr( $bp->groups->current_group->name ) . '</a>';
                     $action  = sprintf(__( 'New RSS post %1$s was shared in %1$s', 'bprf' ), $item_link, $bp_link);
                 } else if ( bp_is_user() ) {
-                    $user_id = bp_displayed_user_id();
-                    $bp_link = bp_core_get_userlink( bp_displayed_user_id() );
-                    $action  = sprintf(__( '%1$s shared a new RSS post %2$s', 'bprf' ), $bp_link, $item_link);
+                    $component = 'activity';
+                    $user_id   = bp_displayed_user_id();
+                    $bp_link   = bp_core_get_userlink( bp_displayed_user_id() );
+                    $action    = sprintf(__( '%1$s shared a new RSS post %2$s', 'bprf' ), $bp_link, $item_link);
                 }
 
                 // TODO: clear cache for counter
@@ -177,6 +179,8 @@ class BPRF_Feed {
                     'user_id'           => $user_id,
                     'action'            => $action, // for backward compatibility
                     'content'           => $content,
+                    'component'         => $component,
+                    'type'              => $component . '_rss_item',
                     'primary_link'      => $item->get_permalink(),
                     'item_id'           => $this->source_id,
                     'secondary_item_id' => $item_time,

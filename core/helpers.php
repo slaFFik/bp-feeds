@@ -29,7 +29,7 @@ function bprf_get_count_folder_size(){
  * @param $options  array  Variables that we need to use inside that template
  */
 function bprf_the_template_part($template, $options = array()){
-    $path = BPRF_PATH . '/_parts/' . $template . '.php';
+    $path = apply_filters( 'bprf_the_template_part', BPRF_PATH . '/_parts/' . $template . '.php', $template, $options);
 
     if( file_exists($path) ){
         // hate doing this
@@ -95,4 +95,18 @@ function bprf_get_href($link){
     preg_match('~(?i)\b((?:[a-z][\w-]+:(?:/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:\'".,<>?«»“”‘’]))~', $link, $url);
 
     return $url[0];
+}
+
+/**
+ * Get the Feed URL of a particular user
+ *
+ * @param bool|integer $user_id
+ * @return string Feed URL
+ */
+function bprf_get_user_rss_feed_url($user_id = false){
+    if ( empty($user_id) ) {
+        $user_id = bp_displayed_user_id();
+    }
+
+    return bp_get_user_meta($user_id, 'bprf_rss_feed', true);
 }

@@ -30,6 +30,29 @@ $checked = 'checked="checked"';
         </td>
     </tr>
 
+    <!-- Sites Directory Integration -->
+    <tr valign="top">
+        <th scope="row">
+            <?php _e('Where do you want to see custom RSS feed menu on user\'s profile?', 'bprf'); ?>
+        </th>
+        <td>
+            <label>
+                <input name="bprf[tabs][profile_nav]" type="radio" value="top" <?php checked('top', $bprf['tabs']['profile_nav']); ?>>&nbsp;
+                <?php _e('Profile Top Level', 'bprf'); ?>
+            </label>
+            <p class="description option_desc">
+                <?php _e('You will see the menu on the same level as Activity, Profile, Messages, Settings etc.', 'bprf'); ?>
+            </p>
+            <label>
+                <input name="bprf[tabs][profile_nav]" type="radio" value="sub" <?php checked('sub', $bprf['tabs']['profile_nav']); ?>>&nbsp;
+                <?php _e('Activity Submenu', 'bprf'); ?>
+            </label>
+            <p class="description option_desc">
+                <?php _e('You will see the menu under Activity on user profile, on the same level as Personal, Mentions, Favorites etc.', 'bprf'); ?>
+            </p>
+        </td>
+    </tr>
+
     <!-- Profile RSS Label -->
     <tr valign="top">
         <th scope="row"><label for="bprf_tabs_members"><?php _e('User profile RSS tab label', 'bprf'); ?></label></th>

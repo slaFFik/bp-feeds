@@ -14,6 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 define( 'BPRF_VERSION', '1.0' );
 define( 'BPRF_URL',     plugins_url('_inc', dirname(__FILE__) )); // link to all assets, with /
 define( 'BPRF_PATH',    dirname(__FILE__) . '/core'); // without /
+define( 'BPRF_MENU_POSITION', 15);
 
 // Give ability to change this variables in bp-custom.php or functions.php
 if (!defined('BPRF_UPLOAD_DIR'))
@@ -29,17 +30,15 @@ register_activation_hook( __FILE__, 'bprf_activation');
 function bprf_activation() {
     // some defaults
     $bprf = array(
-        'rss_for'   => array(
-                        'members',
-                        'groups'
-                    ),
-        'uninstall' => 'leave',
-        'sites'     => 'yes',
-        'tabs'      => array(
-                            'members' => __('RSS Feed', 'bprf'),
-                            'groups'  => __('RSS Feed', 'bprf')
+        'rss_for'     => array( 'members', 'groups' ),
+        'uninstall'   => 'leave',
+        'sites'       => 'yes',
+        'tabs'        => array(
+                            'members'     => __('RSS Feed', 'bprf'),
+                            'groups'      => __('RSS Feed', 'bprf'),
+                            'profile_nav' => 'top', // possible values: top, sub
                         ),
-        'rss'       => array(
+        'rss'         => array(
                             'excerpt'     => '45',     // words
                             'posts'       => '5',      // number of latest posts to import
                             'frequency'   => '43200',  // 12 hours
@@ -278,7 +277,11 @@ function bprf_record_profile_new_feed_item_activity($args){
  * @return string
  */
 function bprf_filter_rss_output($bp_ajax_querystring, $object){
-    if( (bp_is_group() || bp_is_user()) && bp_current_action() === BPRF_SLUG && $object == buddypress()->activity->id ){
+    if(
+        ( bp_is_group() || bp_is_user() ) &&
+        ( bp_current_action() === BPRF_SLUG || bp_current_component() === BPRF_SLUG ) &&
+        $object == buddypress()->activity->id
+    ){
         $query = '';
         if ( bp_is_group() ) {
             $query = 'object=groups&action=groups_rss_item&primary_id=' . bp_get_current_group_id();

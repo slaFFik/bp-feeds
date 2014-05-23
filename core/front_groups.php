@@ -22,7 +22,7 @@ class BPRF_Groups extends BP_Group_Extension {
         $args = array(
             'slug' => BPRF_SLUG,
             'name' => $this->bprf['tabs']['groups'],
-            'nav_item_position' => 45,
+            'nav_item_position' => BPRF_MENU_POSITION,
             'screens' => array(
                 'edit' => array(
                     'name'        => $this->bprf['tabs']['groups'],
@@ -92,11 +92,9 @@ class BPRF_Groups extends BP_Group_Extension {
         // Get a SimplePie feed object from the specified feed source.
         $rss = new BPRF_Feed( $this->rss->url, 'groups' );
 
-        if( !empty($rss->title) ) {
-            bprf_the_template_part('group_feed_title', array(
-                'rss' => $rss
-            ));
-        }
+        bprf_the_template_part('menu_feed_title', array(
+            'rss' => $rss
+        ));
 
         echo '<div class="activity" role="main">';
 

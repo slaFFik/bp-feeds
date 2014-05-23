@@ -8,93 +8,40 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 function bprf_profile_activity_submenu(){
     $bprf = bp_get_option('bprf');
 
-    $parent     = bp_get_activity_slug(); // bp_get_groups_slug()
-    $parent_url = trailingslashit( bp_displayed_user_domain() . $parent );
+    if ( $bprf['tabs']['profile_nav'] == 'sub' ) {
+        $parent = bp_get_activity_slug();
 
-    $sub_nav = array(
-        'name'            => $bprf['tabs']['members'],
-        'slug'            => BPRF_SLUG,
-        'parent_url'      => $parent_url,
-        'parent_slug'     => $parent,
-        'screen_function' => 'bprf_profile_activity_submenu_page',
-        'position'        => 15,
-        'item_css_id'     => BPRF_SLUG,
-        'user_has_access' => true
-    );
+        bp_core_new_subnav_item( array(
+            'name'            => $bprf['tabs']['members'],
+            'slug'            => BPRF_SLUG,
+            'item_css_id'     => BPRF_SLUG,
+            'parent_url'      => trailingslashit( bp_displayed_user_domain() . $parent ),
+            'parent_slug'     => $parent,
+            'screen_function' => 'bprf_profile_activity_submenu_page',
+            'position'        => BPRF_MENU_POSITION,
+            'user_has_access' => true
+        ) );
 
-    bp_core_new_subnav_item($sub_nav);
+    } else if ( $bprf['tabs']['profile_nav'] == 'top' ) {
+        bp_core_new_nav_item( array(
+            'name'                    => $bprf['tabs']['members'], // Display name for the nav item
+            'slug'                    => BPRF_SLUG, // URL slug for the nav item
+            'item_css_id'             => BPRF_SLUG, // The CSS ID to apply to the HTML of the nav item
+            'show_for_displayed_user' => true,  // When viewing another user does this nav item show up?
+            'site_admin_only'         => false, // Can only site admins see this nav item?
+            'position'                => BPRF_MENU_POSITION,    // Index of where this nav item should be positioned
+            'screen_function'         => 'bprf_profile_activity_page', // The name of the function to run when clicked
+            'default_subnav_slug'     => '/'  // The slug of the default subnav item to select when clicked
+        ));
+    }
 }
-add_action('bp_init', 'bprf_profile_activity_submenu', 100);
+add_action('bp_setup_nav', 'bprf_profile_activity_submenu', 100);
 
 /**
- * Add RSS feed menu under Activity
- *
- * @param $wp_admin_nav
- * @return array Modified admin nav
- */
-function bprf_profile_admin_bar_activity_menu($wp_admin_nav){
-    if ( empty( $wp_admin_nav ) ) {
-        return $wp_admin_nav;
-    }
-
-    $bprf = bp_get_option('bprf');
-
-    $feed = array(
-        'parent' => 'my-account-activity',
-        'id'     => 'my-account-activity-' . BPRF_SLUG,
-        'title'  => $bprf['tabs']['members'],
-        'href'   => trailingslashit(  bp_loggedin_user_domain() . bp_get_activity_slug() . '/' . BPRF_SLUG )
-    );
-
-    $new_nav = array();
-
-    foreach($wp_admin_nav as $nav){
-        $new_nav[] = $nav;
-        if(strpos($nav['id'], '-activity-personal')){
-            $new_nav[] = $feed;
-        }
-    }
-
-    return $new_nav;
-}
-add_filter('bp_activity_admin_nav', 'bprf_profile_admin_bar_activity_menu');
-
-/**
- * Add RSS feed settings menu under Settings
- *
- * @param $wp_admin_nav
- * @return array Modified admin nav
- */
-function bprf_profile_admin_bar_settings_menu($wp_admin_nav){
-    $bprf = bp_get_option('bprf');
-
-    $settings = array(
-        'parent' => 'my-account-settings',
-        'id'     => 'my-account-settings-' . BPRF_SLUG,
-        'title'  => $bprf['tabs']['members'],
-        'href'   => trailingslashit(  bp_loggedin_user_domain() . bp_get_settings_slug() . '/' . BPRF_SLUG )
-    );
-
-    $new_nav = array();
-
-    foreach($wp_admin_nav as $nav){
-        $new_nav[] = $nav;
-
-        if(strpos($nav['id'], '-settings-general')){
-            $new_nav[] = $settings;
-        }
-    }
-
-    return $new_nav;
-}
-add_filter('bp_settings_admin_nav', 'bprf_profile_admin_bar_settings_menu');
-
-/**
- * Display the activity feed
+ * Display the activity feed in case of submenu
  */
 function bprf_profile_activity_submenu_page() {
-    if ( bp_is_user() && bp_current_action() == BPRF_SLUG) {
-
+    if ( bp_is_user() && ( bp_current_action() === BPRF_SLUG || bp_current_component() === BPRF_SLUG ) ) {
         // Get a SimplePie feed object from the specified feed source.
         $feed_url = bprf_get_user_rss_feed_url();
 
@@ -111,6 +58,41 @@ function bprf_profile_activity_submenu_page() {
 }
 
 /**
+ * Display the activity feed in case of top level profile menu
+ */
+function bprf_profile_activity_page(){
+    do_action( 'bprf_profile_activity_page' );
+
+    bp_core_load_template( apply_filters( 'bprf_profile_activity_page', 'members/single/plugins' ) );
+}
+
+function bprf_profile_activity_page_content(){
+    if ( bp_current_component() !== BPRF_SLUG) return;
+
+    // Get a SimplePie feed object from the specified feed source.
+    $feed_url = bprf_get_user_rss_feed_url();
+
+    if ( !empty( $feed_url ) ) {
+        $rss = new BPRF_Feed( $feed_url, 'members' );
+
+        bprf_the_template_part('menu_feed_title', array(
+            'rss' => $rss
+        ));
+    }
+
+    echo '<div class="activity" role="main">';
+
+        bp_get_template_part( apply_filters( 'bprf_profile_activity_page_content', 'activity/activity-loop' ) );
+
+    echo '</div>';
+}
+add_action('bp_template_content', 'bprf_profile_activity_page_content');
+
+/************
+ * Settings *
+ ***********/
+
+/**
  * Add a user settings submenu BPRF_SLUG
  */
 function bprf_profile_settings_submenu(){
@@ -125,7 +107,7 @@ function bprf_profile_settings_submenu(){
         'parent_url'      => $parent_url,
         'parent_slug'     => $parent,
         'screen_function' => 'bprf_profile_settings_submenu_page',
-        'position'        => 15,
+        'position'        => BPRF_MENU_POSITION,
         'item_css_id'     => BPRF_SLUG,
         'user_has_access' => true
     );
@@ -186,16 +168,98 @@ function bprf_profile_settings_submenu_page_title(){
 }
 add_action('bp_template_content', 'bprf_profile_settings_submenu_page_title');
 
+/*******************
+ * Admin Bar Fixes *
+ ******************/
+
 /**
- * Get the Feed URL of a particular user
+ * Add RSS feed menu under Activity
  *
- * @param bool|integer $user_id
- * @return string Feed URL
+ * @param $wp_admin_nav
+ * @return array Modified admin nav
  */
-function bprf_get_user_rss_feed_url($user_id = false){
-    if ( empty($user_id) ) {
-        $user_id = bp_displayed_user_id();
+function bprf_profile_admin_bar_activity_submenu($wp_admin_nav){
+    if ( empty( $wp_admin_nav ) ) {
+        return $wp_admin_nav;
     }
 
-    return bp_get_user_meta($user_id, 'bprf_rss_feed', true);
+    $bprf = bp_get_option('bprf');
+
+    if ( !in_array('members', $bprf['rss_for']) && !bp_is_active('settings') || $bprf['tabs']['profile_nav'] == 'top' ) {
+        return $wp_admin_nav;
+    }
+
+    $feed = array(
+        'parent' => 'my-account-activity',
+        'id'     => 'my-account-activity-' . BPRF_SLUG,
+        'title'  => $bprf['tabs']['members'],
+        'href'   => trailingslashit( bp_loggedin_user_domain() . bp_get_activity_slug() . '/' . BPRF_SLUG )
+    );
+
+    $new_nav = array();
+
+    foreach ( $wp_admin_nav as $nav ) {
+        $new_nav[] = $nav;
+        if ( strpos( $nav['id'], '-activity-personal' ) ) {
+            $new_nav[] = $feed;
+        }
+    }
+
+    return $new_nav;
 }
+add_filter('bp_activity_admin_nav', 'bprf_profile_admin_bar_activity_submenu');
+
+/**
+ * Add RSS feed top menu
+ *
+ * @return array Modified admin nav
+ */
+function bprf_profile_admin_bar_topmenu(){
+    /** @var $wp_admin_bar WP_Admin_Bar */
+    global $wp_admin_bar;
+
+    $bprf = bp_get_option('bprf');
+
+    if ( $bprf['tabs']['profile_nav'] == 'sub' || !in_array('members', $bprf['rss_for']) || !bp_is_active('settings') ) {
+        return false;
+    }
+
+    $wp_admin_bar->add_menu(array(
+        'href'   => trailingslashit( bp_loggedin_user_domain() . BPRF_SLUG ),
+        'title'  => $bprf['tabs']['members'],
+        'parent' => 'my-account-buddypress',
+        'id'     => 'my-account-' . BPRF_SLUG,
+        'meta'   => array('class' => 'menupop')
+    ));
+}
+add_action( 'bp_setup_admin_bar', 'bprf_profile_admin_bar_topmenu', BPRF_MENU_POSITION );
+
+/**
+ * Add RSS feed settings menu under Settings
+ *
+ * @param $wp_admin_nav
+ * @return array Modified admin nav
+ */
+function bprf_profile_admin_bar_settings_menu($wp_admin_nav){
+    $bprf = bp_get_option('bprf');
+
+    $settings = array(
+        'parent' => 'my-account-settings',
+        'id'     => 'my-account-settings-' . BPRF_SLUG,
+        'title'  => $bprf['tabs']['members'],
+        'href'   => trailingslashit(  bp_loggedin_user_domain() . bp_get_settings_slug() . '/' . BPRF_SLUG )
+    );
+
+    $new_nav = array();
+
+    foreach($wp_admin_nav as $nav){
+        $new_nav[] = $nav;
+
+        if(strpos($nav['id'], '-settings-general')){
+            $new_nav[] = $settings;
+        }
+    }
+
+    return $new_nav;
+}
+add_filter('bp_settings_admin_nav', 'bprf_profile_admin_bar_settings_menu');
