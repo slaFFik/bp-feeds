@@ -168,6 +168,62 @@ function bprf_profile_settings_submenu_page_title(){
 }
 add_action('bp_template_content', 'bprf_profile_settings_submenu_page_title');
 
+/**
+ * Registration page feed input
+ */
+function bprf_signup_rss_feed_field(){
+    if ( ! bp_is_active('settings') ) {
+        return false;
+    }
+
+    $bprf = bp_get_option('bprf'); ?>
+
+    <div class="editfield">
+        <label for="bprf_rss_feed"><?php echo $bprf['tabs']['members']; ?></label>
+        <input id="bprf_rss_feed" name="bprf_rss_feed" type="text" placeholder="<?php echo $bprf['rss']['placeholder']; ?>" />
+
+        <p class="description">
+            <?php _e('If you already have a blog, you can write here its URL and we will fetch your posts and display links to them on this site global activity stream.', 'bprf'); ?><br />
+            <?php _e('You can change this link later at any time', 'bprf'); ?>
+        </p>
+    </div>
+
+    <?php
+}
+add_action('bp_signup_profile_fields', 'bprf_signup_rss_feed_field');
+
+/**
+ * Process the registration page feed input
+ */
+function bprf_signup_rss_feed_field_pre_save($usermeta){
+    if ( ! bp_is_active('settings') ) {
+        return $usermeta;
+    }
+
+    $usermeta['bprf_rss_feed'] = wp_strip_all_tags($_POST['bprf_rss_feed']);
+
+    return $usermeta;
+}
+add_filter('bp_signup_usermeta', 'bprf_signup_rss_feed_field_pre_save' );
+
+/**
+ * Save RSS feed link to usermeta after user account activation
+ *
+ * @param $user_id int
+ * @param $key string
+ * @param $user array
+ */
+function bprf_signup_rss_feed_field_save($user_id, $key, $user){
+    if ( ! bp_is_active('settings') ) {
+        return false;
+    }
+
+    if ( is_numeric($user_id) ) {
+        bp_update_user_meta($user_id, 'bprf_rss_feed', $user['meta']['bprf_rss_feed']);
+    }
+}
+add_action( 'bp_core_activated_user', 'bprf_signup_rss_feed_field_save', 10, 3 );
+
 /*******************
  * Admin Bar Fixes *
  ******************/
@@ -207,7 +263,7 @@ function bprf_profile_admin_bar_activity_submenu($wp_admin_nav){
 
     return $new_nav;
 }
-add_filter('bp_activity_admin_nav', 'bprf_profile_admin_bar_activity_submenu');
+add_filter( 'bp_activity_admin_nav', 'bprf_profile_admin_bar_activity_submenu' );
 
 /**
  * Add RSS feed top menu
@@ -262,4 +318,4 @@ function bprf_profile_admin_bar_settings_menu($wp_admin_nav){
 
     return $new_nav;
 }
-add_filter('bp_settings_admin_nav', 'bprf_profile_admin_bar_settings_menu');
+add_filter( 'bp_settings_admin_nav', 'bprf_profile_admin_bar_settings_menu' );
