@@ -78,6 +78,11 @@ function bprf_profile_activity_page_content(){
         bprf_the_template_part('menu_feed_title', array(
             'rss' => $rss
         ));
+
+    }
+
+    if ( empty( $feed_url ) && bp_is_my_profile() ) {
+        do_action( 'bprf_no_feed_message' );   
     }
 
     echo '<div class="activity" role="main">';
