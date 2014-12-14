@@ -93,7 +93,11 @@ function bprf_profile_activity_page_content() {
 		) );
 	}
 
-	echo '<div class="activity" role="main">';
+    if ( empty( $feed_url ) && bp_is_my_profile() ) {
+        do_action( 'bprf_no_feed_message' );
+    }
+
+    echo '<div class="activity" role="main">';
 
 	bp_get_template_part( apply_filters( 'bprf_profile_activity_page_content', 'activity/activity-loop' ) );
 
