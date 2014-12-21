@@ -90,6 +90,7 @@ function bprf_blogs_get_blogs($blogs, $params){
         $rss_to_sort  = bprf_blogs_get_groups_blogs($params);
         $members      = bprf_blogs_get_members_blogs($params);
 
+        // add members to groups array - aka merge
         foreach($members as $site){
             array_push($rss_to_sort, $site);
         }
@@ -291,12 +292,14 @@ function bprf_blogs_get_avatar($avatar, $blog_id, $params){
         (isset($_POST['scope']) && $_POST['scope'] === 'rss') ||
         (bp_is_blogs_directory() && isset($_COOKIE['bp-blogs-scope']) && $_COOKIE['bp-blogs-scope'] === 'rss')
     ) {
+        global $blogs_template;
+
         $object = 'user';
 
         // retrieve the source type of an avatar: user or group
-        if ( stristr( $params['email'], '@', true ) == 'group_' . $blog_id ) {
+        if ( stristr( $blogs_template->blog->admin_user_email, '@', true ) == 'group_' . $blog_id ) {
             $object = 'group';
-        } else if ( stristr( $params['email'], '@', true ) == 'user_' . $blog_id ) {
+        } else if ( stristr( $blogs_template->blog->admin_user_email, '@', true ) == 'user_' . $blog_id ) {
             $object = 'user';
         }
 
