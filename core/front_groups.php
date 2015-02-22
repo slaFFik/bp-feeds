@@ -84,11 +84,13 @@ class BPRF_Groups extends BP_Group_Extension {
         return $item_id;
     }
 
-    /**
-     * Display the RSS feed data
-     * Loads BuddyPress activity feed
-     */
-    function display() {
+	/**
+	 * Display the RSS feed data
+	 * Loads BuddyPress activity feed
+	 *
+	 * @param null $group_id
+	 */
+    function display( $group_id = null ) {
         // Get a SimplePie feed object from the specified feed source.
         $rss = new BPRF_Feed( $this->rss->url, 'groups' );
 
