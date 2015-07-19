@@ -210,7 +210,7 @@ function bprf_signup_rss_feed_field() {
 		</p>
 	</div>
 
-<?php
+	<?php
 }
 
 add_action( 'bp_signup_profile_fields', 'bprf_signup_rss_feed_field' );

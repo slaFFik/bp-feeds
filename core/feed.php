@@ -27,12 +27,16 @@ class BPRF_Feed {
 		$bp = buddypress();
 
 		switch ( $source ) {
+			/** @noinspection PhpUndefinedFieldInspection */
 			case $bp->groups->id:
+				/** @noinspection PhpUndefinedFieldInspection */
 				$this->source    = $bp->groups->id;
 				$this->source_id = bp_get_current_group_id();
 				break;
 
+			/** @noinspection PhpUndefinedFieldInspection */
 			case $bp->members->id:
+				/** @noinspection PhpUndefinedFieldInspection */
 				$this->source    = $bp->members->id;
 				$this->source_id = bp_displayed_user_id();
 				break;
@@ -165,6 +169,7 @@ class BPRF_Feed {
 				$user_id   = false;
 				$action    = $bp_link = $component = '';
 				if ( bp_is_group() ) {
+					/** @noinspection PhpUndefinedFieldInspection */
 					$component = buddypress()->groups->id;
 					$bp_link   = '<a href="' . bp_get_group_permalink( $bp->groups->current_group ) . '" class="bprf_feed_group_title">' . esc_attr( $bp->groups->current_group->name ) . '</a>';
 					$action    = sprintf( __( 'New RSS post %1$s was shared in %1$s', 'bprf' ), $item_link, $bp_link );
