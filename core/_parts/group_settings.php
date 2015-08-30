@@ -6,16 +6,16 @@ if ( empty( $group_id ) && is_admin() ) {
 ?>
 
 <p>
-	<label for="bprf_rss_feed">
-		<?php _e( 'External RSS Feed URL', 'bprf' ); ?>
+	<label for="bpf_rss_feed">
+		<?php _e( 'External RSS Feed URL', 'bpf' ); ?>
 	</label>
 	<input type="text" aria-required="true"
-	       id="bprf_rss_feed"
-	       placeholder="<?php bprf_the_rss_placeholder(); ?>"
-	       name="bprf_rss_feed"
-	       value="<?php echo esc_attr( groups_get_groupmeta( $group_id, 'bprf_rss_feed' ) ) ?>"/>
+	       id="bpf_rss_feed"
+	       placeholder="<?php bpf_the_rss_placeholder(); ?>"
+	       name="bpf_rss_feed"
+	       value="<?php echo esc_attr( groups_get_groupmeta( $group_id, 'bpf_rss_feed' ) ) ?>"/>
 </p>
 
 <p class="description">
-	<?php bprf_the_moderated_text(); ?>
+	<?php bpf_the_moderated_text(); ?>
 </p>

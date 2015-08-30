@@ -1,8 +1,8 @@
 <?php
-/** @var $feed BPRF_Feed */
+/** @var $feed BPF_Feed */
 if ( isset( $feed->meta['rss_title'] ) && ! empty( $feed->meta['rss_title'] ) ) : ?>
 	<div class="item-list-tabs no-ajax" id="subnav">
-		<ul class="bprf_rss_feed_title">
+		<ul class="bpf_rss_feed_title">
 			<li class="feed">
 				<?php
 				if ( isset( $feed->meta['rss_url'] ) && ! empty( $feed->meta['rss_url'] ) ) {

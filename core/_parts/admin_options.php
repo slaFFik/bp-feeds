@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-/** @var $bprf array */
+/** @var $bpf array */
 $checked = 'checked="checked"';
 ?>
 
@@ -17,12 +17,12 @@ $checked = 'checked="checked"';
 <table class="form-table">
 	<!-- RSS Feeds For -->
 	<tr valign="top">
-		<th scope="row"><?php _e( 'RSS feeds enabled for:', 'bprf' ); ?></th>
+		<th scope="row"><?php _e( 'RSS feeds enabled for:', 'bpf' ); ?></th>
 		<td>
 			<?php
-			$bprf_enabled_for = apply_filters( 'bprf_enabled_for', array( 'members' => __( 'Members', 'bprf' ) ) );
-			foreach ( $bprf_enabled_for as $slug => $title ) {
-				echo '<span class="bprf-enabled bprf-enabled-' . esc_attr( $slug ) . '"><input type="checkbox" disabled checked/> ' . esc_attr( $title ) . '</span><br/>';
+			$bpf_enabled_for = apply_filters( 'bpf_enabled_for', array( 'members' => __( 'Members', 'bpf' ) ) );
+			foreach ( $bpf_enabled_for as $slug => $title ) {
+				echo '<span class="bpf-enabled bpf-enabled-' . esc_attr( $slug ) . '"><input type="checkbox" disabled checked/> ' . esc_attr( $title ) . '</span><br/>';
 			}
 			?>
 		</td>
@@ -31,47 +31,47 @@ $checked = 'checked="checked"';
 	<!-- Sites Directory Integration -->
 	<tr valign="top">
 		<th scope="row">
-			<?php _e( 'Where to display RSS feed menu in user\'s profile?', 'bprf' ); ?>
+			<?php _e( 'Where to display RSS feed menu in user\'s profile?', 'bpf' ); ?>
 		</th>
 		<td>
 			<label>
-				<input name="bprf[tabs][profile_nav]" type="radio"
-				       value="top" <?php checked( 'top', $bprf['tabs']['profile_nav'] ); ?>>&nbsp;
-				<?php _e( 'Profile Top Level', 'bprf' ); ?>
+				<input name="bpf[tabs][profile_nav]" type="radio"
+				       value="top" <?php checked( 'top', $bpf['tabs']['profile_nav'] ); ?>>&nbsp;
+				<?php _e( 'Profile Top Level', 'bpf' ); ?>
 			</label>
 
 			<p class="description option_desc">
-				<?php _e( 'You will see the menu on the same level as Activity, Profile, Messages, Settings etc.', 'bprf' ); ?>
+				<?php _e( 'You will see the menu on the same level as Activity, Profile, Messages, Settings etc.', 'bpf' ); ?>
 			</p>
 			<label>
-				<input name="bprf[tabs][profile_nav]" type="radio"
-				       value="sub" <?php checked( 'sub', $bprf['tabs']['profile_nav'] ); ?>>&nbsp;
-				<?php _e( 'Activity Submenu', 'bprf' ); ?>
+				<input name="bpf[tabs][profile_nav]" type="radio"
+				       value="sub" <?php checked( 'sub', $bpf['tabs']['profile_nav'] ); ?>>&nbsp;
+				<?php _e( 'Activity Submenu', 'bpf' ); ?>
 			</label>
 
 			<p class="description option_desc">
-				<?php _e( 'You will see the menu under Activity on user profile, on the same level as Personal, Mentions, Favorites etc.', 'bprf' ); ?>
+				<?php _e( 'You will see the menu under Activity on user profile, on the same level as Personal, Mentions, Favorites etc.', 'bpf' ); ?>
 			</p>
 		</td>
 	</tr>
 
 	<!-- Profile RSS Label -->
 	<tr valign="top">
-		<th scope="row"><label for="bprf_tabs_members"><?php _e( 'User profile RSS tab label', 'bprf' ); ?></label></th>
+		<th scope="row"><label for="bpf_tabs_members"><?php _e( 'User profile RSS tab label', 'bpf' ); ?></label></th>
 		<td>
-			<input name="bprf[tabs][members]" id="bprf_tabs_members" type="text" required="required"
-			       value="<?php esc_attr_e( $bprf['tabs']['members'] ); ?>">
+			<input name="bpf[tabs][members]" id="bpf_tabs_members" type="text" required="required"
+			       value="<?php esc_attr_e( $bpf['tabs']['members'] ); ?>">
 		</td>
 	</tr>
 
 	<!-- Placeholder for RSS feed URL -->
 	<tr valign="top">
-		<th scope="row"><label for="bprf_rss_placeholder"><?php _e( 'Placeholder URL', 'bprf' ); ?></label></th>
+		<th scope="row"><label for="bpf_rss_placeholder"><?php _e( 'Placeholder URL', 'bpf' ); ?></label></th>
 		<td>
-			<input name="bprf[rss][placeholder]" id="bprf_rss_placeholder" type="text" class="regular-text"
-			       value="<?php esc_attr_e( $bprf['rss']['placeholder'] ); ?>">
+			<input name="bpf[rss][placeholder]" id="bpf_rss_placeholder" type="text" class="regular-text"
+			       value="<?php esc_attr_e( $bpf['rss']['placeholder'] ); ?>">
 
-			<p class="description"><?php _e( 'That is the URL users will see as an example of what is needed from them. Plugin will not parse it.', 'bprf' ); ?></p>
+			<p class="description"><?php _e( 'That is the URL users will see as an example of what is needed from them. Plugin will not parse it.', 'bpf' ); ?></p>
 		</td>
 	</tr>
 
@@ -79,171 +79,171 @@ $checked = 'checked="checked"';
 	<tr valign="top">
 		<th scope="row">
 			<label
-				for="bprf_rss_nofollow_link"><?php _e( 'List external feeds on the sites directory as blogs', 'bprf' ); ?></label><br/>
-			<label for="bprf_rss_nofollow_link"
-			       style="font-weight: normal"><?php _e( 'WordPress MultiSite only', 'bprf' ); ?></label>
+				for="bpf_rss_nofollow_link"><?php _e( 'List external feeds on the sites directory as blogs', 'bpf' ); ?></label><br/>
+			<label for="bpf_rss_nofollow_link"
+			       style="font-weight: normal"><?php _e( 'WordPress MultiSite only', 'bpf' ); ?></label>
 		</th>
 		<td>
 			<label>
-				<input name="bprf[sites]" type="radio" value="yes" <?php checked( 'yes', $bprf['sites'] ); ?>>&nbsp;
-				<?php _e( 'Yes', 'bprf' ); ?>
+				<input name="bpf[sites]" type="radio" value="yes" <?php checked( 'yes', $bpf['sites'] ); ?>>&nbsp;
+				<?php _e( 'Yes', 'bpf' ); ?>
 			</label>
 
 			<p class="description option_desc">
-				<?php _e( 'On Sites Directory page all RSS feeds (groups and members) will be displayed as Blogs.', 'bprf' ); ?>
+				<?php _e( 'On Sites Directory page all RSS feeds (groups and members) will be displayed as Blogs.', 'bpf' ); ?>
 				<br/>
-				<?php _e( 'Appropriate avatars (groups and members) will be used as blogs avatars.', 'bprf' ); ?>
+				<?php _e( 'Appropriate avatars (groups and members) will be used as blogs avatars.', 'bpf' ); ?>
 			</p>
 			<label>
-				<input name="bprf[sites]" type="radio" value="no" <?php checked( 'no', $bprf['sites'] ); ?>>&nbsp;
-				<?php _e( 'No', 'bprf' ); ?>
+				<input name="bpf[sites]" type="radio" value="no" <?php checked( 'no', $bpf['sites'] ); ?>>&nbsp;
+				<?php _e( 'No', 'bpf' ); ?>
 			</label>
 
 			<p class="description option_desc">
-				<?php _e( 'Do not display them on Sites Directory page.', 'bprf' ); ?>
+				<?php _e( 'Do not display them on Sites Directory page.', 'bpf' ); ?>
 			</p>
 		</td>
 	</tr>
 
-	<?php do_action( 'bprf_admin_options_before_rss', $bprf ); ?>
+	<?php do_action( 'bpf_admin_options_before_rss', $bpf ); ?>
 
 	<!-- RSS first image -->
 	<tr valign="top"  style="display: none">
-		<th scope="row"><?php _e( 'RSS item first image', 'bprf' ); ?></th>
+		<th scope="row"><?php _e( 'RSS item first image', 'bpf' ); ?></th>
 		<td>
 			<label>
-				<input name="bprf[rss][image]" type="radio"
-				       value="display_local" <?php checked( 'display_local', $bprf['rss']['image'] ); ?>>&nbsp;
-				<?php _e( 'Grab, save locally and display', 'bprf' ); ?>
+				<input name="bpf[rss][image]" type="radio"
+				       value="display_local" <?php checked( 'display_local', $bpf['rss']['image'] ); ?>>&nbsp;
+				<?php _e( 'Grab, save locally and display', 'bpf' ); ?>
 			</label>
 
 			<p class="description option_desc">
 				<?php _e( 'This will create a copy of an image on your server. <br/>
-                            If that image is deleted from the RSS source site, you will still be able to display it.', 'bprf' ); ?>
+                            If that image is deleted from the RSS source site, you will still be able to display it.', 'bpf' ); ?>
 			</p>
 			<label>
-				<input name="bprf[rss][image]" type="radio"
-				       value="display_remote" <?php checked( 'display_remote', $bprf['rss']['image'] ); ?>>&nbsp;
-				<?php _e( 'Display using hotlinking', 'bprf' ); ?> <a href="http://en.wikipedia.org/wiki/Inline_linking"
+				<input name="bpf[rss][image]" type="radio"
+				       value="display_remote" <?php checked( 'display_remote', $bpf['rss']['image'] ); ?>>&nbsp;
+				<?php _e( 'Display using hotlinking', 'bpf' ); ?> <a href="http://en.wikipedia.org/wiki/Inline_linking"
 				                                                      target="_blank"
-				                                                      title="<?php _e( 'What is hotlinking?', 'bprf' ); ?>">#</a>
+				                                                      title="<?php _e( 'What is hotlinking?', 'bpf' ); ?>">#</a>
 			</label>
 
 			<p class="description option_desc">
 				<?php _e( 'Image will not be downloaded to your server, saving you some bandwith. <br/>
                             If on RSS source site the image is deleted, it will not be displayed on your site. <br/>
-                            Generally it is a bad practice and you should avoid doing this, because you are creating a server load for external site.', 'bprf' ); ?>
+                            Generally it is a bad practice and you should avoid doing this, because you are creating a server load for external site.', 'bpf' ); ?>
 			</p>
 			<label>
-				<input name="bprf[rss][image]" type="radio"
-				       value="none" <?php checked( 'none', $bprf['rss']['image'] ); ?> />&nbsp;
-				<?php _e( 'Do not display image', 'bprf' ); ?>
+				<input name="bpf[rss][image]" type="radio"
+				       value="none" <?php checked( 'none', $bpf['rss']['image'] ); ?> />&nbsp;
+				<?php _e( 'Do not display image', 'bpf' ); ?>
 			</label>
 
-			<p class="description option_desc"><?php _e( 'Only RSS post title and excerpt will be displayed.', 'bprf' ); ?></p>
+			<p class="description option_desc"><?php _e( 'Only RSS post title and excerpt will be displayed.', 'bpf' ); ?></p>
 		</td>
 	</tr>
 
 	<!-- RSS Nofollow link -->
 	<tr valign="top">
-		<th scope="row"><label for="bprf_rss_nofollow_link"><?php _e( 'RSS item: add nofollow', 'bprf' ); ?></label>
+		<th scope="row"><label for="bpf_rss_nofollow_link"><?php _e( 'RSS item: add nofollow', 'bpf' ); ?></label>
 		</th>
 		<td>
 			<label>
-				<input name="bprf[rss][nofollow]" type="radio"
-				       value="yes" <?php checked( 'yes', $bprf['rss']['nofollow'] ); ?>>&nbsp;
-				<?php _e( 'Yes', 'bprf' ); ?>
+				<input name="bpf[rss][nofollow]" type="radio"
+				       value="yes" <?php checked( 'yes', $bpf['rss']['nofollow'] ); ?>>&nbsp;
+				<?php _e( 'Yes', 'bpf' ); ?>
 			</label>
 
 			<p class="description option_desc">
-				<?php _e( 'Link to a RSS item will have an attribute <code>rel="nofollow"</code>, so search engines should not open it and index.', 'bprf' ); ?>
+				<?php _e( 'Link to a RSS item will have an attribute <code>rel="nofollow"</code>, so search engines should not open it and index.', 'bpf' ); ?>
 			</p>
 			<label>
-				<input name="bprf[rss][nofollow]" type="radio"
-				       value="no" <?php checked( 'no', $bprf['rss']['nofollow'] ); ?>>&nbsp;
-				<?php _e( 'No', 'bprf' ); ?>
+				<input name="bpf[rss][nofollow]" type="radio"
+				       value="no" <?php checked( 'no', $bpf['rss']['nofollow'] ); ?>>&nbsp;
+				<?php _e( 'No', 'bpf' ); ?>
 			</label>
 
 			<p class="description option_desc">
-				<?php _e( 'Search engines will open that link and may index it.', 'bprf' ); ?>
+				<?php _e( 'Search engines will open that link and may index it.', 'bpf' ); ?>
 			</p>
 		</td>
 	</tr>
 
 	<!-- RSS Excerpt Length -->
 	<tr valign="top" style="display: none">
-		<th scope="row"><label for="bprf_rss_excerpts_length"><?php _e( 'RSS posts excerpt length', 'bprf' ); ?></label>
+		<th scope="row"><label for="bpf_rss_excerpts_length"><?php _e( 'RSS posts excerpt length', 'bpf' ); ?></label>
 		</th>
 		<td>
-			<input name="bprf[rss][excerpt]" id="bprf_rss_excerpts_length" type="text" required="required"
-			       value="<?php esc_attr_e( $bprf['rss']['excerpt'] ); ?>"> <?php _e( 'words', 'bprf' ); ?>
-			<p class="description"><?php _e( 'Three dots <code>...</code> will be used to identify the end of excerpt.', 'bprf' ); ?></p>
+			<input name="bpf[rss][excerpt]" id="bpf_rss_excerpts_length" type="text" required="required"
+			       value="<?php esc_attr_e( $bpf['rss']['excerpt'] ); ?>"> <?php _e( 'words', 'bpf' ); ?>
+			<p class="description"><?php _e( 'Three dots <code>...</code> will be used to identify the end of excerpt.', 'bpf' ); ?></p>
 
-			<p class="description"><?php _e( 'Words will stay intact, sentences may be cut in the middle.', 'bprf' ); ?></p>
+			<p class="description"><?php _e( 'Words will stay intact, sentences may be cut in the middle.', 'bpf' ); ?></p>
 		</td>
 	</tr>
 
 	<!-- RSS Imported Posts -->
 	<tr valign="top">
-		<th scope="row"><label for="bprf_rss_posts"><?php _e( 'Maximum amount of posts to import', 'bprf' ); ?></label>
+		<th scope="row"><label for="bpf_rss_posts"><?php _e( 'Maximum amount of posts to import', 'bpf' ); ?></label>
 		</th>
 		<td>
-			<input name="bprf[rss][posts]" id="bprf_rss_posts" type="text" class="small-text" required="required" value="<?php esc_attr_e( $bprf['rss']['posts'] ); ?>"> <?php _e( 'posts', 'bprf' ); ?>
+			<input name="bpf[rss][posts]" id="bpf_rss_posts" type="text" class="small-text" required="required" value="<?php esc_attr_e( $bpf['rss']['posts'] ); ?>"> <?php _e( 'posts', 'bpf' ); ?>
 			<p class="description">
-				<?php _e( 'How many posts would you like to import when a RSS feed is added?', 'bprf' ); ?><br/>
-				<?php _e( 'This is useful if you do not want to fill the activity stream with older posts.', 'bprf' ); ?>
+				<?php _e( 'How many posts would you like to import when a RSS feed is added?', 'bpf' ); ?><br/>
+				<?php _e( 'This is useful if you do not want to fill the activity stream with older posts.', 'bpf' ); ?>
 				<br/>
-				<?php _e( 'By default this is set to only import the last 5 published posts.', 'bprf' ); ?>
+				<?php _e( 'By default this is set to only import the last 5 published posts.', 'bpf' ); ?>
 			</p>
 		</td>
 	</tr>
 
 	<!-- Cron frequency -->
 	<tr valign="top">
-		<th scope="row"><label for="bprf_rss_frequency"><?php _e( 'RSS feeds update frequency', 'bprf' ); ?></label>
+		<th scope="row"><label for="bpf_rss_frequency"><?php _e( 'RSS feeds update frequency', 'bpf' ); ?></label>
 		</th>
 		<td>
-			<input name="bprf[rss][frequency]" id="bprf_rss_frequency" type="text" required="required"
-			       value="<?php esc_attr_e( $bprf['rss']['frequency'] ); ?>"> <?php _e( 'seconds', 'bprf' ); ?>
-			<p class="description"><?php _e( 'This value defines how often you want the site to check users/groups RSS feeds for new posts.', 'bprf' ); ?></p>
+			<input name="bpf[rss][frequency]" id="bpf_rss_frequency" type="text" required="required"
+			       value="<?php esc_attr_e( $bpf['rss']['frequency'] ); ?>"> <?php _e( 'seconds', 'bpf' ); ?>
+			<p class="description"><?php _e( 'This value defines how often you want the site to check users/groups RSS feeds for new posts.', 'bpf' ); ?></p>
 
-			<p class="description"><?php _e( 'For reference: the bigger time is specified, the less overhead will be on your site.', 'bprf' ); ?></p>
+			<p class="description"><?php _e( 'For reference: the bigger time is specified, the less overhead will be on your site.', 'bpf' ); ?></p>
 
-			<p class="description"><?php _e( 'Recommended value: 43200 sec, or 12 hours.', 'bprf' ); ?></p>
+			<p class="description"><?php _e( 'Recommended value: 43200 sec, or 12 hours.', 'bpf' ); ?></p>
 		</td>
 	</tr>
 
-	<?php do_action( 'bprf_admin_options_after_rss', $bprf ); ?>
+	<?php do_action( 'bpf_admin_options_after_rss', $bpf ); ?>
 
 	<!-- Deactivation -->
 	<tr valign="top">
 		<th scope="row">
-			<?php _e( 'What to do on plugin deactivation?', 'bprf' ); ?><br/><br/>
+			<?php _e( 'What to do on plugin deactivation?', 'bpf' ); ?><br/><br/>
 			<?php
-			$data = bprf_get_count_folder_size();
+			$data = bpf_get_count_folder_size();
 			if ( ! empty( $data ) ) {
-				printf( __( 'More than %s of files stored', 'bprf' ), $data );
+				printf( __( 'More than %s of files stored', 'bpf' ), $data );
 			} ?>
 		</th>
 		<td>
 			<label>
-				<input name="bprf[uninstall]" type="radio" value="nothing" <?php checked( 'nothing', $bprf['uninstall'] ); ?>>&nbsp;
-				<?php _e( 'Do not delete anything. Leave all the data and options in the DB', 'bprf' ); ?>
+				<input name="bpf[uninstall]" type="radio" value="nothing" <?php checked( 'nothing', $bpf['uninstall'] ); ?>>&nbsp;
+				<?php _e( 'Do not delete anything. Leave all the data and options in the DB', 'bpf' ); ?>
 			</label>
 
-			<p class="description option_desc"><?php _e( 'Good option if you want to reactivate the plugin later.', 'bprf' ); ?></p>
+			<p class="description option_desc"><?php _e( 'Good option if you want to reactivate the plugin later.', 'bpf' ); ?></p>
 			<label>
-				<input name="bprf[uninstall]" type="radio" value="data" <?php checked( 'data', $bprf['uninstall'] ); ?>>&nbsp;
-				<?php _e( 'RSS data will be deleted, options (admin, users, groups) will be preserved', 'bprf' ); ?>
+				<input name="bpf[uninstall]" type="radio" value="data" <?php checked( 'data', $bpf['uninstall'] ); ?>>&nbsp;
+				<?php _e( 'RSS data will be deleted, options (admin, users, groups) will be preserved', 'bpf' ); ?>
 			</label>
 
-			<p class="description option_desc"><?php _e( 'If you want to cleanup the plugin\'s data, but preserve all settings - use this option.', 'bprf' ); ?></p>
+			<p class="description option_desc"><?php _e( 'If you want to cleanup the plugin\'s data, but preserve all settings - use this option.', 'bpf' ); ?></p>
 			<label>
-				<input name="bprf[uninstall]" type="radio" value="all" <?php checked( 'all', $bprf['uninstall'] ); ?>>&nbsp;
-				<?php _e( 'Completely delete all plugin-related data and options', 'bprf' ); ?>
+				<input name="bpf[uninstall]" type="radio" value="all" <?php checked( 'all', $bpf['uninstall'] ); ?>>&nbsp;
+				<?php _e( 'Completely delete all plugin-related data and options', 'bpf' ); ?>
 			</label>
 
-			<p class="description option_desc"><?php _e( 'If you decided not to use this plugin, then check this option.', 'bprf' ); ?></p>
+			<p class="description option_desc"><?php _e( 'If you decided not to use this plugin, then check this option.', 'bpf' ); ?></p>
 		</td>
 	</tr>
 

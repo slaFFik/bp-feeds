@@ -4,107 +4,107 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-add_action( 'bp_init', 'bprf_admin_init' );
-function bprf_admin_init() {
-	add_action( bp_core_admin_hook(), 'bprf_admin_page', 99 );
+add_action( 'bp_init', 'bpf_admin_init' );
+function bpf_admin_init() {
+	add_action( bp_core_admin_hook(), 'bpf_admin_page', 99 );
 }
 
-function bprf_admin_page() {
+function bpf_admin_page() {
 	if ( ! is_super_admin() ) {
 		return;
 	}
 
-	bprf_admin_page_save();
+	bpf_admin_page_save();
 
 	add_submenu_page(
 		bp_core_do_network_admin() ? 'settings.php' : 'options-general.php',
-		__( 'BuddyPress RSS Feeds', 'bprf' ),
-		__( 'BP RSS Feeds', 'bprf' ),
+		__( 'BuddyPress Feeds', 'bpf' ),
+		__( 'BuddyPress Feeds', 'bpf' ),
 		'manage_options',
-		'bprf-admin',
-		'bprf_admin_page_content'
+		'bpf-admin',
+		'bpf_admin_page_content'
 	);
 }
 
 
-function bprf_admin_page_content() {
-	$bprf = bp_get_option( 'bprf' ); ?>
+function bpf_admin_page_content() {
+	$bpf = bp_get_option( 'bpf' ); ?>
 
 	<div class="wrap">
 
-		<h2><?php _e( 'BuddyPress RSS Feeds', 'bprf' ); ?> <sup>v<?php echo BPRF_VERSION ?></sup></h2>
+		<h2><?php _e( 'BuddyPress Feeds', 'bpf' ); ?> <sup>v<?php echo BPF_VERSION ?></sup></h2>
 
 		<?php
 		if ( isset( $_GET['status'] ) && $_GET['status'] == 'saved' ) {
-			echo '<div id="message" class="updated fade"><p>' . __( 'All options were successfully saved.', 'bprf' ) . '</p></div>';
+			echo '<div id="message" class="updated fade"><p>' . __( 'All options were successfully saved.', 'bpf' ) . '</p></div>';
 		}
 		?>
 
-		<form action="" method="post" id="bprf-admin-form">
+		<form action="" method="post" id="bpf-admin-form">
 
-			<p><?php _e( 'Below are several options that you can use to change the plugin behaviour.', 'bprf' ); ?></p>
+			<p><?php _e( 'Below are several options that you can use to change the plugin behaviour.', 'bpf' ); ?></p>
 
 			<?php
-			bprf_the_template_part( 'admin_options', array(
-				'bprf' => $bprf
+			bpf_the_template_part( 'admin_options', array(
+				'bpf' => $bpf
 			) ); ?>
 
 			<p class="submit">
-				<input class="button-primary" type="submit" name="bprf-admin-submit" id="bprf-admin-submit"
-				       value="<?php esc_attr_e( 'Save', 'bprf' ); ?>"/>
+				<input class="button-primary" type="submit" name="bpf-admin-submit" id="bpf-admin-submit"
+				       value="<?php esc_attr_e( 'Save', 'bpf' ); ?>"/>
 			</p>
 
-			<?php wp_nonce_field( 'bprf-admin' ); ?>
+			<?php wp_nonce_field( 'bpf-admin' ); ?>
 
 		</form>
-		<!-- #bprf-admin-form -->
+		<!-- #bpf-admin-form -->
 	</div><!-- .wrap -->
 	<?php
 }
 
-function bprf_admin_page_save() {
+function bpf_admin_page_save() {
 
-	if ( isset( $_POST['bprf-admin-submit'] ) && isset( $_POST['bprf'] ) ) {
-		$bprf = $_POST['bprf'];
+	if ( isset( $_POST['bpf-admin-submit'] ) && isset( $_POST['bpf'] ) ) {
+		$bpf = $_POST['bpf'];
 
-		$bprf['tabs']['members'] = trim( htmlentities( wp_strip_all_tags( $bprf['tabs']['members'] ) ) );
-		if ( empty( $bprf['tabs']['members'] ) ) {
-			$bprf['tabs']['members'] = __( 'RSS Feed', 'bprf' );
+		$bpf['tabs']['members'] = trim( htmlentities( wp_strip_all_tags( $bpf['tabs']['members'] ) ) );
+		if ( empty( $bpf['tabs']['members'] ) ) {
+			$bpf['tabs']['members'] = __( 'Feed', 'bpf' );
 		}
 
-		//$bprf['tabs']['groups'] = trim( htmlentities( wp_strip_all_tags( $bprf['tabs']['groups'] ) ) );
-		//if ( empty( $bprf['tabs']['groups'] ) ) {
-		//	$bprf['tabs']['groups'] = __( 'RSS Feed', 'bprf' );
+		//$bpf['tabs']['groups'] = trim( htmlentities( wp_strip_all_tags( $bpf['tabs']['groups'] ) ) );
+		//if ( empty( $bpf['tabs']['groups'] ) ) {
+		//	$bpf['tabs']['groups'] = __( 'RSS Feed', 'bpf' );
 		//}
 
-		$bprf['tabs']['profile_nav'] = trim( htmlentities( wp_strip_all_tags( $bprf['tabs']['profile_nav'] ) ) );
-		if ( empty( $bprf['tabs']['profile_nav'] ) ) {
-			$bprf['tabs']['profile_nav'] = 'top';
+		$bpf['tabs']['profile_nav'] = trim( htmlentities( wp_strip_all_tags( $bpf['tabs']['profile_nav'] ) ) );
+		if ( empty( $bpf['tabs']['profile_nav'] ) ) {
+			$bpf['tabs']['profile_nav'] = 'top';
 		}
 
-		$bprf['rss']['placeholder'] = trim( htmlentities( wp_strip_all_tags( $bprf['rss']['placeholder'] ) ) );
-		if ( empty( $bprf['rss']['placeholder'] ) ) {
-			$bprf['rss']['placeholder'] = 'http://buddypress.org/blog/feed';
+		$bpf['rss']['placeholder'] = trim( htmlentities( wp_strip_all_tags( $bpf['rss']['placeholder'] ) ) );
+		if ( empty( $bpf['rss']['placeholder'] ) ) {
+			$bpf['rss']['placeholder'] = 'http://buddypress.org/blog/feed';
 		}
 
-		$bprf['rss']['excerpt'] = (int) $bprf['rss']['excerpt'];
-		if ( empty( $bprf['rss']['excerpt'] ) ) {
-			$bprf['rss']['excerpt'] = '45';
+		$bpf['rss']['excerpt'] = (int) $bpf['rss']['excerpt'];
+		if ( empty( $bpf['rss']['excerpt'] ) ) {
+			$bpf['rss']['excerpt'] = '45';
 		}
 
-		$bprf['rss']['posts'] = (int) $bprf['rss']['posts'];
-		if ( empty( $bprf['rss']['posts'] ) ) {
-			$bprf['rss']['posts'] = '5';
+		$bpf['rss']['posts'] = (int) $bpf['rss']['posts'];
+		if ( empty( $bpf['rss']['posts'] ) ) {
+			$bpf['rss']['posts'] = '5';
 		}
 
-		$bprf['rss']['frequency'] = (int) $bprf['rss']['frequency'];
-		if ( empty( $bprf['rss']['frequency'] ) ) {
-			$bprf['rss']['frequency'] = '43200';
+		$bpf['rss']['frequency'] = (int) $bpf['rss']['frequency'];
+		if ( empty( $bpf['rss']['frequency'] ) ) {
+			$bpf['rss']['frequency'] = '43200';
 		}
 
-		$bprf = apply_filters( 'bprf_admin_page_save', $bprf );
+		$bpf = apply_filters( 'bpf_admin_page_save', $bpf );
 
-		bp_update_option( 'bprf', $bprf );
+		bp_update_option( 'bpf', $bpf );
 
 		wp_redirect( add_query_arg( 'status', 'saved' ) );
 	}

@@ -4,7 +4,7 @@
  * Class to get feed data and save it into the DB
  *
  * Usage:
- *      $feed = new BPRF_Feed();
+ *      $feed = new BPF_Feed();
  *      $feed->get_meta();
  *      $feed->pull();
  *      $feed->set_url($url)->pull();
@@ -12,7 +12,7 @@
  *      $feed->fetch()->get_rss();
  *
  */
-class BPRF_Feed {
+class BPF_Feed {
 
 	public $component;
 	public $component_id;
@@ -33,9 +33,9 @@ class BPRF_Feed {
 		$this->_set_save_path();
 
 		$this->meta    = $this->get_meta();
-		$this->rss_url = bprf_get_user_rss_feed_url();
+		$this->rss_url = bpf_get_user_rss_feed_url();
 
-		do_action( 'bprf_feed_construct', $this );
+		do_action( 'bpf_feed_construct', $this );
 	}
 
 	protected function _set_component( $component, $id = false ) {
@@ -70,8 +70,8 @@ class BPRF_Feed {
 	 */
 	protected function _set_save_path() {
 		$this->upload_dir = apply_filters(
-			'bprf_feed_set_save_path',
-			BPRF_UPLOAD_DIR . '/' . $this->component . '/' . $this->component_id,
+			'bpf_feed_set_save_path',
+			BPF_UPLOAD_DIR . '/' . $this->component . '/' . $this->component_id,
 			$this->component,
 			$this->component_id
 		);
@@ -82,10 +82,10 @@ class BPRF_Feed {
 	 *
 	 * @param $url
 	 *
-	 * @return $this BPRF_Feed
+	 * @return $this BPF_Feed
 	 */
 	function set_url( $url ) {
-		$this->rss_url = apply_filters( 'bprf_feed_set_url', esc_url_raw( $url ) );
+		$this->rss_url = apply_filters( 'bpf_feed_set_url', esc_url_raw( $url ) );
 
 		return $this;
 	}
@@ -94,30 +94,30 @@ class BPRF_Feed {
 	 * Just get the feed data, no saving and no processing
 	 * Can be used for previewing the feed somewhere before saving
 	 *
-	 * @return BPRF_Feed|WP_Error $this BPRF_Feed
+	 * @return BPF_Feed|WP_Error $this BPF_Feed
 	 */
 	function fetch() {
-		do_action( 'bprf_feed_before_fetch' );
+		do_action( 'bpf_feed_before_fetch' );
 
 		include_once( ABSPATH . WPINC . '/feed.php' );
 
-		add_filter( 'wp_feed_cache_transient_lifetime', 'bprf_feed_cache_lifetime', 999, 2 );
+		add_filter( 'wp_feed_cache_transient_lifetime', 'bpf_feed_cache_lifetime', 999, 2 );
 
 		$this->rss = fetch_feed( $this->rss_url );
 
-		remove_filter( 'wp_feed_cache_transient_lifetime', 'bprf_feed_cache_lifetime', 999 );
+		remove_filter( 'wp_feed_cache_transient_lifetime', 'bpf_feed_cache_lifetime', 999 );
 
-		$bprf = bp_get_option( 'bprf' );
+		$bpf = bp_get_option( 'bpf' );
 
 		if ( ! is_wp_error( $this->rss ) ) {
 			// retrieve only defined amount of RSS items
-			$this->maxitems = $this->rss->get_item_quantity( $bprf['rss']['posts'] );
+			$this->maxitems = $this->rss->get_item_quantity( $bpf['rss']['posts'] );
 
 			// Build an array of all the items, starting with element 0 (first element).
 			$this->items = $this->rss->get_items( 0, $this->maxitems );
 		}
 
-		do_action( 'bprf_feed_after_fetch' );
+		do_action( 'bpf_feed_after_fetch' );
 
 		return $this;
 	}
@@ -143,7 +143,7 @@ class BPRF_Feed {
 
 		$this->save_meta();
 
-		$bprf = bp_get_option( 'bprf' );
+		$bpf = bp_get_option( 'bpf' );
 
 		global $wpdb; // required to quickly run a query to check for dublicates
 
@@ -158,20 +158,20 @@ class BPRF_Feed {
 
 			//$content = $item->get_content();
 			// In case we have the image in feed and set to display it from remote site:
-			//if ( $bprf['rss']['image'] == 'display_remote' ) {
+			//if ( $bpf['rss']['image'] == 'display_remote' ) {
 			//	$image_src = $this->get_item_image_url( $item->get_content() );
 			//
 			//	if ( ! empty( $image_src ) ) {
-			//		$content = '<a href="' . esc_url( $item->get_permalink() ) . '" class="bprf-feed-item-image">' .
+			//		$content = '<a href="' . esc_url( $item->get_permalink() ) . '" class="bpf-feed-item-image">' .
 			//		           '<img src="' . $image_src . '" alt="' . esc_attr( $item->get_title() ) . '" />' .
 			//		           '</a>' . $content;
 			//	}
 			//}
-			//if ( $bprf['rss']['image'] == 'display_' )
+			//if ( $bpf['rss']['image'] == 'display_' )
 
 			//if ( bp_is_group() ) {
 			//	/** @noinspection PhpUndefinedFieldInspection */
-			//	$bp_link = '<a href="' . bp_get_group_permalink( $bp->groups->current_group ) . '" class="bprf_feed_group_title">' . esc_attr( $bp->groups->current_group->name ) . '</a>';
+			//	$bp_link = '<a href="' . bp_get_group_permalink( $bp->groups->current_group ) . '" class="bpf_feed_group_title">' . esc_attr( $bp->groups->current_group->name ) . '</a>';
 			//}
 
 			$feed_item_id = wp_insert_post( array(
@@ -182,7 +182,7 @@ class BPRF_Feed {
 				                                'post_date'    => $item->get_date( 'Y-m-d h:i:s' ),
 				                                'guid'         => $item->get_permalink(),
 				                                'post_status'  => 'publish',
-				                                'post_author'  => apply_filters( 'bprf_feed_save_item_author_id', $this->component_id ),
+				                                'post_author'  => apply_filters( 'bpf_feed_save_item_author_id', $this->component_id ),
 				                                // current group_id or displayed_user_id,
 				                                'post_parent'  => $this->component_id,
 				                                // we're using taxonomy, this value is more like for a back-up
@@ -191,18 +191,18 @@ class BPRF_Feed {
 
 			// check that we successfully saved
 			if ( ! is_wp_error( $feed_item_id ) && !empty( $feed_item_id ) ) {
-				$item_link = '<a href="' . esc_url( $item->get_permalink() ) . '" ' . ( $bprf['rss']['nofollow'] == 'yes' ? 'rel="nofollow"' : '' ) . ' class="bprf_feed_item_title">' . $item->get_title() . '</a>';
+				$item_link = '<a href="' . esc_url( $item->get_permalink() ) . '" ' . ( $bpf['rss']['nofollow'] == 'yes' ? 'rel="nofollow"' : '' ) . ' class="bpf_feed_item_title">' . $item->get_title() . '</a>';
 
-				$bp_link = apply_filters( 'bprf_feed_save_bp_link', bp_core_get_userlink( $this->component_id ), $this->component, $this->component_id );
+				$bp_link = apply_filters( 'bpf_feed_save_bp_link', bp_core_get_userlink( $this->component_id ), $this->component, $this->component_id );
 
 				// Just in case
-				update_post_meta( $feed_item_id, 'bprf_title_links', array(
+				update_post_meta( $feed_item_id, 'bpf_title_links', array(
 					'item'   => $item_link,
 					'source' => $bp_link,
 				) );
 
 				// Featured image
-				//if ( $bprf['rss']['image'] == 'display_local' ) {
+				//if ( $bpf['rss']['image'] == 'display_local' ) {
 				//	$this->upload_featured_image( $item, $feed_item_id );
 				//}
 
@@ -211,13 +211,13 @@ class BPRF_Feed {
 
 				array_push( $this->imported, $feed_item_id );
 
-				do_action( 'bprf_feed_saved_item', $item, $feed_item_id );
+				do_action( 'bpf_feed_saved_item', $item, $feed_item_id );
 			} else {
-				do_action( 'bprf_feed_not_saved_item', $item, $feed_item_id );
+				do_action( 'bpf_feed_not_saved_item', $item, $feed_item_id );
 			}
 		}
 
-		do_action( 'bprf_feed_save', $this );
+		do_action( 'bpf_feed_save', $this );
 
 		return $this->imported;
 	}
@@ -260,7 +260,7 @@ class BPRF_Feed {
 
 		// Such a hack is required because sometimes images are returned by an url that doesn't have extension,
 		// Like http://example.com/img/adeaew213d/
-		$ext        = bprf_get_file_extension_by_type( exif_imagetype( $remote_img_url ) );
+		$ext        = bpf_get_file_extension_by_type( exif_imagetype( $remote_img_url ) );
 		$file_name  = md5( NONCE_KEY . $item->get_id() ); // string is longer, but more secure (comparing to using timestamp)
 
 		$uploaded_file    = '/' . $file_name . '.' . $ext;
@@ -285,7 +285,7 @@ class BPRF_Feed {
 			'guid'           => $upload_dir['baseurl'] . '/' . $this->upload_dir . '/' . $uploaded_file,
 			'post_mime_type' => $filetype['type'],
 			'post_title'     => $item->get_title(),
-			'post_content'   => BPRF_CPT_MEMBER_ITEM,
+			'post_content'   => BPF_CPT_MEMBER_ITEM,
 			'post_status'    => 'inherit'
 		);
 
@@ -306,8 +306,8 @@ class BPRF_Feed {
 	}
 
 	function get_type() {
-		// for groups: $type = BPRF_CPT_GROUP_ITEM;
-		return apply_filters( 'bpfr_feed_get_type', BPRF_CPT_MEMBER_ITEM, $this->component, $this->component_id );
+		// for groups: $type = BPF_CPT_GROUP_ITEM;
+		return apply_filters( 'bpfr_feed_get_type', BPF_CPT_MEMBER_ITEM, $this->component, $this->component_id );
 	}
 
 	function save_url( $url ) {
@@ -315,11 +315,11 @@ class BPRF_Feed {
 
 		/** @noinspection PhpUndefinedFieldInspection */
 		if ( $this->component === buddypress()->members->id ) {
-			bp_update_user_meta( $this->component_id, 'bprf_feed_url', $this->rss_url );
+			bp_update_user_meta( $this->component_id, 'bpf_feed_url', $this->rss_url );
 		}
 
-		// groups_update_groupmeta( $this->component_id, 'bprf_feed_url', $this->rss_url );
-		do_action( 'bprf_feed_save_url', $url );
+		// groups_update_groupmeta( $this->component_id, 'bpf_feed_url', $this->rss_url );
+		do_action( 'bpf_feed_save_url', $url );
 	}
 
 	/**
@@ -327,20 +327,20 @@ class BPRF_Feed {
 	 * so it will be reused later easily
 	 */
 	function save_meta() {
-		$data = apply_filters( 'bprf_feed_before_save_meta', array(
+		$data = apply_filters( 'bpf_feed_before_save_meta', array(
 			'rss_title' => $this->rss->get_title(),
 			'rss_url'   => $this->rss->get_link()
 		) );
 
 		/** @noinspection PhpUndefinedFieldInspection */
 		if ( $this->component === buddypress()->members->id ) {
-			bp_update_user_meta( $this->component_id, 'bprf_feed_meta', $data );
+			bp_update_user_meta( $this->component_id, 'bpf_feed_meta', $data );
 		}
 
 		$this->set_meta( $data );
 
-		// groups_update_groupmeta( $this->component_id, 'bprf_feed_meta', $data );
-		do_action( 'bprf_feed_save_meta', $this );
+		// groups_update_groupmeta( $this->component_id, 'bpf_feed_meta', $data );
+		do_action( 'bpf_feed_save_meta', $this );
 	}
 
 	/**
@@ -358,11 +358,11 @@ class BPRF_Feed {
 
 		/** @noinspection PhpUndefinedFieldInspection */
 		if ( $this->component === $bp->members->id ) {
-			$meta = bp_get_user_meta( $this->component_id, 'bprf_feed_meta' );
+			$meta = bp_get_user_meta( $this->component_id, 'bpf_feed_meta' );
 		}
 
-		// $meta = groups_get_groupmeta( bp_get_current_group_id(), 'bprf_feed_meta' );
-		$meta = apply_filters( 'bprf_feed_get_meta', $meta, $this->component, $this->component_id );
+		// $meta = groups_get_groupmeta( bp_get_current_group_id(), 'bpf_feed_meta' );
+		$meta = apply_filters( 'bpf_feed_get_meta', $meta, $this->component, $this->component_id );
 
 		if ( empty( $meta['rss_title'] ) ) {
 			$meta['rss_title'] = '';
@@ -373,11 +373,11 @@ class BPRF_Feed {
 
 		//$meta['local'] = true;
 
-		return apply_filters( 'bprf_feed_get_meta', $meta );
+		return apply_filters( 'bpf_feed_get_meta', $meta );
 	}
 
 	function set_meta( $data ) {
-		$this->meta = apply_filters( 'bprf_feed_set_meta', $data );
+		$this->meta = apply_filters( 'bpf_feed_set_meta', $data );
 	}
 
 	/**

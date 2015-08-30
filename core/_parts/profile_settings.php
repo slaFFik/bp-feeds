@@ -1,28 +1,28 @@
-<?php do_action( 'bprf_before_member_settings_template' ); ?>
+<?php do_action( 'bpf_before_member_settings_template' ); ?>
 
-	<form action="<?php echo bp_displayed_user_domain() . bp_get_settings_slug() . '/' . BPRF_SLUG; ?>" method="post"
+	<form action="<?php echo bp_displayed_user_domain() . bp_get_settings_slug() . '/' . BPF_SLUG; ?>" method="post"
 	      class="standard-form" id="settings-form">
 
-		<label for="bprf_<?php echo BPRF_SLUG; ?>"><?php _e( 'External RSS Feed URL', 'bprf' ); ?></label>
+		<label for="bpf_<?php echo BPF_SLUG; ?>"><?php _e( 'External Feed URL', 'bpf' ); ?></label>
 
-		<input type="text" name="bprf_rss_feed" id="bprf_<?php echo BPRF_SLUG; ?>"
-		       placeholder="<?php bprf_the_rss_placeholder(); ?>" value="<?php echo bprf_get_user_rss_feed_url(); ?>"
+		<input type="text" name="bpf_rss_feed" id="bpf_<?php echo BPF_SLUG; ?>"
+		       placeholder="<?php bpf_the_rss_placeholder(); ?>" value="<?php echo bpf_get_user_rss_feed_url(); ?>"
 		       class="settings-input">
 
 		<p class="description">
-			<?php bprf_the_moderated_text(); ?>
+			<?php bpf_the_moderated_text(); ?>
 		</p>
 
-		<?php do_action( 'bprf_member_settings_template_before_submit' ); ?>
+		<?php do_action( 'bpf_member_settings_template_before_submit' ); ?>
 
 		<div class="submit">
-			<input type="submit" name="submit" value="<?php esc_attr_e( 'Save', 'bprf' ); ?>" id="submit" class="auto"/>
+			<input type="submit" name="submit" value="<?php esc_attr_e( 'Save', 'bpf' ); ?>" id="submit" class="auto"/>
 		</div>
 
-		<?php do_action( 'bprf_member_settings_template_after_submit' ); ?>
+		<?php do_action( 'bpf_member_settings_template_after_submit' ); ?>
 
-		<?php wp_nonce_field( 'bp_settings_bprf' ); ?>
+		<?php wp_nonce_field( 'bp_settings_bpf' ); ?>
 
 	</form>
 
-<?php do_action( 'bprf_after_member_settings_template' ); ?>
+<?php do_action( 'bpf_after_member_settings_template' ); ?>

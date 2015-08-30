@@ -3,15 +3,15 @@
 /**
  * Count the size of custom RSS images
  */
-function bprf_count_folder_size() {
-	echo bprf_get_count_folder_size();
+function bpf_count_folder_size() {
+	echo bpf_get_count_folder_size();
 }
 
-function bprf_get_count_folder_size() {
+function bpf_get_count_folder_size() {
 	$bytestotal = 0;
 
 	$upload_dir = wp_upload_dir();
-	$path       = $upload_dir['basedir'] . '/' . BPRF_UPLOAD_DIR;
+	$path       = $upload_dir['basedir'] . '/' . BPF_UPLOAD_DIR;
 	$path       = realpath( $path );
 
 	if ( $path !== false ) {
@@ -29,8 +29,8 @@ function bprf_get_count_folder_size() {
  * @param $template string Template file from /core/_part/ fodler without file extension
  * @param $options  array  Variables that we need to use inside that template
  */
-function bprf_the_template_part( $template, $options = array() ) {
-	$path = apply_filters( 'bprf_the_template_part', BPRF_PATH . '/_parts/' . $template . '.php', $template, $options );
+function bpf_the_template_part( $template, $options = array() ) {
+	$path = apply_filters( 'bpf_the_template_part', BPF_PATH . '/_parts/' . $template . '.php', $template, $options );
 
 	if ( file_exists( $path ) ) {
 		// hate doing this
@@ -47,7 +47,7 @@ function bprf_the_template_part( $template, $options = array() ) {
  *
  * @return int
  */
-function bprf_get_file_extension_by_type( $type ) {
+function bpf_get_file_extension_by_type( $type ) {
 	$extensions = array(
 		IMAGETYPE_GIF     => "gif",
 		IMAGETYPE_JPEG    => "jpg",
@@ -72,16 +72,16 @@ function bprf_get_file_extension_by_type( $type ) {
 }
 
 /**
- * Get the global $bprf option - placeholder url
+ * Get the global $bpf option - placeholder url
  */
-function bprf_the_rss_placeholder() {
-	echo bprf_get_rss_placeholder();
+function bpf_the_rss_placeholder() {
+	echo bpf_get_rss_placeholder();
 }
 
-function bprf_get_rss_placeholder() {
-	$bprf = bp_get_option( 'bprf' );
+function bpf_get_rss_placeholder() {
+	$bpf = bp_get_option( 'bpf' );
 
-	return isset( $bprf['rss']['placeholder'] ) ? apply_filters( 'bprf_get_rss_placeholder', $bprf['rss']['placeholder'], $bprf ) : '';
+	return isset( $bpf['rss']['placeholder'] ) ? apply_filters( 'bpf_get_rss_placeholder', $bpf['rss']['placeholder'], $bpf ) : '';
 }
 
 /**
@@ -89,24 +89,24 @@ function bprf_get_rss_placeholder() {
  *
  * @return bool
  */
-function bprf_is_moderated() {
+function bpf_is_moderated() {
 	return false;
 }
 
 /**
  * Display the text about moderation
  */
-function bprf_the_moderated_text() {
-	echo bprf_get_moderated_text();
+function bpf_the_moderated_text() {
+	echo bpf_get_moderated_text();
 }
 
-function bprf_get_moderated_text() {
-	if ( bprf_is_moderated() ) {
+function bpf_get_moderated_text() {
+	if ( bpf_is_moderated() ) {
 		// This message should be shown when feed moderation is enabled
-		$text = __( 'Fill in the address to your personal website in the field above. If your website has an RSS feed (most websites create an RSS feed automatically) and your site has been verified by our team, your published posts will automatically be imported to your profile for your friends to see.', 'bprf' );
+		$text = __( 'Fill in the address to your personal website in the field above. If your website has an feed (most websites create an feed automatically) and your site has been verified by our team, your published posts will automatically be imported to your profile for your friends to see.', 'bpf' );
 	} else {
 		// When feed moderation is disabled show this message
-		$text = __( 'Fill in the address to your personal website in the field above. If your website has an RSS feed (most websites create an RSS feed automatically) your published posts will automatically be imported to your profile stream for your friends to see.', 'bprf' );
+		$text = __( 'Fill in the address to your personal website in the field above. If your website has an feed (most websites create an feed automatically) your published posts will automatically be imported to your profile stream for your friends to see.', 'bpf' );
 	}
 
 	return $text;
@@ -119,7 +119,7 @@ function bprf_get_moderated_text() {
  *
  * @return
  */
-function bprf_get_href( $link ) {
+function bpf_get_href( $link ) {
 	preg_match( '~(?i)\b((?:[a-z][\w-]+:(?:/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:\'".,<>?«»“”‘’]))~', $link, $url );
 
 	return $url[0];
@@ -132,10 +132,10 @@ function bprf_get_href( $link ) {
  *
  * @return string Feed URL
  */
-function bprf_get_user_rss_feed_url( $user_id = false ) {
+function bpf_get_user_rss_feed_url( $user_id = false ) {
 	if ( empty( $user_id ) ) {
 		$user_id = bp_displayed_user_id();
 	}
 
-	return bp_get_user_meta( $user_id, 'bprf_rss_feed', true );
+	return bp_get_user_meta( $user_id, 'bpf_rss_feed', true );
 }
