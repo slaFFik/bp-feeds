@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: BuddyPress RSS Feeds
- * Plugin URI:  https://github.com/CFCommunity-net/buddypress-rss-feeds
- * Description: Allows your members or group moderators to attach RSS feeds to either their profile or their group
+ * Plugin URI:  https://wefoster.co
+ * Description: Allow your members to import RSS feeds of their external blogs into Activity Directory
  * Version:     1.0
  * Author:      slaFFik
  * Author URI:  http://ovirium.com
@@ -17,11 +17,11 @@ define( 'BPRF_VERSION', '1.0' );
 define( 'BPRF_URL', plugins_url( '_inc', dirname( __FILE__ ) ) ); // link to all assets, with /
 define( 'BPRF_PATH', dirname( __FILE__ ) . '/core' ); // without /
 define( 'BPRF_MENU_POSITION', 15 );
+define( 'BPRF_UPLOAD_DIR', 'bp-rss-feeds' );
 
-// Give ability to change this variables in bp-custom.php or functions.php
-if ( ! defined( 'BPRF_UPLOAD_DIR' ) ) {
-	define( 'BPRF_UPLOAD_DIR', 'bp-rss-feeds' );
-}
+// CPT & CT
+define( 'BPRF_CPT_MEMBER_ITEM', 'bprf_member_item' );
+define( 'BPRF_TAX_SLUG', 'bprf_component' );
 
 if ( ! defined( 'BPRF_SLUG' ) ) {
 	define( 'BPRF_SLUG', 'rss-feed' );
@@ -34,21 +34,19 @@ register_activation_hook( __FILE__, 'bprf_activation' );
 function bprf_activation() {
 	// some defaults
 	$bprf = array(
-		'rss_for'   => array( 'members', 'groups' ),
-		'uninstall' => 'leave',
+		'uninstall' => 'nothing',
 		'sites'     => 'yes',
 		'tabs'      => array(
 			'members'     => __( 'RSS Feed', 'bprf' ),
-			'groups'      => __( 'RSS Feed', 'bprf' ),
 			'profile_nav' => 'top', // possible values: top, sub
 		),
 		'rss'       => array(
-			'excerpt'     => '45',     // words
+			//'excerpt'     => '45',     // words
 			'posts'       => '5',      // number of latest posts to import
 			'frequency'   => '43200',  // 12 hours
 			'image'       => 'none',   // do not dislay it all
 			'nofollow'    => 'yes',    // add rel="nofollow"
-			'placeholder' => 'http://buddypress.org/blog/feed'
+			'placeholder' => get_bloginfo( 'rss2_url' )
 		)
 	);
 
@@ -68,14 +66,19 @@ function bprf_deactivation() {
 		case 'all':
 			bprf_delete_options();
 			bprf_delete_data();
+
+			do_action( 'bprf_delete_all' );
 			break;
 
 		case 'data':
 			bprf_delete_data();
+
+			do_action( 'bprf_delete_data' );
 			break;
 
-		case 'leave':
+		case 'nothing':
 			// do nothing
+			do_action( 'bprf_delete_nothing' );
 			break;
 	}
 }
@@ -104,24 +107,17 @@ if ( is_admin() ) {
 /**
  * Include the front-end things
  */
-add_action( 'bp_loaded', 'bprf_front_init' );
 function bprf_front_init() {
 	$bprf = bp_get_option( 'bprf' );
 
-	require_once( BPRF_PATH . '/feed.php' );
+	require_once( BPRF_PATH . '/class-feed.php' );
 
-	if ( in_array( 'members', $bprf['rss_for'] ) && bp_is_active( 'settings' ) ) {
-		require_once( BPRF_PATH . '/front_members.php' );
-	}
+	require_once( BPRF_PATH . '/front_members.php' );
 
-	if ( in_array( 'groups', $bprf['rss_for'] ) && bp_is_active( 'groups' ) ) {
-		require_once( BPRF_PATH . '/front_groups.php' );
-	}
-
-	if ( $bprf['sites'] == 'yes' && bp_is_active( 'blogs' ) ) {
-		require_once( BPRF_PATH . '/front_blogs.php' );
-	}
+	do_action( 'bprf_front_init', $bprf );
 }
+
+add_action( 'bp_loaded', 'bprf_front_init' );
 
 /**
  * Modify the caching period to the specified value in seconds by admin
@@ -131,10 +127,17 @@ function bprf_front_init() {
  *
  * @return int
  */
-function bprf_feed_cache_lifetime( $time, /** @noinspection PhpUnusedParameterInspection */$url ) {
+function bprf_feed_cache_lifetime(
+	$time, /** @noinspection PhpUnusedParameterInspection */
+	$url
+) {
 	$bprf = bp_get_option( 'bprf' );
 
-	if ( isset( $bprf['rss']['frequency'] ) && ! empty( $bprf['rss']['frequency'] ) && is_numeric( $bprf['rss']['frequency'] ) && $bprf['rss']['frequency'] > 0 ) {
+	if (
+		! empty( $bprf['rss']['frequency'] ) &&
+		is_numeric( $bprf['rss']['frequency'] ) &&
+		$bprf['rss']['frequency'] > 0
+	) {
 		return $bprf['rss']['frequency'];
 	}
 
@@ -142,146 +145,124 @@ function bprf_feed_cache_lifetime( $time, /** @noinspection PhpUnusedParameterIn
 }
 
 /**
- * Register activity actions for the plguin
- *
- * @return void
+ * Enable storing new imported feed items in Activity stream
  */
-function bprf_register_activity_actions() {
-	$bp = buddypress();
+add_post_type_support( BPRF_CPT_MEMBER_ITEM, 'buddypress-activity' );
 
+/**
+ * Register CPT that will be used to store all imported feed items
+ */
+function bprf_register_cpt() {
+	// Check if the Activity component is active before using it.
 	if ( ! bp_is_active( 'activity' ) ) {
 		return;
 	}
 
 	/** @noinspection PhpUndefinedFieldInspection */
-	bp_activity_set_action(
-		$bp->groups->id,
-		'groups_rss_item',
-		__( 'New RSS feed item', 'bprf' ),
-		'bprf_format_activity_action_new_rss_item'
+	/** @noinspection HtmlUnknownTarget */
+	$args = array(
+		'public'      => defined( 'WP_DEBUG' ) && WP_DEBUG ? true : false,
+		'labels'      => array(
+			'name'                     => __( 'Members RSS Items', 'bprf' ),
+			'singular_name'            => __( 'Members RSS Item', 'bprf' ),
+			'bp_activity_admin_filter' => __( 'New member RSS post imported', 'bprf' ),
+			'bp_activity_front_filter' => bp_is_user() ? __( 'RSS Items', 'bprf' ) : __( 'Members RSS Items', 'bprf' ),
+			'bp_activity_new_post'     => __( '%1$s wrote a new post, %2$s', 'bprf' ),
+		),
+		'supports'    => array( 'title', 'editor', 'buddypress-activity', 'thumbnail' ),
+		'bp_activity' => array(
+			'component_id'     => buddypress()->activity->id, // this is default, that is changed on a fly on saving
+			'action_id'        => 'new_' . BPRF_CPT_MEMBER_ITEM,
+			'contexts'         => array( 'member' ),
+			//'position'     => 40,
+			'activity_comment' => true
+		),
 	);
 
-	/** @noinspection PhpUndefinedFieldInspection */
-	bp_activity_set_action(
-		$bp->profile->id,
-		'activity_rss_item',
-		__( 'New RSS feed item', 'bprf' ),
-		'bprf_format_activity_action_new_rss_item'
-	);
+	register_post_type( BPRF_CPT_MEMBER_ITEM, $args );
 
-	do_action( 'bprf_register_activity_actions' );
+	do_action( 'bprf_register_cpts' );
 }
 
-add_action( 'bp_register_activity_actions', 'bprf_register_activity_actions' );
+add_action( 'init', 'bprf_register_cpt', 999 );
 
 /**
- * Display additional Activity filters
+ * Modify activity data for CPT before it was saved into DB
+ *
+ * @param $activity
+ *
+ * @return array $activity
+ */
+function bprf_record_cpt_activity_content( $activity ) {
+	// $activity['secondary_item_id'] is CPT ID
+
+	if ( 'new_' . BPRF_CPT_MEMBER_ITEM === $activity['type'] ) {
+		$bprf = bp_get_option( 'bprf' );
+
+		//$bp   = buddypress();
+		$item = BPRF_Feed::get_item( $activity['secondary_item_id'] );
+
+		$nofollow = 'rel="nofollow"';
+		if ( ! empty( $bprf['link_nofollow'] ) && $bprf['link_nofollow'] == 'no' ) {
+			$nofollow = '';
+		}
+
+		$target = 'target="_blank"';
+		if ( ! empty( $bprf['link_target'] ) && $bprf['link_target'] == 'self' ) {
+			$target = '';
+		}
+
+		$post_link = '<a href="' . esc_url( $item->guid ) . '" ' . $nofollow . ' ' . $target . ' class="bprf-feed-item bprf-feed-member-item">'
+		             . apply_filters( 'the_title', $item->post_title, $item->ID ) .
+		             '</a>';
+
+		$activity['component']    = 'members';
+		$activity['primary_link'] = $item->guid;
+		$activity['action']       = sprintf(
+			__( '%1$s wrote a new post, %2$s', 'bprf' ),
+			bp_core_get_userlink( $activity['user_id'] ),
+			$post_link
+		);
+	}
+
+	return apply_filters( 'bprf_record_cpt_activity_content', $activity );
+}
+
+//add_filter('bp_before_activity_add_parse_args', 'bprf_record_cpt_activity_content');
+add_filter( 'bp_after_activity_add_parse_args', 'bprf_record_cpt_activity_content' );
+
+/**
+ * Display additional Activity filter on Activity Directory
  */
 function bprf_activity_filter_options() {
 	if ( bp_is_active( 'settings' ) ) {
-		echo '<option value="activity_rss_item">' . __( 'Members RSS Items', 'bprf' ) . '</option>';
+		echo '<option value="new_' . BPRF_CPT_MEMBER_ITEM . '">' . __( 'Members RSS Items', 'bprf' ) . '</option>';
 	}
-	if ( bp_is_active( 'groups' ) ) {
-		echo '<option value="groups_rss_item">' . __( 'Groups RSS Items', 'bprf' ) . '</option>';
-	}
+
+	do_action( 'bprf_activity_filter_options' );
 }
 
 add_action( 'bp_activity_filter_options', 'bprf_activity_filter_options' );
-add_action( 'bp_member_activity_filter_options', 'bprf_activity_filter_options' );
+//add_action( 'bp_member_activity_filter_options', 'bprf_activity_filter_options' );
 
 /**
- * Format the activity stream output using BuddyPress 2.0 style.
- * Thanks, Boone!
+ * In activity stream "since" meta link about activity item depends on whether Site Tracking is enabled or not.
+ * To normalize this behaviour (and making the link lead to activity item page) we filter this manually.
  *
- * @param $action
- * @param $activity
+ * @param int $link
+ * @param BP_Activity_Activity $activity
  *
- * @return mixed|void
+ * @return string
  */
-function bprf_format_activity_action_new_rss_item( $action, $activity ) {
-	$links = bp_activity_get_meta( $activity->id, 'bprf_title_links' );
-
-	if ( $activity->type == 'groups_rss_item' ) {
-		return sprintf(
-			__( 'New RSS post %1$s was shared in the group %2$s', 'bprf' ),
-			$links['item'],
-			$links['source']
-		);
-	} else if ( $activity->type == 'xprofiles_rss_item' ) {
-		return sprintf(
-			__( '%1$s shared a new RSS post %2$s', 'bprf' ),
-			$links['source'],
-			$links['item']
-		);
+function bprf_activity_get_permalink( $link, $activity ) {
+	if ( $activity->type == 'new_' . BPRF_CPT_MEMBER_ITEM ) {
+		$link = bp_get_root_domain() . '/' . bp_get_activity_root_slug() . '/p/' . $activity->id . '/';
 	}
 
-	return $action;
+	return $link;
 }
 
-/**
- * Just in case adding to activity stream will be modified in the future
- *
- * @param $args array Possible keys:
- *      user_id             - who added the feed
- *      component           - profile or group feed
- *      type                - profile_rss_item or group_rss_item
- *      action              - what actually was done, string (for pre-BP 2.0)
- *      content             - feed excerpt with image, html
- *      primary_link        - link to the feed item
- *      item_id             -
- *      secondary_item_id   - grous id if any?
- *      date_recorded       - bp_core_current_time()
- *      hide_sitewide       - display eveywhere, so false
- *
- * @return int|bool The ID of the activity on success. False on error.
- */
-function bprf_record_profile_new_feed_item_activity( $args ) {
-	if ( ! bp_is_active( 'activity' ) ) {
-		return false;
-	}
-
-	$defaults = array(
-		'user_id'           => bp_loggedin_user_id(),
-		'action'            => '',
-		'content'           => '',
-		'primary_link'      => '',
-		'component'         => bp_current_component(),
-		'type'              => bp_current_component() . '_rss_item',
-		'item_id'           => false,
-		'secondary_item_id' => false,
-		'recorded_time'     => bp_core_current_time(),
-		'hide_sitewide'     => false
-	);
-
-	// I hate those 2 lines of code below
-	$r = wp_parse_args( $args, $defaults );
-	extract( $r, EXTR_SKIP );
-
-	/** @var $user_id */
-	/** @var $action */
-	/** @var $content */
-	/** @var $primary_link */
-	/** @var $component */
-	/** @var $type */
-	/** @var $item_id */
-	/** @var $secondary_item_id */
-	/** @var $recorded_time */
-
-	/** @var $hide_sitewide */
-
-	return bp_activity_add( array(
-		                        'user_id'           => $user_id,
-		                        'action'            => $action,
-		                        'content'           => $content,
-		                        'primary_link'      => $primary_link,
-		                        'component'         => $component,
-		                        'type'              => $type,
-		                        'item_id'           => $item_id,
-		                        'secondary_item_id' => $secondary_item_id,
-		                        'recorded_time'     => $recorded_time,
-		                        'hide_sitewide'     => $hide_sitewide
-	                        ) );
-}
+add_filter( 'bp_activity_get_permalink', 'bprf_activity_get_permalink', 10, 2 );
 
 /**
  * Alter the user/group activity stream to display RSS feed items only
@@ -294,22 +275,16 @@ function bprf_record_profile_new_feed_item_activity( $args ) {
 function bprf_filter_rss_output( $bp_ajax_querystring, $object ) {
 	/** @noinspection PhpUndefinedFieldInspection */
 	if (
-		( bp_is_group() || bp_is_user() ) &&
+		bp_is_user() &&
 		( bp_current_action() === BPRF_SLUG || bp_current_component() === BPRF_SLUG ) &&
 		$object == buddypress()->activity->id
 	) {
-		$query = '';
-		if ( bp_is_group() ) {
-			$query = 'object=groups&action=groups_rss_item&primary_id=' . bp_get_current_group_id();
-		} else if ( bp_is_user() ) {
-			$query = 'object=activity&action=activity_rss_item&user_id=' . bp_displayed_user_id();
-		}
+		$query = 'object=members&action=new_' . BPRF_CPT_MEMBER_ITEM . '&user_id=' . bp_displayed_user_id();
 
-		return trim( $bp_ajax_querystring . '&' . $query, '&' );
+		$bp_ajax_querystring .= '&' . $query;
 	}
 
-	return $bp_ajax_querystring;
+	return apply_filters( 'bprf_filter_rss_output', $bp_ajax_querystring, $object );
 }
 
 add_filter( 'bp_ajax_querystring', 'bprf_filter_rss_output', 999, 2 );
-

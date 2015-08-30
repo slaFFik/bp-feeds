@@ -10,7 +10,7 @@
 		       class="settings-input">
 
 		<p class="description">
-			<?php bpfr_the_moderated_text(); ?>
+			<?php bprf_the_moderated_text(); ?>
 		</p>
 
 		<?php do_action( 'bprf_member_settings_template_before_submit' ); ?>

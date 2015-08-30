@@ -48,6 +48,10 @@ function bprf_profile_activity_submenu() {
 
 add_action( 'bp_setup_nav', 'bprf_profile_activity_submenu', 100 );
 
+/******************************************
+ *************** Templating ***************
+ *****************************************/
+
 /**
  * Display the activity feed in case of submenu
  */
@@ -57,9 +61,15 @@ function bprf_profile_activity_submenu_page() {
 		$feed_url = bprf_get_user_rss_feed_url();
 
 		if ( ! empty( $feed_url ) ) {
-			new BPRF_Feed( $feed_url, 'members' );
-
 			echo '<style>#activity-filter-select{display:none}</style>';
+
+			// do the import
+			if ( ! empty( $feed_url ) ) {
+
+				$feed = new BPRF_Feed( 'members' ); // displayed user id by default
+
+				$feed->pull(); // got data and saved into DB
+			}
 		}
 	}
 
@@ -79,17 +89,21 @@ function bprf_profile_activity_page() {
 
 function bprf_profile_activity_page_content() {
 	if ( bp_current_component() !== BPRF_SLUG ) {
+		do_action( 'bprf_no_page_message' );
 		return;
 	}
 
-	// Get a SimplePie feed object from the specified feed source.
+	// Get a SimplePie feed url from the specified feed source.
 	$feed_url = bprf_get_user_rss_feed_url();
 
 	if ( ! empty( $feed_url ) ) {
-		$rss = new BPRF_Feed( $feed_url, 'members' );
+
+		$feed = new BPRF_Feed( 'members' ); // displayed user id by default
+
+		$feed->pull(); // got data and saved into DB
 
 		bprf_the_template_part( 'menu_feed_title', array(
-			'rss' => $rss
+			'feed' => $feed
 		) );
 	}
 
@@ -97,7 +111,7 @@ function bprf_profile_activity_page_content() {
 		do_action( 'bprf_no_feed_message' );
 	}
 
-	echo '<div class="activity" role="main">';
+	echo '<div class="activity bprf-member-activity" role="main">';
 
 	bp_get_template_part( apply_filters( 'bprf_profile_activity_page_content', 'activity/activity-loop' ) );
 
@@ -106,9 +120,9 @@ function bprf_profile_activity_page_content() {
 
 add_action( 'bp_template_content', 'bprf_profile_activity_page_content' );
 
-/************
- * Settings *
- ***********/
+/************************************
+ ************* Settings *************
+ ***********************************/
 
 /**
  * Add a user settings submenu BPRF_SLUG
@@ -188,6 +202,10 @@ function bprf_profile_settings_submenu_page_title() {
 
 add_action( 'bp_template_content', 'bprf_profile_settings_submenu_page_title' );
 
+/************************************************
+ ***************** Registration *****************
+ ***********************************************/
+
 /**
  * Registration page feed input
  */
@@ -243,10 +261,7 @@ add_filter( 'bp_signup_usermeta', 'bprf_signup_rss_feed_field_pre_save' );
  *
  * @return bool
  */
-function bprf_signup_rss_feed_field_save(
-	$user_id, /** @noinspection PhpUnusedParameterInspection */
-	$key, $user
-) {
+function bprf_signup_rss_feed_field_save( $user_id, /** @noinspection PhpUnusedParameterInspection */$key, $user ) {
 	if ( ! bp_is_active( 'settings' ) ) {
 		return false;
 	}
@@ -260,9 +275,9 @@ function bprf_signup_rss_feed_field_save(
 
 add_action( 'bp_core_activated_user', 'bprf_signup_rss_feed_field_save', 10, 3 );
 
-/*******************
- * Admin Bar Fixes *
- ******************/
+/*********************************************************
+ ******************** Admin Bar Fixes ********************
+ ********************************************************/
 
 /**
  * Add RSS feed menu under Activity
@@ -278,7 +293,7 @@ function bprf_profile_admin_bar_activity_submenu( $wp_admin_nav ) {
 
 	$bprf = bp_get_option( 'bprf' );
 
-	if ( ! in_array( 'members', $bprf['rss_for'] ) && ! bp_is_active( 'settings' ) || $bprf['tabs']['profile_nav'] == 'top' ) {
+	if ( ! bp_is_active( 'settings' ) || $bprf['tabs']['profile_nav'] == 'top' ) {
 		return $wp_admin_nav;
 	}
 
@@ -312,7 +327,7 @@ function bprf_profile_admin_bar_topmenu() {
 
 	$bprf = bp_get_option( 'bprf' );
 
-	if ( $bprf['tabs']['profile_nav'] == 'sub' || ! in_array( 'members', $bprf['rss_for'] ) || ! bp_is_active( 'settings' ) ) {
+	if ( $bprf['tabs']['profile_nav'] == 'sub' || ! bp_is_active( 'settings' ) ) {
 		return;
 	}
 

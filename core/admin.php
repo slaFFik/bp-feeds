@@ -67,19 +67,15 @@ function bprf_admin_page_save() {
 	if ( isset( $_POST['bprf-admin-submit'] ) && isset( $_POST['bprf'] ) ) {
 		$bprf = $_POST['bprf'];
 
-		if ( ! isset( $bprf['rss_for'] ) ) {
-			$bprf['rss_for'] = array();
-		}
-
 		$bprf['tabs']['members'] = trim( htmlentities( wp_strip_all_tags( $bprf['tabs']['members'] ) ) );
 		if ( empty( $bprf['tabs']['members'] ) ) {
 			$bprf['tabs']['members'] = __( 'RSS Feed', 'bprf' );
 		}
 
-		$bprf['tabs']['groups'] = trim( htmlentities( wp_strip_all_tags( $bprf['tabs']['groups'] ) ) );
-		if ( empty( $bprf['tabs']['groups'] ) ) {
-			$bprf['tabs']['groups'] = __( 'RSS Feed', 'bprf' );
-		}
+		//$bprf['tabs']['groups'] = trim( htmlentities( wp_strip_all_tags( $bprf['tabs']['groups'] ) ) );
+		//if ( empty( $bprf['tabs']['groups'] ) ) {
+		//	$bprf['tabs']['groups'] = __( 'RSS Feed', 'bprf' );
+		//}
 
 		$bprf['tabs']['profile_nav'] = trim( htmlentities( wp_strip_all_tags( $bprf['tabs']['profile_nav'] ) ) );
 		if ( empty( $bprf['tabs']['profile_nav'] ) ) {

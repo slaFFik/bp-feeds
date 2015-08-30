@@ -1,15 +1,15 @@
 <?php
-/** @var $rss BPRF_Feed */
-if ( isset( $rss->title ) && ! empty( $rss->title ) ) : ?>
+/** @var $feed BPRF_Feed */
+if ( isset( $feed->meta['rss_title'] ) && ! empty( $feed->meta['rss_title'] ) ) : ?>
 	<div class="item-list-tabs no-ajax" id="subnav">
 		<ul class="bprf_rss_feed_title">
 			<li class="feed">
 				<?php
-				if ( isset( $rss->link ) && ! empty( $rss->link ) ) {
-					echo '<a href="' . $rss->link . '" target="_blank">';
+				if ( isset( $feed->meta['rss_url'] ) && ! empty( $feed->meta['rss_url'] ) ) {
+					echo '<a href="' . esc_url($feed->meta['rss_url']) . '" target="_blank">';
 				}
-				echo $rss->title;
-				if ( isset( $rss->link ) && ! empty( $rss->link ) ) {
+				echo esc_attr( $feed->meta['rss_title'] );
+				if ( isset( $feed->meta['rss_url'] ) && ! empty( $feed->meta['rss_url'] ) ) {
 					echo '</a>';
 				}
 				?>

@@ -17,5 +17,5 @@ if ( empty( $group_id ) && is_admin() ) {
 </p>
 
 <p class="description">
-	<?php bpfr_the_moderated_text(); ?>
+	<?php bprf_the_moderated_text(); ?>
 </p>

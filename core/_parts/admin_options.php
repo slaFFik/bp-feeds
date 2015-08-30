@@ -17,27 +17,21 @@ $checked = 'checked="checked"';
 <table class="form-table">
 	<!-- RSS Feeds For -->
 	<tr valign="top">
-		<th scope="row"><?php _e( 'Enable custom RSS feeds for:', 'bprf' ); ?></th>
+		<th scope="row"><?php _e( 'RSS feeds enabled for:', 'bprf' ); ?></th>
 		<td>
-			<label>
-				<input name="bprf[rss_for][]" type="checkbox"
-				       value="members" <?php echo in_array( 'members', $bprf['rss_for'] ) ? $checked : ''; ?>>&nbsp;
-				<?php _e( 'Members', 'bprf' ); ?>
-			</label><br/>
-			<label>
-				<input name="bprf[rss_for][]" type="checkbox"
-				       value="groups" <?php echo in_array( 'groups', $bprf['rss_for'] ) ? $checked : ''; ?>>&nbsp;
-				<?php _e( 'Groups', 'bprf' ); ?>
-			</label>
-
-			<?php do_action( 'bprf_admin_option_rss_for', $bprf ); ?>
+			<?php
+			$bprf_enabled_for = apply_filters( 'bprf_enabled_for', array( 'members' => __( 'Members', 'bprf' ) ) );
+			foreach ( $bprf_enabled_for as $slug => $title ) {
+				echo '<span class="bprf-enabled bprf-enabled-' . esc_attr( $slug ) . '"><input type="checkbox" disabled checked/> ' . esc_attr( $title ) . '</span><br/>';
+			}
+			?>
 		</td>
 	</tr>
 
 	<!-- Sites Directory Integration -->
 	<tr valign="top">
 		<th scope="row">
-			<?php _e( 'Where do you want to see custom RSS feed menu on user\'s profile?', 'bprf' ); ?>
+			<?php _e( 'Where to display RSS feed menu in user\'s profile?', 'bprf' ); ?>
 		</th>
 		<td>
 			<label>
@@ -67,15 +61,6 @@ $checked = 'checked="checked"';
 		<td>
 			<input name="bprf[tabs][members]" id="bprf_tabs_members" type="text" required="required"
 			       value="<?php esc_attr_e( $bprf['tabs']['members'] ); ?>">
-		</td>
-	</tr>
-
-	<!-- Groups RSS Label -->
-	<tr valign="top">
-		<th scope="row"><label for="bprf_tabs_groups"><?php _e( 'Groups RSS tab label', 'bprf' ); ?></label></th>
-		<td>
-			<input name="bprf[tabs][groups]" id="bprf_tabs_groups" type="text" required="required"
-			       value="<?php esc_attr_e( $bprf['tabs']['groups'] ); ?>">
 		</td>
 	</tr>
 
@@ -123,7 +108,7 @@ $checked = 'checked="checked"';
 	<?php do_action( 'bprf_admin_options_before_rss', $bprf ); ?>
 
 	<!-- RSS first image -->
-	<tr valign="top">
+	<tr valign="top"  style="display: none">
 		<th scope="row"><?php _e( 'RSS item first image', 'bprf' ); ?></th>
 		<td>
 			<label>
@@ -186,7 +171,7 @@ $checked = 'checked="checked"';
 	</tr>
 
 	<!-- RSS Excerpt Length -->
-	<tr valign="top">
+	<tr valign="top" style="display: none">
 		<th scope="row"><label for="bprf_rss_excerpts_length"><?php _e( 'RSS posts excerpt length', 'bprf' ); ?></label>
 		</th>
 		<td>
@@ -203,8 +188,7 @@ $checked = 'checked="checked"';
 		<th scope="row"><label for="bprf_rss_posts"><?php _e( 'Maximum amount of posts to import', 'bprf' ); ?></label>
 		</th>
 		<td>
-			<input name="bprf[rss][posts]" id="bprf_rss_posts" type="text" required="required"
-			       value="<?php esc_attr_e( $bprf['rss']['posts'] ); ?>"> <?php _e( 'posts', 'bprf' ); ?>
+			<input name="bprf[rss][posts]" id="bprf_rss_posts" type="text" class="small-text" required="required" value="<?php esc_attr_e( $bprf['rss']['posts'] ); ?>"> <?php _e( 'posts', 'bprf' ); ?>
 			<p class="description">
 				<?php _e( 'How many posts would you like to import when a RSS feed is added?', 'bprf' ); ?><br/>
 				<?php _e( 'This is useful if you do not want to fill the activity stream with older posts.', 'bprf' ); ?>
@@ -243,8 +227,7 @@ $checked = 'checked="checked"';
 		</th>
 		<td>
 			<label>
-				<input name="bprf[uninstall]" type="radio"
-				       value="leave" <?php checked( 'leave', $bprf['uninstall'] ); ?>>&nbsp;
+				<input name="bprf[uninstall]" type="radio" value="nothing" <?php checked( 'nothing', $bprf['uninstall'] ); ?>>&nbsp;
 				<?php _e( 'Do not delete anything. Leave all the data and options in the DB', 'bprf' ); ?>
 			</label>
 

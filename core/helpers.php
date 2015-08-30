@@ -96,11 +96,11 @@ function bprf_is_moderated() {
 /**
  * Display the text about moderation
  */
-function bpfr_the_moderated_text() {
-	echo bpfr_get_moderated_text();
+function bprf_the_moderated_text() {
+	echo bprf_get_moderated_text();
 }
 
-function bpfr_get_moderated_text() {
+function bprf_get_moderated_text() {
 	if ( bprf_is_moderated() ) {
 		// This message should be shown when feed moderation is enabled
 		$text = __( 'Fill in the address to your personal website in the field above. If your website has an RSS feed (most websites create an RSS feed automatically) and your site has been verified by our team, your published posts will automatically be imported to your profile for your friends to see.', 'bprf' );
