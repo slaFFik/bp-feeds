@@ -108,6 +108,9 @@ function bpf_admin_page() { ?>
 		<?php do_action( 'bpf_admin_page_after_nav' ); ?>
 
 		<form action="" method="post" id="bpf-admin-form">
+
+			<?php wp_nonce_field( 'bpf_admin_form', 'bpf_nonce' ); ?>
+
 			<!--suppress CssUnusedSymbol -->
 			<style>.option_desc {
 					margin: 0 0 10px 30px !important
@@ -167,6 +170,9 @@ function bpf_admin_get_current_section() {
 	return apply_filters( 'bpf_admin_get_current_section', ( ! empty( $_GET['page'] ) && $_GET['page'] == BPF_ADMIN_SLUG && ! empty( $_GET['section'] ) ) ? (string) $_GET['section'] : 'general' );
 }
 
+/**
+ * Display error or success messages when options are saved
+ */
 function bpf_admin_page_notice() {
 
 	if ( empty( $_GET['message'] ) ) {
@@ -215,69 +221,81 @@ add_action( 'bpf_admin_page_content_members', 'bpf_admin_page_members' );
 
 /**
  * Process saving of all settings
- * TODO: refactor
  */
 function bpf_admin_page_save() {
 
-	if ( isset( $_POST['bpf-admin-submit'] ) && isset( $_POST['bpf'] ) ) {
+	if ( ! isset( $_POST['bpf-admin-submit'] ) || ! isset( $_POST['bpf'] ) ) {
+		return;
+	}
 
-		if ( ! empty( $_POST['bpf']['tabs']['members'] ) ) {
-			$bpf['tabs']['members'] = trim( htmlentities( wp_strip_all_tags( $_POST['bpf']['tabs']['members'] ) ) );
-		} else {
-			$bpf['tabs']['members'] = __( 'Feed', 'bpf' );
-		}
+	// Verify that the nonce is valid
+	if ( ! wp_verify_nonce( $_POST['bpf_nonce'], 'bpf_admin_form' ) ) {
+		return;
+	}
 
-		if ( ! empty( $_POST['bpf']['tabs']['profile_nav'] ) ) {
-			$bpf['tabs']['profile_nav'] = trim( htmlentities( wp_strip_all_tags( $_POST['bpf']['tabs']['profile_nav'] ) ) );
-		} else {
-			$bpf['tabs']['profile_nav'] = 'top';
-		}
+	if ( ! empty( $_POST['bpf']['tabs']['members'] ) ) {
+		$bpf['tabs']['members'] = trim( htmlentities( wp_strip_all_tags( $_POST['bpf']['tabs']['members'] ) ) );
+	} else {
+		$bpf['tabs']['members'] = __( 'Feed', 'bpf' );
+	}
+
+	if ( ! empty( $_POST['bpf']['tabs']['profile_nav'] ) ) {
+		$bpf['tabs']['profile_nav'] = trim( htmlentities( wp_strip_all_tags( $_POST['bpf']['tabs']['profile_nav'] ) ) );
+	} else {
+		$bpf['tabs']['profile_nav'] = 'top';
+	}
 
 
-		if ( ! empty( $_POST['bpf']['rss']['placeholder'] ) ) {
-			$bpf['rss']['placeholder'] = trim( htmlentities( wp_strip_all_tags( $_POST['bpf']['rss']['placeholder'] ) ) );
-		} else {
-			$bpf['rss']['placeholder'] = '';
-		}
+	if ( ! empty( $_POST['bpf']['rss']['placeholder'] ) ) {
+		$bpf['rss']['placeholder'] = trim( htmlentities( wp_strip_all_tags( $_POST['bpf']['rss']['placeholder'] ) ) );
+	} else {
+		$bpf['rss']['placeholder'] = '';
+	}
 
-		if ( ! empty( $_POST['bpf']['rss']['nofollow'] ) ) {
-			$bpf['rss']['nofollow'] = wp_strip_all_tags($_POST['bpf']['rss']['nofollow']);
-		} else {
-			$bpf['rss']['nofollow'] = 'yes';
-		}
+	if ( ! empty( $_POST['bpf']['rss']['nofollow'] ) ) {
+		$bpf['rss']['nofollow'] = wp_strip_all_tags( $_POST['bpf']['rss']['nofollow'] );
+	} else {
+		$bpf['rss']['nofollow'] = 'yes';
+	}
 
-		if ( ! empty( $_POST['bpf']['rss']['excerpt'] ) ) {
-			$bpf['rss']['excerpt'] = (int) $_POST['bpf']['rss']['excerpt'];
-		} else {
-			$bpf['rss']['excerpt'] = '45';
-		}
+	if ( ! empty( $_POST['bpf']['rss']['excerpt'] ) ) {
+		$bpf['rss']['excerpt'] = (int) $_POST['bpf']['rss']['excerpt'];
+	} else {
+		$bpf['rss']['excerpt'] = '45';
+	}
 
-		if ( ! empty( $_POST['bpf']['rss']['posts'] ) ) {
-			$bpf['rss']['posts'] = (int) $_POST['bpf']['rss']['posts'];
-		} else {
-			$bpf['rss']['posts'] = '5';
-		}
+	if ( ! empty( $_POST['bpf']['rss']['posts'] ) ) {
+		$bpf['rss']['posts'] = (int) $_POST['bpf']['rss']['posts'];
+	} else {
+		$bpf['rss']['posts'] = '5';
+	}
 
-		if ( ! empty( $_POST['bpf']['rss']['frequency'] ) ) {
-			$bpf['rss']['frequency'] = (int) $_POST['bpf']['rss']['frequency'];
-		} else {
-			$bpf['rss']['frequency'] = '43200';
-		}
+	if ( ! empty( $_POST['bpf']['rss']['frequency'] ) ) {
+		$bpf['rss']['frequency'] = (int) $_POST['bpf']['rss']['frequency'];
+	} else {
+		$bpf['rss']['frequency'] = '43200';
+	}
 
-		if ( ! empty( $_POST['bpf']['uninstall'] ) ) {
-			$bpf['uninstall'] = wp_strip_all_tags($_POST['bpf']['uninstall']);
-		} else {
-			$bpf['uninstall'] = 'nothing';
-		}
+	if ( ! empty( $_POST['bpf']['uninstall'] ) ) {
+		$bpf['uninstall'] = wp_strip_all_tags( $_POST['bpf']['uninstall'] );
+	} else {
+		$bpf['uninstall'] = 'nothing';
+	}
 
-		$bpf = apply_filters( 'bpf_admin_page_before_save', $bpf );
+	$bpf = apply_filters( 'bpf_admin_page_before_save', $bpf );
 
-		if ( bp_update_option( 'bpf', $bpf ) ) {
-			wp_redirect( add_query_arg( 'message', 'success' ) );
-		} else {
-			wp_redirect( add_query_arg( 'message', 'error' ) );
-		}
+	do_action( 'bpf_admin_page_before_save', $bpf );
 
+	if ( bp_update_option( 'bpf', $bpf ) ) {
+
+		do_action( 'bpf_admin_page_after_save_success', $bpf );
+
+		wp_redirect( add_query_arg( 'message', 'success' ) );
+	} else {
+
+		do_action( 'bpf_admin_page_after_save_error', $bpf );
+
+		wp_redirect( add_query_arg( 'message', 'error' ) );
 	}
 
 	return;
