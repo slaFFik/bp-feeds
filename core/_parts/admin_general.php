@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<?php _e( 'Yes', 'bpf' ); ?>
 			</label>
 
-			<p class="description option_desc">
+			<p class="description bpf-option-desc">
 				<?php _e( 'On Sites Directory page all RSS feeds (groups and members) will be displayed as Blogs.', 'bpf' ); ?>
 				<br/>
 				<?php _e( 'Appropriate avatars (groups and members) will be used as blogs avatars.', 'bpf' ); ?>
@@ -35,7 +35,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<?php _e( 'No', 'bpf' ); ?>
 			</label>
 
-			<p class="description option_desc">
+			<p class="description bpf-option-desc">
 				<?php _e( 'Do not display them on Sites Directory page.', 'bpf' ); ?>
 			</p>
 		</td>
@@ -80,26 +80,58 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	<!-- RSS Nofollow link -->
 	<tr valign="top">
-		<th scope="row"><label for="bpf_rss_nofollow_link"><?php _e( 'RSS item link: add nofollow', 'bpf' ); ?></label>
+		<th scope="row">
+			<label for="bpf_rss_nofollow_link"><?php _e( 'RSS item link: add nofollow', 'bpf' ); ?></label><br/>
+			<label for="bpf_rss_nofollow_link" class="bpf-option-label"><?php _e( 'Applied only to newly imported feeds after saving', 'bpf' ); ?></label>
 		</th>
 		<td>
+			<?php $bpf['link_nofollow'] = empty( $bpf['link_nofollow'] ) ? 'yes' : $bpf['link_nofollow']; ?>
+
 			<label>
-				<input name="bpf[rss][nofollow]" type="radio"
-				       value="yes" <?php checked( 'yes', $bpf['rss']['nofollow'] ); ?>>&nbsp;
+				<input name="bpf[link_nofollow]" type="radio"
+				       value="yes" <?php checked( 'yes', $bpf['link_nofollow'] ); ?>>&nbsp;
 				<?php _e( 'Yes', 'bpf' ); ?>
 			</label>
 
-			<p class="description option_desc">
-				<?php _e( 'Link to a RSS item will have an attribute <code>rel="nofollow"</code>, so search engines should not open it and index.', 'bpf' ); ?>
+			<p class="description bpf-option-desc">
+				<?php _e( 'Link to a feed item will have an attribute <code>rel="nofollow"</code>, so search engines should not open it and index.', 'bpf' ); ?>
 			</p>
 			<label>
-				<input name="bpf[rss][nofollow]" type="radio"
-				       value="no" <?php checked( 'no', $bpf['rss']['nofollow'] ); ?>>&nbsp;
+				<input name="bpf[link_nofollow]" type="radio"
+				       value="no" <?php checked( 'no', $bpf['link_nofollow'] ); ?>>&nbsp;
 				<?php _e( 'No', 'bpf' ); ?>
 			</label>
 
-			<p class="description option_desc">
+			<p class="description bpf-option-desc">
 				<?php _e( 'Search engines will open that link and may index it.', 'bpf' ); ?>
+			</p>
+		</td>
+	</tr>
+
+	<!-- RSS Target link -->
+	<tr valign="top">
+		<th scope="row"><label for="bpf_rss_target_link"><?php _e( 'RSS item open links', 'bpf' ); ?></label>
+		</th>
+		<td>
+			<?php $bpf['link_target'] = empty( $bpf['link_target'] ) ? 'blank' : $bpf['link_target']; ?>
+
+			<label>
+				<input name="bpf[link_target]" type="radio"
+				       value="blank" <?php checked( 'blank', $bpf['link_target'] ); ?>>&nbsp;
+				<?php _e( 'In a new tab', 'bpf' ); ?>
+			</label>
+
+			<p class="description bpf-option-desc">
+				<?php _e( 'Link to a feed item will have an attribute <code>target="_blank"</code>, so on click a new tab will be opened.', 'bpf' ); ?>
+			</p>
+			<label>
+				<input name="bpf[link_target]" type="radio"
+				       value="self" <?php checked( 'self', $bpf['link_target'] ); ?>>&nbsp;
+				<?php _e( 'In the same tab', 'bpf' ); ?>
+			</label>
+
+			<p class="description bpf-option-desc">
+				<?php _e( 'Link will be opened in the same browser tab.', 'bpf' ); ?>
 			</p>
 		</td>
 	</tr>
@@ -180,19 +212,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<?php _e( 'Do not delete anything. Leave all the data and options in the DB', 'bpf' ); ?>
 			</label>
 
-			<p class="description option_desc"><?php _e( 'Good option if you want to reactivate the plugin later.', 'bpf' ); ?></p>
+			<p class="description bpf-option-desc"><?php _e( 'Good option if you want to reactivate the plugin later.', 'bpf' ); ?></p>
 			<label>
 				<input name="bpf[uninstall]" type="radio" value="data" <?php checked( 'data', $bpf['uninstall'] ); ?>>&nbsp;
 				<?php _e( 'RSS data will be deleted, options (admin, users, groups) will be preserved', 'bpf' ); ?>
 			</label>
 
-			<p class="description option_desc"><?php _e( 'If you want to cleanup the plugin\'s data, but preserve all settings - use this option.', 'bpf' ); ?></p>
+			<p class="description bpf-option-desc"><?php _e( 'If you want to cleanup the plugin\'s data, but preserve all settings - use this option.', 'bpf' ); ?></p>
 			<label>
 				<input name="bpf[uninstall]" type="radio" value="all" <?php checked( 'all', $bpf['uninstall'] ); ?>>&nbsp;
 				<?php _e( 'Completely delete all plugin-related data and options', 'bpf' ); ?>
 			</label>
 
-			<p class="description option_desc"><?php _e( 'If you decided not to use this plugin, then check this option.', 'bpf' ); ?></p>
+			<p class="description bpf-option-desc"><?php _e( 'If you decided not to use this plugin, then check this option.', 'bpf' ); ?></p>
 		</td>
 	</tr>
 

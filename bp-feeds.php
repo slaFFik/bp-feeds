@@ -19,13 +19,14 @@ define( 'BPF_PATH', dirname( __FILE__ ) . '/core' ); // without /
 define( 'BPF_MENU_POSITION', 15 );
 define( 'BPF_UPLOAD_DIR', 'bp-feeds' );
 define( 'BPF_ADMIN_SLUG', 'bp-feeds-admin' );
+define( 'BPF_I18N', 'buddypress-feeds' ); // should be the same as plugin folder name, otherwise auto-deliver of translations won't work
 
 // CPT & CT
 define( 'BPF_CPT_MEMBER_ITEM', 'bpf_member_item' );
 define( 'BPF_TAX_SLUG', 'bpf_component' );
 
 if ( ! defined( 'BPF_SLUG' ) ) {
-	define( 'BPF_SLUG', 'feed' );
+	define( 'BPF_SLUG', 'bp-feed' );
 }
 
 /**
@@ -36,6 +37,8 @@ function bpf_activation() {
 	// some defaults
 	$bpf = array(
 		'uninstall' => 'nothing',
+		'link_target' => 'blank',
+		'link_nofollow' => 'yes',
 		'sites'     => 'yes',
 		'tabs'      => array(
 			'members'     => __( 'Feed', 'bpf' ),

@@ -103,10 +103,10 @@ function bpf_the_moderated_text() {
 function bpf_get_moderated_text() {
 	if ( bpf_is_moderated() ) {
 		// This message should be shown when feed moderation is enabled
-		$text = __( 'Fill in the address to your personal website in the field above. If your website has an feed (most websites create an feed automatically) and your site has been verified by our team, your published posts will automatically be imported to your profile for your friends to see.', 'bpf' );
+		$text = __( 'Fill in the address to your personal website in the field above. If your website has an feed (most websites create a feed automatically) and your site has been verified by our team, your published posts will automatically be imported to your profile for your friends to see.', 'bpf' );
 	} else {
 		// When feed moderation is disabled show this message
-		$text = __( 'Fill in the address to your personal website in the field above. If your website has an feed (most websites create an feed automatically) your published posts will automatically be imported to your profile stream for your friends to see.', 'bpf' );
+		$text = __( 'Fill in the address to your personal website in the field above. If your website has an feed (most websites create a feed automatically) your published posts will automatically be imported to your profile stream for your friends to see.', 'bpf' );
 	}
 
 	return $text;

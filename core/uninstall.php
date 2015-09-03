@@ -55,12 +55,16 @@ function bpf_delete_options() {
 	bp_delete_option( 'bpf' );
 
 	// groups feeds urls
-	/** @noinspection PhpUndefinedFieldInspection */
-	$wpdb->query( "DELETE FROM {$bp->groups->table_name_groupmeta} WHERE `meta_key` LIKE 'bpf_%'" );
+	if ( bp_is_active( 'groups' ) && defined('BPF_CPT_GROUP_ITEM') ) {
+		/** @noinspection PhpUndefinedFieldInspection */
+		$wpdb->query( "DELETE FROM {$bp->groups->table_name_groupmeta} WHERE `meta_key` LIKE 'bpf_%'" );
+	}
 
 	// activity feed meta
-	/** @noinspection PhpUndefinedFieldInspection */
-	$wpdb->query( "DELETE FROM {$bp->activity->table_name_meta} WHERE `meta_key` LIKE 'bpf_%'" );
+	if ( bp_is_active( 'activity' ) ) {
+		/** @noinspection PhpUndefinedFieldInspection */
+		$wpdb->query( "DELETE FROM {$bp->activity->table_name_meta} WHERE `meta_key` LIKE 'bpf_%'" );
+	}
 
 	// users feeds urls
 	/** @noinspection PhpUndefinedFieldInspection */

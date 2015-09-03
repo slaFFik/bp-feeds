@@ -112,9 +112,15 @@ function bpf_admin_page() { ?>
 			<?php wp_nonce_field( 'bpf_admin_form', 'bpf_nonce' ); ?>
 
 			<!--suppress CssUnusedSymbol -->
-			<style>.option_desc {
+			<style scoped>
+				.bpf-option-desc {
 					margin: 0 0 10px 30px !important
-				}</style>
+				}
+				.bpf-option-label {
+					font-size: 90%;
+					font-weight: normal
+				}
+			</style>
 
 			<?php do_action( 'bpf_admin_page_before_content' ); ?>
 
@@ -246,10 +252,16 @@ function bpf_admin_page_save() {
 		$bpf['rss']['placeholder'] = '';
 	}
 
-	if ( ! empty( $_POST['bpf']['rss']['nofollow'] ) ) {
-		$bpf['rss']['nofollow'] = wp_strip_all_tags( $_POST['bpf']['rss']['nofollow'] );
+	if ( ! empty( $_POST['bpf']['link_nofollow'] ) ) {
+		$bpf['link_nofollow'] = wp_strip_all_tags( $_POST['bpf']['link_nofollow'] );
 	} else {
-		$bpf['rss']['nofollow'] = 'yes';
+		$bpf['link_nofollow'] = 'yes';
+	}
+
+	if ( ! empty( $_POST['bpf']['link_target'] ) ) {
+		$bpf['link_target'] = wp_strip_all_tags( $_POST['bpf']['link_target'] );
+	} else {
+		$bpf['link_target'] = 'blank';
 	}
 
 	if ( ! empty( $_POST['bpf']['rss']['excerpt'] ) ) {

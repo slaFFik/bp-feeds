@@ -17,6 +17,7 @@ class BPF_Feed {
 	public $component;
 	public $component_id;
 
+	/** @var SimplePie $rss */
 	public $rss = null;
 	public $maxitems;
 
@@ -190,8 +191,17 @@ class BPF_Feed {
 			                                ) );
 
 			// check that we successfully saved
-			if ( ! is_wp_error( $feed_item_id ) && !empty( $feed_item_id ) ) {
-				$item_link = '<a href="' . esc_url( $item->get_permalink() ) . '" ' . ( $bpf['rss']['nofollow'] == 'yes' ? 'rel="nofollow"' : '' ) . ' class="bpf_feed_item_title">' . $item->get_title() . '</a>';
+			if ( ! is_wp_error( $feed_item_id ) && ! empty( $feed_item_id ) ) {
+				$nofollow = 'rel="nofollow"';
+				if ( ! empty( $bpf['link_nofollow'] ) && $bpf['link_nofollow'] == 'no' ) {
+					$nofollow = '';
+				}
+				$target = 'target="_blank"';
+				if ( ! empty( $bpf['link_target'] ) && $bpf['link_target'] == 'self' ) {
+					$target = '';
+				}
+
+				$item_link = '<a href="' . esc_url( $item->get_permalink() ) . '" ' . $nofollow . ' ' . $target . ' class="bpf_feed_item_title">' . $item->get_title() . '</a>';
 
 				$bp_link = apply_filters( 'bpf_feed_save_bp_link', bp_core_get_userlink( $this->component_id ), $this->component, $this->component_id );
 
@@ -253,15 +263,16 @@ class BPF_Feed {
 		// Get the image from a remote source
 		try {
 			$image = file_get_contents( $remote_img_url );
-		} catch ( HttpException $e ) {
+		}
+		catch ( HttpException $e ) {
 			// we have an error on retrieving the image, do nothing
 			return false;
 		}
 
 		// Such a hack is required because sometimes images are returned by an url that doesn't have extension,
 		// Like http://example.com/img/adeaew213d/
-		$ext        = bpf_get_file_extension_by_type( exif_imagetype( $remote_img_url ) );
-		$file_name  = md5( NONCE_KEY . $item->get_id() ); // string is longer, but more secure (comparing to using timestamp)
+		$ext       = bpf_get_file_extension_by_type( exif_imagetype( $remote_img_url ) );
+		$file_name = md5( NONCE_KEY . $item->get_id() ); // string is longer, but more secure (comparing to using timestamp)
 
 		$uploaded_file    = '/' . $file_name . '.' . $ext;
 		$upload_file_path = $uploaded_dir . $uploaded_file;

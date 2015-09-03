@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<?php _e( 'Profile Top Level', 'bpf' ); ?>
 			</label>
 
-			<p class="description option_desc">
+			<p class="description bpf-option-desc">
 				<?php _e( 'You will see the menu on the same level as Activity, Profile, Messages, Settings etc.', 'bpf' ); ?>
 			</p>
 			<label>
@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<?php _e( 'Activity Submenu', 'bpf' ); ?>
 			</label>
 
-			<p class="description option_desc">
+			<p class="description bpf-option-desc">
 				<?php _e( 'You will see the menu under Activity on user profile, on the same level as Personal, Mentions, Favorites etc.', 'bpf' ); ?>
 			</p>
 		</td>
