@@ -17,7 +17,8 @@ define( 'BPF_VERSION', '1.0' );
 define( 'BPF_URL', plugins_url( '_inc', dirname( __FILE__ ) ) ); // link to all assets, with /
 define( 'BPF_PATH', dirname( __FILE__ ) . '/core' ); // without /
 define( 'BPF_MENU_POSITION', 15 );
-define( 'BPF_UPLOAD_DIR', 'bp-rss-feeds' );
+define( 'BPF_UPLOAD_DIR', 'bp-feeds' );
+define( 'BPF_ADMIN_SLUG', 'bp-feeds-admin' );
 
 // CPT & CT
 define( 'BPF_CPT_MEMBER_ITEM', 'bpf_member_item' );
@@ -46,7 +47,7 @@ function bpf_activation() {
 			'frequency'   => '43200',  // 12 hours
 			'image'       => 'none',   // do not dislay it all
 			'nofollow'    => 'yes',    // add rel="nofollow"
-			'placeholder' => get_bloginfo( 'rss2_url' )
+			'placeholder' => ''
 		)
 	);
 

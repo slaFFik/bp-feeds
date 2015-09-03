@@ -8,75 +8,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 $checked = 'checked="checked"';
 ?>
 
-<style>
-	.option_desc {
-		margin: 0 0 10px 30px !important;
-	}
-</style>
+<p><?php _e( 'Below are several general options that you can use to change the plugin behaviour.', 'bpf' ); ?></p>
 
 <table class="form-table">
-	<!-- RSS Feeds For -->
-	<tr valign="top">
-		<th scope="row"><?php _e( 'RSS feeds enabled for:', 'bpf' ); ?></th>
-		<td>
-			<?php
-			$bpf_enabled_for = apply_filters( 'bpf_enabled_for', array( 'members' => __( 'Members', 'bpf' ) ) );
-			foreach ( $bpf_enabled_for as $slug => $title ) {
-				echo '<span class="bpf-enabled bpf-enabled-' . esc_attr( $slug ) . '"><input type="checkbox" disabled checked/> ' . esc_attr( $title ) . '</span><br/>';
-			}
-			?>
-		</td>
-	</tr>
 
 	<!-- Sites Directory Integration -->
-	<tr valign="top">
-		<th scope="row">
-			<?php _e( 'Where to display RSS feed menu in user\'s profile?', 'bpf' ); ?>
-		</th>
-		<td>
-			<label>
-				<input name="bpf[tabs][profile_nav]" type="radio"
-				       value="top" <?php checked( 'top', $bpf['tabs']['profile_nav'] ); ?>>&nbsp;
-				<?php _e( 'Profile Top Level', 'bpf' ); ?>
-			</label>
-
-			<p class="description option_desc">
-				<?php _e( 'You will see the menu on the same level as Activity, Profile, Messages, Settings etc.', 'bpf' ); ?>
-			</p>
-			<label>
-				<input name="bpf[tabs][profile_nav]" type="radio"
-				       value="sub" <?php checked( 'sub', $bpf['tabs']['profile_nav'] ); ?>>&nbsp;
-				<?php _e( 'Activity Submenu', 'bpf' ); ?>
-			</label>
-
-			<p class="description option_desc">
-				<?php _e( 'You will see the menu under Activity on user profile, on the same level as Personal, Mentions, Favorites etc.', 'bpf' ); ?>
-			</p>
-		</td>
-	</tr>
-
-	<!-- Profile RSS Label -->
-	<tr valign="top">
-		<th scope="row"><label for="bpf_tabs_members"><?php _e( 'User profile RSS tab label', 'bpf' ); ?></label></th>
-		<td>
-			<input name="bpf[tabs][members]" id="bpf_tabs_members" type="text" required="required"
-			       value="<?php esc_attr_e( $bpf['tabs']['members'] ); ?>">
-		</td>
-	</tr>
-
-	<!-- Placeholder for RSS feed URL -->
-	<tr valign="top">
-		<th scope="row"><label for="bpf_rss_placeholder"><?php _e( 'Placeholder URL', 'bpf' ); ?></label></th>
-		<td>
-			<input name="bpf[rss][placeholder]" id="bpf_rss_placeholder" type="text" class="regular-text"
-			       value="<?php esc_attr_e( $bpf['rss']['placeholder'] ); ?>">
-
-			<p class="description"><?php _e( 'That is the URL users will see as an example of what is needed from them. Plugin will not parse it.', 'bpf' ); ?></p>
-		</td>
-	</tr>
-
-	<!-- Sites Directory Integration -->
-	<tr valign="top">
+	<tr valign="top" style="display: none">
 		<th scope="row">
 			<label
 				for="bpf_rss_nofollow_link"><?php _e( 'List external feeds on the sites directory as blogs', 'bpf' ); ?></label><br/>
@@ -105,10 +42,8 @@ $checked = 'checked="checked"';
 		</td>
 	</tr>
 
-	<?php do_action( 'bpf_admin_options_before_rss', $bpf ); ?>
-
 	<!-- RSS first image -->
-	<tr valign="top"  style="display: none">
+	<tr valign="top" style="display: none">
 		<th scope="row"><?php _e( 'RSS item first image', 'bpf' ); ?></th>
 		<td>
 			<label>
@@ -125,8 +60,8 @@ $checked = 'checked="checked"';
 				<input name="bpf[rss][image]" type="radio"
 				       value="display_remote" <?php checked( 'display_remote', $bpf['rss']['image'] ); ?>>&nbsp;
 				<?php _e( 'Display using hotlinking', 'bpf' ); ?> <a href="http://en.wikipedia.org/wiki/Inline_linking"
-				                                                      target="_blank"
-				                                                      title="<?php _e( 'What is hotlinking?', 'bpf' ); ?>">#</a>
+				                                                     target="_blank"
+				                                                     title="<?php _e( 'What is hotlinking?', 'bpf' ); ?>">#</a>
 			</label>
 
 			<p class="description option_desc">
@@ -146,7 +81,7 @@ $checked = 'checked="checked"';
 
 	<!-- RSS Nofollow link -->
 	<tr valign="top">
-		<th scope="row"><label for="bpf_rss_nofollow_link"><?php _e( 'RSS item: add nofollow', 'bpf' ); ?></label>
+		<th scope="row"><label for="bpf_rss_nofollow_link"><?php _e( 'RSS item link: add nofollow', 'bpf' ); ?></label>
 		</th>
 		<td>
 			<label>
@@ -183,12 +118,26 @@ $checked = 'checked="checked"';
 		</td>
 	</tr>
 
+	<!-- Placeholder for RSS feed URL -->
+	<tr valign="top">
+		<th scope="row"><label for="bpf_rss_placeholder"><?php _e( 'Placeholder URL', 'bpf' ); ?></label></th>
+		<td>
+			<input name="bpf[rss][placeholder]" id="bpf_rss_placeholder" type="text" class="regular-text"
+			       value="<?php esc_attr_e( $bpf['rss']['placeholder'] ); ?>"
+			       placeholder="<?php bloginfo( 'rss2_url' ); ?>">
+
+			<p class="description"><?php _e( 'That is the URL users will see as an example of what is needed from them. Plugin will not parse it.', 'bpf' ); ?></p>
+		</td>
+	</tr>
+
 	<!-- RSS Imported Posts -->
 	<tr valign="top">
-		<th scope="row"><label for="bpf_rss_posts"><?php _e( 'Maximum amount of posts to import', 'bpf' ); ?></label>
+		<th scope="row">
+			<label for="bpf_rss_posts"><?php _e( 'Maximum amount of posts to import', 'bpf' ); ?></label>
 		</th>
 		<td>
-			<input name="bpf[rss][posts]" id="bpf_rss_posts" type="text" class="small-text" required="required" value="<?php esc_attr_e( $bpf['rss']['posts'] ); ?>"> <?php _e( 'posts', 'bpf' ); ?>
+			<input name="bpf[rss][posts]" id="bpf_rss_posts" type="text" class="small-text" required="required"
+			       value="<?php esc_attr_e( $bpf['rss']['posts'] ); ?>"> <?php _e( 'posts', 'bpf' ); ?>
 			<p class="description">
 				<?php _e( 'How many posts would you like to import when a RSS feed is added?', 'bpf' ); ?><br/>
 				<?php _e( 'This is useful if you do not want to fill the activity stream with older posts.', 'bpf' ); ?>
@@ -213,8 +162,6 @@ $checked = 'checked="checked"';
 		</td>
 	</tr>
 
-	<?php do_action( 'bpf_admin_options_after_rss', $bpf ); ?>
-
 	<!-- Deactivation -->
 	<tr valign="top">
 		<th scope="row">
@@ -226,8 +173,11 @@ $checked = 'checked="checked"';
 			} ?>
 		</th>
 		<td>
+			<?php $bpf['uninstall'] = empty( $bpf['uninstall'] ) ? 'nothing' : $bpf['uninstall']; ?>
+
 			<label>
-				<input name="bpf[uninstall]" type="radio" value="nothing" <?php checked( 'nothing', $bpf['uninstall'] ); ?>>&nbsp;
+				<input name="bpf[uninstall]" type="radio"
+				       value="nothing" <?php checked( 'nothing', $bpf['uninstall'] ); ?>>&nbsp;
 				<?php _e( 'Do not delete anything. Leave all the data and options in the DB', 'bpf' ); ?>
 			</label>
 

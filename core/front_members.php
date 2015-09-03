@@ -90,6 +90,7 @@ function bpf_profile_activity_page() {
 function bpf_profile_activity_page_content() {
 	if ( bp_current_component() !== BPF_SLUG ) {
 		do_action( 'bpf_no_page_message' );
+
 		return;
 	}
 
@@ -261,7 +262,10 @@ add_filter( 'bp_signup_usermeta', 'bpf_signup_rss_feed_field_pre_save' );
  *
  * @return bool
  */
-function bpf_signup_rss_feed_field_save( $user_id, /** @noinspection PhpUnusedParameterInspection */$key, $user ) {
+function bpf_signup_rss_feed_field_save(
+	$user_id, /** @noinspection PhpUnusedParameterInspection */
+	$key, $user
+) {
 	if ( ! bp_is_active( 'settings' ) ) {
 		return false;
 	}
