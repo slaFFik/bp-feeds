@@ -5,7 +5,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /** @var $bpf array */
-$checked = 'checked="checked"';
 ?>
 
 <p><?php _e( 'Below are several general options that you can use to change the plugin behaviour.', 'bpf' ); ?></p>

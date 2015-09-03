@@ -119,14 +119,10 @@ function bpf_admin_page() { ?>
 			<?php do_action( 'bpf_admin_page_before_content' ); ?>
 
 			<?php
-			foreach ( $sections as $section_id => $section_title ) :
-
-				/**
-				 * Give ability to include section-specific content for a page
-				 */
-				do_action( 'bpf_admin_page_content_' . bpf_admin_get_current_section() );
-
-			endforeach;
+			/**
+			 * Give ability to include section-specific content for a page
+			 */
+			do_action( 'bpf_admin_page_content_' . bpf_admin_get_current_section() );
 			?>
 
 			<?php do_action( 'bpf_admin_page_after_content' ); ?>
@@ -135,8 +131,6 @@ function bpf_admin_page() { ?>
 				<input class="button-primary" type="submit" name="bpf-admin-submit" id="bpf-admin-submit"
 				       value="<?php esc_attr_e( 'Save Settings', 'bpf' ); ?>"/>
 			</p>
-
-			<?php wp_nonce_field( 'bpf-admin' ); ?>
 
 		</form>
 		<!-- #bpf-admin-form -->
