@@ -10,7 +10,7 @@
 		       class="settings-input">
 
 		<p class="description">
-			<?php bpf_the_moderated_text(); ?>
+			<?php _e( 'Fill in the address to your personal website in the field above. If your website has a feed (most websites create it automatically) your published posts will automatically be imported to your profile stream for your friends to see.', BPF_I18N ); ?>
 		</p>
 
 		<?php do_action( 'bpf_member_settings_template_before_submit' ); ?>
