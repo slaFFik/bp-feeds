@@ -27,8 +27,8 @@ function bpf_admin_register_page() {
 
 	add_submenu_page(
 		bp_core_do_network_admin() ? 'settings.php' : 'options-general.php',
-		__( 'BuddyPress Feeds', 'bpf' ),
-		__( 'BuddyPress Feeds', 'bpf' ),
+		__( 'BuddyPress Feeds', BPF_I18N ),
+		__( 'BuddyPress Feeds', BPF_I18N ),
 		'manage_options',
 		BPF_ADMIN_SLUG, // slug
 		'bpf_admin_page'
@@ -66,7 +66,7 @@ function bpf_admin_page() { ?>
 	<div class="wrap">
 
 		<h1>
-			<?php _e( 'BuddyPress Feeds', 'bpf' ); ?> <sup>v<?php echo BPF_VERSION ?></sup>
+			<?php _e( 'BuddyPress Feeds', BPF_I18N ); ?> <sup>v<?php echo BPF_VERSION ?></sup>
 		</h1>
 
 		<?php //
@@ -116,6 +116,7 @@ function bpf_admin_page() { ?>
 				.bpf-option-desc {
 					margin: 0 0 10px 30px !important
 				}
+
 				.bpf-option-label {
 					font-weight: normal
 				}
@@ -134,7 +135,7 @@ function bpf_admin_page() { ?>
 
 			<p class="submit">
 				<input class="button-primary" type="submit" name="bpf-admin-submit" id="bpf-admin-submit"
-				       value="<?php esc_attr_e( 'Save Settings', 'bpf' ); ?>"/>
+				       value="<?php esc_attr_e( 'Save Settings', BPF_I18N ); ?>"/>
 			</p>
 
 		</form>
@@ -154,8 +155,8 @@ function bpf_admin_page() { ?>
  */
 function bpf_admin_get_sections() {
 	return apply_filters( 'bpf_admin_page_sections', array(
-		'general' => __( 'General', 'bpf' ),
-		'members' => __( 'Members', 'bpf' ),
+		'general' => __( 'General', BPF_I18N ),
+		'members' => __( 'Members', BPF_I18N ),
 	) );
 }
 
@@ -180,11 +181,11 @@ function bpf_admin_page_notice() {
 
 	switch ( $_GET['message'] ) {
 		case 'success':
-			echo '<div id="message" class="notice is-dismissible updated"><p>' . __( 'All options were successfully saved.', 'bpf' ) . '</p></div>';
+			echo '<div id="message" class="notice is-dismissible updated"><p>' . __( 'All options were successfully saved.', BPF_I18N ) . '</p></div>';
 			break;
 
 		case 'error':
-			echo '<div id="message" class="notice is-dismissible error"><p>' . __( 'Oops! Seems you either did not change anything or there was an error while saving options. Please try again.', 'bpf' ) . '</p></div>';
+			echo '<div id="message" class="notice is-dismissible error"><p>' . __( 'Oops! Seems you either did not change anything or there was an error while saving options. Please try again.', BPF_I18N ) . '</p></div>';
 	}
 
 	do_action( 'bpf_admin_page_notice' );
@@ -235,7 +236,7 @@ function bpf_admin_page_save() {
 	if ( ! empty( $_POST['bpf']['tabs']['members'] ) ) {
 		$bpf['tabs']['members'] = trim( htmlentities( wp_strip_all_tags( $_POST['bpf']['tabs']['members'] ) ) );
 	} else {
-		$bpf['tabs']['members'] = __( 'Feed', 'bpf' );
+		$bpf['tabs']['members'] = __( 'Feed', BPF_I18N );
 	}
 
 	if ( ! empty( $_POST['bpf']['tabs']['profile_nav'] ) ) {

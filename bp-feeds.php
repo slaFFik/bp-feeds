@@ -36,15 +36,15 @@ register_activation_hook( __FILE__, 'bpf_activation' );
 function bpf_activation() {
 	// some defaults
 	$bpf = array(
-		'uninstall' => 'nothing',
-		'link_target' => 'blank',
+		'uninstall'     => 'nothing',
+		'link_target'   => 'blank',
 		'link_nofollow' => 'yes',
-		'sites'     => 'yes',
-		'tabs'      => array(
-			'members'     => __( 'Feed', 'bpf' ),
+		'sites'         => 'yes',
+		'tabs'          => array(
+			'members'     => __( 'Feed', BPF_I18N ),
 			'profile_nav' => 'top', // possible values: top, sub
 		),
-		'rss'       => array(
+		'rss'           => array(
 			//'excerpt'     => '45',     // words
 			'posts'       => '5',      // number of latest posts to import
 			'frequency'   => '43200',  // 12 hours
@@ -90,11 +90,11 @@ function bpf_deactivation() {
 /**
  * In case somebody will want to translate the plugin
  */
-add_action( 'plugins_loaded', 'bpf_load_textdomain' );
 function bpf_load_textdomain() {
-	load_plugin_textdomain( 'bpf', false, dirname( plugin_basename( __FILE__ ) ) . '/langs/' );
+	load_plugin_textdomain( BPF_I18N, false, dirname( plugin_basename( __FILE__ ) ) . '/langs/' );
 }
 
+add_action( 'plugins_loaded', 'bpf_load_textdomain' );
 
 /**
  * All the helpers functions used everywhere
@@ -167,11 +167,11 @@ function bpf_register_cpt() {
 	$args = array(
 		'public'      => defined( 'WP_DEBUG' ) && WP_DEBUG ? true : false,
 		'labels'      => array(
-			'name'                     => __( 'Members Feeds', 'bpf' ),
-			'singular_name'            => __( 'Members Feed Item', 'bpf' ),
-			'bp_activity_admin_filter' => __( 'New member feed post imported', 'bpf' ),
-			'bp_activity_front_filter' => bp_is_user() ? __( 'Feed Items', 'bpf' ) : __( 'Members Feed Items', 'bpf' ),
-			'bp_activity_new_post'     => __( '%1$s imported a new post, %2$s', 'bpf' ),
+			'name'                     => __( 'Members Feeds', BPF_I18N ),
+			'singular_name'            => __( 'Members Feed Item', BPF_I18N ),
+			'bp_activity_admin_filter' => __( 'New member feed post imported', BPF_I18N ),
+			'bp_activity_front_filter' => bp_is_user() ? __( 'Feed Items', BPF_I18N ) : __( 'Members Feed Items', BPF_I18N ),
+			'bp_activity_new_post'     => __( '%1$s imported a new post, %2$s', BPF_I18N ),
 		),
 		'supports'    => array( 'title', 'editor', 'buddypress-activity', 'thumbnail' ),
 		'bp_activity' => array(
@@ -223,7 +223,7 @@ function bpf_record_cpt_activity_content( $activity ) {
 		$activity['component']    = 'members';
 		$activity['primary_link'] = $item->guid;
 		$activity['action']       = sprintf(
-			__( '%1$s imported a new post, %2$s', 'bpf' ),
+			__( '%1$s imported a new post, %2$s', BPF_I18N ),
 			bp_core_get_userlink( $activity['user_id'] ),
 			$post_link
 		);
@@ -241,7 +241,7 @@ add_filter( 'bp_after_activity_add_parse_args', 'bpf_record_cpt_activity_content
  *
  * @return array
  */
-function bpf_activity_allowed_tags($activity_allowedtags) {
+function bpf_activity_allowed_tags( $activity_allowedtags ) {
 	$activity_allowedtags['a']['target'] = array();
 
 	return $activity_allowedtags;
@@ -254,7 +254,7 @@ add_filter( 'bp_activity_allowed_tags', 'bpf_activity_allowed_tags', 99 );
  */
 function bpf_activity_filter_options() {
 	if ( bp_is_active( 'settings' ) ) {
-		echo '<option value="new_' . BPF_CPT_MEMBER_ITEM . '">' . __( 'Members Feed Items', 'bpf' ) . '</option>';
+		echo '<option value="new_' . BPF_CPT_MEMBER_ITEM . '">' . __( 'Members Feed Items', BPF_I18N ) . '</option>';
 	}
 
 	do_action( 'bpf_activity_filter_options' );

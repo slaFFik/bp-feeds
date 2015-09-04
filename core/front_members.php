@@ -158,11 +158,11 @@ function bpf_profile_settings_submenu_page() {
 
 	if ( isset( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'bp_settings_bpf' ) ) {
 		if ( bp_update_user_meta( bp_displayed_user_id(), 'bpf_rss_feed', wp_strip_all_tags( $_POST['bpf_rss_feed'] ) ) ) {
-			$message = __( 'Your Feed URL has been saved.', 'bpf' );
+			$message = __( 'Your Feed URL has been saved.', BPF_I18N );
 			$type    = 'success';
-			wp_cache_delete( 'bpf_blogs_get_blogs_count', 'bpf' );
+			wp_cache_delete( 'bpf_blogs_get_blogs_count', BPF_I18N );
 		} else {
-			$message = __( 'No changes were made.', 'bpf' );
+			$message = __( 'No changes were made.', BPF_I18N );
 			$type    = 'updated';
 		}
 
@@ -223,9 +223,9 @@ function bpf_signup_rss_feed_field() {
 		       placeholder="<?php echo $bpf['rss']['placeholder']; ?>"/>
 
 		<p class="description">
-			<?php _e( 'If you already have a blog, you can write here its URL and we will fetch your posts and display links to them on this site global activity stream.', 'bpf' ); ?>
+			<?php _e( 'If you already have a blog, you can write here its URL and we will fetch your posts and display links to them on this site global activity stream.', BPF_I18N ); ?>
 			<br/>
-			<?php _e( 'You can change this link later at any time', 'bpf' ); ?>
+			<?php _e( 'You can change this link later at any time', BPF_I18N ); ?>
 		</p>
 	</div>
 
