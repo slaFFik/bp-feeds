@@ -117,7 +117,6 @@ function bpf_admin_page() { ?>
 					margin: 0 0 10px 30px !important
 				}
 				.bpf-option-label {
-					font-size: 90%;
 					font-weight: normal
 				}
 			</style>

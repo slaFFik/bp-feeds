@@ -11,36 +11,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 <table class="form-table">
 
-	<!-- Sites Directory Integration -->
-	<tr valign="top" style="display: none">
-		<th scope="row">
-			<label
-				for="bpf_rss_nofollow_link"><?php _e( 'List external feeds on the sites directory as blogs', 'bpf' ); ?></label><br/>
-			<label for="bpf_rss_nofollow_link"
-			       style="font-weight: normal"><?php _e( 'WordPress MultiSite only', 'bpf' ); ?></label>
-		</th>
-		<td>
-			<label>
-				<input name="bpf[sites]" type="radio" value="yes" <?php checked( 'yes', $bpf['sites'] ); ?>>&nbsp;
-				<?php _e( 'Yes', 'bpf' ); ?>
-			</label>
-
-			<p class="description bpf-option-desc">
-				<?php _e( 'On Sites Directory page all RSS feeds (groups and members) will be displayed as Blogs.', 'bpf' ); ?>
-				<br/>
-				<?php _e( 'Appropriate avatars (groups and members) will be used as blogs avatars.', 'bpf' ); ?>
-			</p>
-			<label>
-				<input name="bpf[sites]" type="radio" value="no" <?php checked( 'no', $bpf['sites'] ); ?>>&nbsp;
-				<?php _e( 'No', 'bpf' ); ?>
-			</label>
-
-			<p class="description bpf-option-desc">
-				<?php _e( 'Do not display them on Sites Directory page.', 'bpf' ); ?>
-			</p>
-		</td>
-	</tr>
-
 	<!-- RSS first image -->
 	<tr valign="top" style="display: none">
 		<th scope="row"><?php _e( 'RSS item first image', 'bpf' ); ?></th>
@@ -81,8 +51,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<!-- RSS Nofollow link -->
 	<tr valign="top">
 		<th scope="row">
-			<label for="bpf_rss_nofollow_link"><?php _e( 'RSS item link: add nofollow', 'bpf' ); ?></label><br/>
-			<label for="bpf_rss_nofollow_link" class="bpf-option-label"><?php _e( 'Applied only to newly imported feeds after saving', 'bpf' ); ?></label>
+			<label for="bpf_rss_nofollow_link"><?php _e( 'RSS item link: add nofollow', 'bpf' ); ?></label>
+			<p class="description">
+				<label for="bpf_rss_nofollow_link" class="bpf-option-label"><?php _e( 'Applied only to newly imported feeds after saving', 'bpf' ); ?></label>
+			</p>
 		</th>
 		<td>
 			<?php $bpf['link_nofollow'] = empty( $bpf['link_nofollow'] ) ? 'yes' : $bpf['link_nofollow']; ?>
@@ -110,7 +82,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	<!-- RSS Target link -->
 	<tr valign="top">
-		<th scope="row"><label for="bpf_rss_target_link"><?php _e( 'RSS item open links', 'bpf' ); ?></label>
+		<th scope="row">
+			<label for="bpf_rss_target_link"><?php _e( 'RSS item open links', 'bpf' ); ?></label>
+			<p class="description">
+				<label for="bpf_rss_target_link" class="bpf-option-label"><?php _e( 'Applied only to newly imported feeds after saving', 'bpf' ); ?></label>
+			</p>
 		</th>
 		<td>
 			<?php $bpf['link_target'] = empty( $bpf['link_target'] ) ? 'blank' : $bpf['link_target']; ?>

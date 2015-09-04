@@ -171,7 +171,7 @@ function bpf_register_cpt() {
 			'singular_name'            => __( 'Members Feed Item', 'bpf' ),
 			'bp_activity_admin_filter' => __( 'New member feed post imported', 'bpf' ),
 			'bp_activity_front_filter' => bp_is_user() ? __( 'Feed Items', 'bpf' ) : __( 'Members Feed Items', 'bpf' ),
-			'bp_activity_new_post'     => __( '%1$s wrote a new post, %2$s', 'bpf' ),
+			'bp_activity_new_post'     => __( '%1$s imported a new post, %2$s', 'bpf' ),
 		),
 		'supports'    => array( 'title', 'editor', 'buddypress-activity', 'thumbnail' ),
 		'bp_activity' => array(
@@ -223,7 +223,7 @@ function bpf_record_cpt_activity_content( $activity ) {
 		$activity['component']    = 'members';
 		$activity['primary_link'] = $item->guid;
 		$activity['action']       = sprintf(
-			__( '%1$s wrote a new post, %2$s', 'bpf' ),
+			__( '%1$s imported a new post, %2$s', 'bpf' ),
 			bp_core_get_userlink( $activity['user_id'] ),
 			$post_link
 		);
@@ -232,8 +232,22 @@ function bpf_record_cpt_activity_content( $activity ) {
 	return apply_filters( 'bpf_record_cpt_activity_content', $activity );
 }
 
-//add_filter('bp_before_activity_add_parse_args', 'bpf_record_cpt_activity_content');
 add_filter( 'bp_after_activity_add_parse_args', 'bpf_record_cpt_activity_content' );
+
+/**
+ * Allow specific a[target] attribute for activity
+ *
+ * @param array $activity_allowedtags
+ *
+ * @return array
+ */
+function bpf_activity_allowed_tags($activity_allowedtags) {
+	$activity_allowedtags['a']['target'] = array();
+
+	return $activity_allowedtags;
+}
+
+add_filter( 'bp_activity_allowed_tags', 'bpf_activity_allowed_tags', 99 );
 
 /**
  * Display additional Activity filter on Activity Directory
