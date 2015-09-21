@@ -165,16 +165,26 @@ function bpf_register_cpt() {
 	/** @noinspection PhpUndefinedFieldInspection */
 	/** @noinspection HtmlUnknownTarget */
 	$args = array(
-		'public'      => defined( 'WP_DEBUG' ) && WP_DEBUG ? true : false,
-		'labels'      => array(
+		'labels'              => array(
 			'name'                     => __( 'Members Feeds', BPF_I18N ),
 			'singular_name'            => __( 'Members Feed Item', BPF_I18N ),
 			'bp_activity_admin_filter' => __( 'New member feed post imported', BPF_I18N ),
 			'bp_activity_front_filter' => bp_is_user() ? __( 'Feed Items', BPF_I18N ) : __( 'Members Feed Items', BPF_I18N ),
 			'bp_activity_new_post'     => __( '%1$s imported a new post, %2$s', BPF_I18N ),
 		),
-		'supports'    => array( 'title', 'editor', 'buddypress-activity', 'thumbnail' ),
-		'bp_activity' => array(
+		'show_ui'             => defined( 'WP_DEBUG' ) && WP_DEBUG ? true : false,
+		'exclude_from_search' => true,
+		'publicly_queryable'  => false,
+		'show_in_menu'        => defined( 'WP_DEBUG' ) && WP_DEBUG ? true : false,
+		'show_in_nav_menus'   => false,
+		'show_in_admin_bar'   => false,
+		'supports'            => array( 'title', 'editor', 'buddypress-activity', 'thumbnail' ),
+		'capability_type'     => 'post',
+		'capabilities'        => array(
+			'create_posts' => 'do_not_allow'
+		),
+		'map_meta_cap'        => true,
+		'bp_activity'         => array(
 			'component_id'     => buddypress()->activity->id, // this is default, that is changed on a fly on saving
 			'action_id'        => 'new_' . BPF_CPT_MEMBER_ITEM,
 			'contexts'         => array( 'member' ),
