@@ -40,8 +40,6 @@ class BPF_Feed {
 	}
 
 	protected function _set_component( $component, $id = false ) {
-		$bp = buddypress();
-
 		//switch ( $component ) {
 		//	/** @noinspection PhpUndefinedFieldInspection */
 		//	case $bp->groups->id:
@@ -52,10 +50,10 @@ class BPF_Feed {
 		//
 		//}
 
-		/** @noinspection PhpUndefinedFieldInspection */
-		if ( $component === $bp->members->id ) {
-			/** @noinspection PhpUndefinedFieldInspection */
-			$this->component    = $bp->members->id;
+		$default_slug = bpf_members_get_component_slug();
+
+		if ( $component === $default_slug ) {
+			$this->component    = $default_slug;
 			$this->component_id = is_numeric( $id ) ? (int) $id : bp_displayed_user_id();
 		} else {
 
@@ -186,8 +184,11 @@ class BPF_Feed {
 				                                'post_author'  => apply_filters( 'bpf_feed_save_item_author_id', $this->component_id ),
 				                                // current group_id or displayed_user_id,
 				                                'post_parent'  => $this->component_id,
-				                                // we're using taxonomy, this value is more like for a back-up
-				                                'pinged'       => $this->component
+				                                // we're using taxonomies, this value is more like for a back-up
+				                                'pinged'       => $this->component,
+				                                'tax_input'    => array(
+					                                BPF_TAX => $this->component
+				                                )
 			                                ) );
 
 			// check that we successfully saved
@@ -215,9 +216,6 @@ class BPF_Feed {
 				//if ( $bpf['rss']['image'] == 'display_local' ) {
 				//	$this->upload_featured_image( $item, $feed_item_id );
 				//}
-
-				// "Taxonomy 2 Component" relation
-				//wp_set_object_terms($feed_item_id, );
 
 				array_push( $this->imported, $feed_item_id );
 
@@ -296,7 +294,7 @@ class BPF_Feed {
 			'guid'           => $upload_dir['baseurl'] . '/' . $this->upload_dir . '/' . $uploaded_file,
 			'post_mime_type' => $filetype['type'],
 			'post_title'     => $item->get_title(),
-			'post_content'   => BPF_CPT_MEMBER_ITEM,
+			'post_content'   => BPF_CPT,
 			'post_status'    => 'inherit'
 		);
 
@@ -318,7 +316,7 @@ class BPF_Feed {
 
 	function get_type() {
 		// for groups: $type = BPF_CPT_GROUP_ITEM;
-		return apply_filters( 'bpfr_feed_get_type', BPF_CPT_MEMBER_ITEM, $this->component, $this->component_id );
+		return apply_filters( 'bpfr_feed_get_type', BPF_CPT, $this->component, $this->component_id );
 	}
 
 	function save_url( $url ) {

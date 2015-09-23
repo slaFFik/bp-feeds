@@ -1,6 +1,16 @@
 <?php
 
 /**
+ * Get the lusg that is later used in urls, forms etc
+ */
+function bpf_the_slug() {
+	echo bpf_get_slug();
+}
+function bpf_get_slug(){
+	return apply_filters( 'bpf_get_slug', BPF_SLUG );
+}
+
+/**
  * Count the size of custom RSS images
  */
 function bpf_count_folder_size() {

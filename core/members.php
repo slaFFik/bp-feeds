@@ -99,9 +99,9 @@ function bpf_profile_activity_page_content() {
 
 	if ( ! empty( $feed_url ) ) {
 
-		$feed = new BPF_Feed( 'members' ); // displayed user id by default
+		$feed = new BPF_Feed( bpf_members_get_component_slug() ); // displayed user id by default
 
-		$feed->pull(); // got data and saved into DB
+		$feed->pull(); // we just got data from $feed_url and saved it into DB
 
 		bpf_the_template_part( 'menu_feed_title', array(
 			'feed' => $feed

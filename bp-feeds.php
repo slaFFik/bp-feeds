@@ -20,14 +20,12 @@ define( 'BPF_MENU_POSITION', 15 );
 define( 'BPF_UPLOAD_DIR', 'bp-feeds' );
 define( 'BPF_ADMIN_SLUG', 'bp-feeds-admin' );
 define( 'BPF_I18N', 'buddypress-feeds' ); // should be the same as plugin folder name, otherwise auto-deliver of translations won't work
+define( 'BPF_SLUG', 'bp-feed' ); // can be redefined inside {@link bpf_get_slug()}
 
 // CPT & CT
-define( 'BPF_CPT_MEMBER_ITEM', 'bpf_member_item' );
-define( 'BPF_TAX_SLUG', 'bpf_component' );
+define( 'BPF_CPT', 'bp_feed' );
+define( 'BPF_TAX', 'bp_feed_component' );
 
-if ( ! defined( 'BPF_SLUG' ) ) {
-	define( 'BPF_SLUG', 'bp-feed' );
-}
 
 /**
  * What to do on activation
@@ -55,6 +53,13 @@ function bpf_activation() {
 	);
 
 	bp_add_option( 'bpf', $bpf );
+
+	bpf_register_cpt();
+
+	bpf_register_component( bpf_members_get_component_slug(), array(
+		'name'        => __( 'Members', BPF_I18N ),
+		'description' => __( 'Give your members ability to import posts from other sources into their activity feed.', BPF_I18N ),
+	) );
 }
 
 /**
@@ -100,6 +105,14 @@ add_action( 'plugins_loaded', 'bpf_load_textdomain' );
  * All the helpers functions used everywhere
  */
 include_once( BPF_PATH . '/helpers.php' );
+/**
+ * All general filters
+ */
+include_once( BPF_PATH . '/filters.php' );
+/**
+ * All components code
+ */
+include_once( BPF_PATH . '/components.php' );
 
 /**
  * Admin area
@@ -116,7 +129,7 @@ function bpf_front_init() {
 
 	require_once( BPF_PATH . '/class-feed.php' );
 
-	require_once( BPF_PATH . '/front_members.php' );
+	require_once( BPF_PATH . '/members.php' );
 
 	do_action( 'bpf_front_init', $bpf );
 }
@@ -151,7 +164,7 @@ function bpf_feed_cache_lifetime(
 /**
  * Enable storing new imported feed items in Activity stream
  */
-add_post_type_support( BPF_CPT_MEMBER_ITEM, 'buddypress-activity' );
+add_post_type_support( BPF_CPT, 'buddypress-activity' );
 
 /**
  * Register CPT that will be used to store all imported feed items
@@ -163,19 +176,20 @@ function bpf_register_cpt() {
 	}
 
 	/** @noinspection PhpUndefinedFieldInspection */
-	/** @noinspection HtmlUnknownTarget */
-	$args = array(
+	register_post_type( BPF_CPT, array(
 		'labels'              => array(
-			'name'                     => __( 'Members Feeds', BPF_I18N ),
-			'singular_name'            => __( 'Members Feed Item', BPF_I18N ),
-			'bp_activity_admin_filter' => __( 'New member feed post imported', BPF_I18N ),
-			'bp_activity_front_filter' => bp_is_user() ? __( 'Feed Items', BPF_I18N ) : __( 'Members Feed Items', BPF_I18N ),
+			'name'                     => __( 'BP Feeds', BPF_I18N ),
+			'all_items'                => __( 'Imported Items', BPF_I18N ),
+			'bp_activity_admin_filter' => __( 'New imported feed post', BPF_I18N ),
+			'bp_activity_front_filter' => __( 'Feed', BPF_I18N ), // This is used on Member Activity page
+			// overriden in {@link bpf_record_cpt_activity_content()}
 			'bp_activity_new_post'     => __( '%1$s imported a new post, %2$s', BPF_I18N ),
 		),
-		'show_ui'             => defined( 'WP_DEBUG' ) && WP_DEBUG ? true : false,
+		'public'              => true,
+		'show_ui'             => true,
 		'exclude_from_search' => true,
 		'publicly_queryable'  => false,
-		'show_in_menu'        => defined( 'WP_DEBUG' ) && WP_DEBUG ? true : false,
+		'show_in_menu'        => true,
 		'show_in_nav_menus'   => false,
 		'show_in_admin_bar'   => false,
 		'supports'            => array( 'title', 'editor', 'buddypress-activity', 'thumbnail' ),
@@ -184,16 +198,55 @@ function bpf_register_cpt() {
 			'create_posts' => 'do_not_allow'
 		),
 		'map_meta_cap'        => true,
+		'taxonomies'          => array( BPF_TAX ),
 		'bp_activity'         => array(
 			'component_id'     => buddypress()->activity->id, // this is default, that is changed on a fly on saving
-			'action_id'        => 'new_' . BPF_CPT_MEMBER_ITEM,
-			'contexts'         => array( 'member' ),
+			'action_id'        => 'new_' . BPF_CPT,
+			'contexts'         => array( 'activity', 'member' ),
 			//'position'     => 40,
-			'activity_comment' => true
+			'activity_comment' => true // TODO: this will be a separate option in admin area, see #41
 		),
-	);
+	) );
 
-	register_post_type( BPF_CPT_MEMBER_ITEM, $args );
+	register_taxonomy( BPF_TAX, BPF_CPT, array(
+		'labels'             => array(
+			'name'                       => __( 'Components', BPF_I18N ),
+			'singular_name'              => __( 'Component', BPF_I18N ),
+			'all_items'                  => __( 'All Components', BPF_I18N ), // not used
+			'popular_items'              => __( 'Popular Components', BPF_I18N ), // not used
+			'search_items'               => __( 'Search Components', BPF_I18N ),
+			'no_terms'                   => __( 'No Components', BPF_I18N ),
+			'parent_item'                => __( 'Parent Component', BPF_I18N ), // not used
+			'parent_item_colon'          => __( 'Parent:', BPF_I18N ), // not used
+			'edit_item'                  => __( 'Edit Component', BPF_I18N ),
+			'update_item'                => __( 'Update Component', BPF_I18N ),
+			'add_new_item'               => __( 'Add New Component', BPF_I18N ),
+			'new_item_name'              => __( 'New Component Name', BPF_I18N ),
+			'not_found'                  => __( 'No Components Found.', BPF_I18N ),
+			'view_item'                  => __( 'View Component', BPF_I18N ),
+			'separate_items_with_commas' => __( 'Separate components with commas', BPF_I18N ), // not used
+			'add_or_remove_items'        => __( 'Add or remove components', BPF_I18N ), // not used
+			'choose_from_most_used'      => __( 'Choose from the most used components', BPF_I18N ), // not used
+		),
+		'description'        => __( 'Registered components that imported feed item is associated with.', BPF_I18N ),
+		'public'             => false,
+		'show_ui'            => true,
+		'show_in_menu'       => true,
+		'show_in_nav_menus'  => false,
+		'show_tagcloud'      => false,
+		'show_in_quick_edit' => false,
+		'meta_box_cb'        => false,
+		'show_admin_column'  => true,
+		'hierarchical'       => false,
+		'rewrite'            => false,
+		'query_var'          => false,
+		'capabilities'       => array(
+			'manage_terms' => 'manage_options',
+			'edit_terms'   => 'manage_options', // includes creating and editing
+			'delete_terms' => defined( 'WP_DEBUG' ) && WP_DEBUG === true ? 'manage_options' : 'do_not_allow',
+			'assign_terms' => 'read',
+		)
+	) );
 
 	do_action( 'bpf_register_cpts' );
 }
@@ -201,118 +254,14 @@ function bpf_register_cpt() {
 add_action( 'init', 'bpf_register_cpt', 999 );
 
 /**
- * Modify activity data for CPT before it was saved into DB
- *
- * @param $activity
- *
- * @return array $activity
- */
-function bpf_record_cpt_activity_content( $activity ) {
-	// $activity['secondary_item_id'] is CPT ID
-
-	if ( 'new_' . BPF_CPT_MEMBER_ITEM === $activity['type'] ) {
-		$bpf = bp_get_option( 'bpf' );
-
-		//$bp   = buddypress();
-		$item = BPF_Feed::get_item( $activity['secondary_item_id'] );
-
-		$nofollow = 'rel="nofollow"';
-		if ( ! empty( $bpf['link_nofollow'] ) && $bpf['link_nofollow'] == 'no' ) {
-			$nofollow = '';
-		}
-
-		$target = 'target="_blank"';
-		if ( ! empty( $bpf['link_target'] ) && $bpf['link_target'] == 'self' ) {
-			$target = '';
-		}
-
-		$post_link = '<a href="' . esc_url( $item->guid ) . '" ' . $nofollow . ' ' . $target . ' class="bpf-feed-item bpf-feed-member-item">'
-		             . apply_filters( 'the_title', $item->post_title, $item->ID ) .
-		             '</a>';
-
-		$activity['component']    = 'members';
-		$activity['primary_link'] = $item->guid;
-		$activity['action']       = sprintf(
-			__( '%1$s imported a new post, %2$s', BPF_I18N ),
-			bp_core_get_userlink( $activity['user_id'] ),
-			$post_link
-		);
-	}
-
-	return apply_filters( 'bpf_record_cpt_activity_content', $activity );
-}
-
-add_filter( 'bp_after_activity_add_parse_args', 'bpf_record_cpt_activity_content' );
-
-/**
- * Allow specific a[target] attribute for activity
- *
- * @param array $activity_allowedtags
- *
- * @return array
- */
-function bpf_activity_allowed_tags( $activity_allowedtags ) {
-	$activity_allowedtags['a']['target'] = array();
-
-	return $activity_allowedtags;
-}
-
-add_filter( 'bp_activity_allowed_tags', 'bpf_activity_allowed_tags', 99 );
-
-/**
- * Display additional Activity filter on Activity Directory
+ * Display additional Activity filter on Activity Directory page
  */
 function bpf_activity_filter_options() {
 	if ( bp_is_active( 'settings' ) ) {
-		echo '<option value="new_' . BPF_CPT_MEMBER_ITEM . '">' . __( 'Members Feed Items', BPF_I18N ) . '</option>';
+		echo '<option value="new_' . BPF_CPT . '">' . __( 'Members Feed', BPF_I18N ) . '</option>';
 	}
 
 	do_action( 'bpf_activity_filter_options' );
 }
 
 add_action( 'bp_activity_filter_options', 'bpf_activity_filter_options' );
-//add_action( 'bp_member_activity_filter_options', 'bpf_activity_filter_options' );
-
-/**
- * In activity stream "since" meta link about activity item depends on whether Site Tracking is enabled or not.
- * To normalize this behaviour (and making the link lead to activity item page) we filter this manually.
- *
- * @param int $link
- * @param BP_Activity_Activity $activity
- *
- * @return string
- */
-function bpf_activity_get_permalink( $link, $activity ) {
-	if ( $activity->type == 'new_' . BPF_CPT_MEMBER_ITEM ) {
-		$link = bp_get_root_domain() . '/' . bp_get_activity_root_slug() . '/p/' . $activity->id . '/';
-	}
-
-	return $link;
-}
-
-add_filter( 'bp_activity_get_permalink', 'bpf_activity_get_permalink', 10, 2 );
-
-/**
- * Alter the user/group activity stream to display RSS feed items only
- *
- * @param $bp_ajax_querystring string
- * @param $object string
- *
- * @return string
- */
-function bpf_filter_rss_output( $bp_ajax_querystring, $object ) {
-	/** @noinspection PhpUndefinedFieldInspection */
-	if (
-		bp_is_user() &&
-		( bp_current_action() === BPF_SLUG || bp_current_component() === BPF_SLUG ) &&
-		$object == buddypress()->activity->id
-	) {
-		$query = 'object=members&action=new_' . BPF_CPT_MEMBER_ITEM . '&user_id=' . bp_displayed_user_id();
-
-		$bp_ajax_querystring .= '&' . $query;
-	}
-
-	return apply_filters( 'bpf_filter_rss_output', $bp_ajax_querystring, $object );
-}
-
-add_filter( 'bp_ajax_querystring', 'bpf_filter_rss_output', 999, 2 );

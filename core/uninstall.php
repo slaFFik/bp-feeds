@@ -23,28 +23,28 @@ function bpf_delete_data() {
 	$cpt_member = BPF_CPT;
 	$posts_ids  = $wpdb->get_col( "SELECT ID FROM {$wpdb->posts} WHERE post_type = '{$cpt_member}'" );
 	$attach_ids = $wpdb->get_col( "SELECT ID FROM {$wpdb->posts} WHERE post_content = '{$cpt_member}'" );
-	$ids_str    = implode( ',', array_merge( $posts_ids, $attach_ids ) );
+	$ids = array_merge( $posts_ids, $attach_ids );
 
-	if ( ! empty( $ids_str ) ) {
-		$wpdb->query( "DELETE FROM {$wpdb->posts} WHERE ID IN ({$ids_str})" );
-		$wpdb->query( "DELETE FROM {$wpdb->postmeta} WHERE post_id IN ({$ids_str})" );
+	// Taxonomies
+	bpf_delete_components();
+
+	foreach($ids as $post_id) {
+		wp_delete_post($post_id, true);
 	}
 
 	$wpdb->query( "DELETE FROM {$wpdb->postmeta} WHERE `meta_key` LIKE 'bpf_%'" );
 
-	if ( bp_is_active( 'groups' ) && defined( 'BPF_CPT_GROUP_ITEM' ) ) {
-		$cpt_group = BPF_CPT_GROUP_ITEM;
-
-		if ( bp_is_active( 'activity' ) ) {
-			bp_activity_delete( array(
-				                    'type' => 'new_' . $cpt_group
-			                    ) );
-		}
-
-		$wpdb->query( "DELETE FROM {$wpdb->posts} WHERE post_type = '{$cpt_group}'" );
-	}
-
-	// TODO: Delete terms and taxonomies as well
+	//if ( bp_is_active( 'groups' ) && defined( 'BPF_CPT_GROUP_ITEM' ) ) {
+	//	$cpt_group = BPF_CPT;
+	//
+	//	if ( bp_is_active( 'activity' ) ) {
+	//		bp_activity_delete( array(
+	//			                    'type' => 'new_' . $cpt_group
+	//		                    ) );
+	//	}
+	//
+	//	$wpdb->query( "DELETE FROM {$wpdb->posts} WHERE post_type = '{$cpt_group}'" );
+	//}
 }
 
 /**

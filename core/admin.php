@@ -26,9 +26,9 @@ function bpf_admin_register_page() {
 	bpf_admin_page_save();
 
 	add_submenu_page(
-		bp_core_do_network_admin() ? 'settings.php' : 'options-general.php',
+		'edit.php?post_type=bp_feed',
 		__( 'BuddyPress Feeds', BPF_I18N ),
-		__( 'BuddyPress Feeds', BPF_I18N ),
+		__( 'Settings', BPF_I18N ),
 		'manage_options',
 		BPF_ADMIN_SLUG, // slug
 		'bpf_admin_page'
@@ -40,7 +40,7 @@ function bpf_admin_url( $path = '' ) {
 }
 
 function bpf_get_admin_url( $path = '' ) {
-	$page = ( bp_core_do_network_admin() ? 'settings.php' : 'options-general.php' ) . '?page=' . BPF_ADMIN_SLUG;
+	$page = 'edit.php?post_type=bp_feed&page=' . BPF_ADMIN_SLUG;
 
 	if ( ! empty( $path ) ) {
 		$path = '&' . $path;
@@ -69,15 +69,14 @@ function bpf_admin_page() { ?>
 			<?php _e( 'BuddyPress Feeds', BPF_I18N ); ?> <sup>v<?php echo BPF_VERSION ?></sup>
 		</h1>
 
-		<?php //
-		$sections = bpf_admin_get_sections();
-		?>
-
 		<?php do_action( 'bpf_admin_page_before_nav' ); ?>
 
 		<h2 class="nav-tab-wrapper">
 
-			<?php foreach ( $sections as $section_id => $section_title ) :
+			<?php
+			$sections = bpf_admin_get_sections();
+
+			foreach ( $sections as $section_id => $section_title ) :
 				$active_tab = '';
 
 				if ( ! empty( $_GET['section'] ) ) {
