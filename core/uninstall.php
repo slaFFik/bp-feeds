@@ -16,21 +16,23 @@ function bpf_delete_data() {
 	// remove activity database entries
 	if ( bp_is_active( 'activity' ) ) {
 		bp_activity_delete( array(
-			                    'type' => 'new_' . BPF_CPT_MEMBER_ITEM
+			                    'type' => 'new_' . BPF_CPT
 		                    ) );
 	}
 
-	$cpt_member = BPF_CPT_MEMBER_ITEM;
+	$cpt_member = BPF_CPT;
 	$posts_ids  = $wpdb->get_col( "SELECT ID FROM {$wpdb->posts} WHERE post_type = '{$cpt_member}'" );
 	$attach_ids = $wpdb->get_col( "SELECT ID FROM {$wpdb->posts} WHERE post_content = '{$cpt_member}'" );
-	$ids_str = implode( ',', array_merge( $posts_ids, $attach_ids ) );
+	$ids_str    = implode( ',', array_merge( $posts_ids, $attach_ids ) );
 
-	$wpdb->query( "DELETE FROM {$wpdb->posts} WHERE ID IN ({$ids_str})" );
-	$wpdb->query( "DELETE FROM {$wpdb->postmeta} WHERE post_id IN ({$ids_str})" );
+	if ( ! empty( $ids_str ) ) {
+		$wpdb->query( "DELETE FROM {$wpdb->posts} WHERE ID IN ({$ids_str})" );
+		$wpdb->query( "DELETE FROM {$wpdb->postmeta} WHERE post_id IN ({$ids_str})" );
+	}
 
 	$wpdb->query( "DELETE FROM {$wpdb->postmeta} WHERE `meta_key` LIKE 'bpf_%'" );
 
-	if ( bp_is_active( 'groups' ) && defined('BPF_CPT_GROUP_ITEM') ) {
+	if ( bp_is_active( 'groups' ) && defined( 'BPF_CPT_GROUP_ITEM' ) ) {
 		$cpt_group = BPF_CPT_GROUP_ITEM;
 
 		if ( bp_is_active( 'activity' ) ) {
@@ -41,6 +43,8 @@ function bpf_delete_data() {
 
 		$wpdb->query( "DELETE FROM {$wpdb->posts} WHERE post_type = '{$cpt_group}'" );
 	}
+
+	// TODO: Delete terms and taxonomies as well
 }
 
 /**
@@ -55,7 +59,7 @@ function bpf_delete_options() {
 	bp_delete_option( 'bpf' );
 
 	// groups feeds urls
-	if ( bp_is_active( 'groups' ) && defined('BPF_CPT_GROUP_ITEM') ) {
+	if ( bp_is_active( 'groups' ) && defined( 'BPF_CPT_GROUP_ITEM' ) ) {
 		/** @noinspection PhpUndefinedFieldInspection */
 		$wpdb->query( "DELETE FROM {$bp->groups->table_name_groupmeta} WHERE `meta_key` LIKE 'bpf_%'" );
 	}
