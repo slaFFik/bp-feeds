@@ -106,9 +106,9 @@ class BPF_Feed {
 
 		remove_filter( 'wp_feed_cache_transient_lifetime', 'bpf_feed_cache_lifetime', 999 );
 
-		$bpf = bp_get_option( 'bpf' );
-
 		if ( ! is_wp_error( $this->rss ) ) {
+			$bpf = bp_get_option( 'bpf' );
+
 			// retrieve only defined amount of RSS items
 			$this->maxitems = $this->rss->get_item_quantity( $bpf['rss']['posts'] );
 
@@ -136,7 +136,7 @@ class BPF_Feed {
 	 */
 	function save() {
 		// return early in case we have problems while fetching data
-		if ( is_wp_error( $this->rss ) ) {
+		if ( empty( $this->items ) ) {
 			return $this;
 		}
 
