@@ -154,6 +154,34 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</td>
 	</tr>
 
+	<!-- Allow commenting? -->
+	<tr valign="top">
+		<th scope="row">
+			<?php _e( 'Allow activity feen commenting of imported posts?', BPF_I18N ); ?>
+		</th>
+		<td>
+			<label>
+				<input name="bpf[allow_commenting]" type="radio"
+				       value="yes" <?php checked( 'yes', $bpf['allow_commenting'] ); ?>>&nbsp;
+				<?php _e( 'Yes, allow', BPF_I18N ); ?>
+			</label>
+
+			<p class="description bpf-option-desc">
+				<?php _e( 'Commenting button will be displayed and members will be able to leave their comment under the activity item.', BPF_I18N ); ?>
+			</p>
+
+			<label>
+				<input name="bpf[allow_commenting]" type="radio"
+				       value="no" <?php checked( 'no', $bpf['allow_commenting'] ); ?>>&nbsp;
+				<?php _e( 'No, deny', BPF_I18N ); ?>
+			</label>
+
+			<p class="description bpf-option-desc">
+				<?php _e( 'Commenting button will not be displayed and thus commenting will be disabled.', BPF_I18N ); ?>
+			</p>
+		</td>
+	</tr>
+
 	<!-- Cron frequency -->
 	<tr valign="top">
 		<th scope="row"><label for="bpf_rss_frequency"><?php _e( 'RSS feeds update frequency', BPF_I18N ); ?></label>

@@ -16,7 +16,7 @@ function bpf_delete_data() {
 	// remove activity database entries
 	if ( bp_is_active( 'activity' ) ) {
 		bp_activity_delete( array(
-			                    'type' => 'new_' . BPF_CPT
+			                    'type' => bpf_get_new_cpt_slug()
 		                    ) );
 	}
 

@@ -42,6 +42,7 @@ function bpf_activation() {
 			'members'     => __( 'Feed', BPF_I18N ),
 			'profile_nav' => 'top', // possible values: top, sub
 		),
+		'allow_commenting' => 'yes',
 		'rss'           => array(
 			//'excerpt'     => '45',     // words
 			'posts'       => '5',      // number of latest posts to import
@@ -175,6 +176,8 @@ function bpf_register_cpt() {
 		return;
 	}
 
+	$bpf = bp_get_option( 'bpf' );
+
 	/** @noinspection PhpUndefinedFieldInspection */
 	register_post_type( BPF_CPT, array(
 		'labels'              => array(
@@ -201,10 +204,11 @@ function bpf_register_cpt() {
 		'taxonomies'          => array( BPF_TAX ),
 		'bp_activity'         => array(
 			'component_id'     => buddypress()->activity->id, // this is default, that is changed on a fly on saving
-			'action_id'        => 'new_' . BPF_CPT,
+			'action_id'        => bpf_get_new_cpt_slug(),
 			'contexts'         => array( 'activity', 'member' ),
+			'singular'         => __( 'Imported post', BPF_I18N ),
 			//'position'     => 40,
-			'activity_comment' => true // TODO: this will be a separate option in admin area, see #41
+			'activity_comment' => true
 		),
 	) );
 
@@ -258,7 +262,7 @@ add_action( 'init', 'bpf_register_cpt', 999 );
  */
 function bpf_activity_filter_options() {
 	if ( bp_is_active( 'settings' ) ) {
-		echo '<option value="new_' . BPF_CPT . '">' . __( 'Members Feed', BPF_I18N ) . '</option>';
+		echo '<option value="' . bpf_get_new_cpt_slug() . '">' . __( 'Members Feed', BPF_I18N ) . '</option>';
 	}
 
 	do_action( 'bpf_activity_filter_options' );

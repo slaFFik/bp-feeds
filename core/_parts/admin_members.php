@@ -38,9 +38,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</td>
 	</tr>
 
-	<!-- Profile RSS Label -->
+	<!-- Profile nav feed Label -->
 	<tr valign="top">
-		<th scope="row"><label for="bpf_tabs_members"><?php _e( 'User profile RSS tab label', BPF_I18N ); ?></label></th>
+		<th scope="row"><label for="bpf_tabs_members"><?php _e( 'User profile RSS tab label', BPF_I18N ); ?></label>
+		</th>
 		<td>
 			<input name="bpf[tabs][members]" id="bpf_tabs_members" type="text" required="required"
 			       value="<?php esc_attr_e( $bpf['tabs']['members'] ); ?>">

@@ -10,7 +10,7 @@
 function bpf_record_cpt_activity_content( $activity ) {
 	// $activity['secondary_item_id'] is CPT ID
 
-	if ( 'new_' . BPF_CPT === $activity['type'] ) {
+	if ( bpf_get_new_cpt_slug() === $activity['type'] ) {
 		$bpf = bp_get_option( 'bpf' );
 
 		$item = BPF_Feed::get_item( $activity['secondary_item_id'] );
@@ -68,7 +68,7 @@ add_filter( 'bp_activity_allowed_tags', 'bpf_activity_allowed_tags', 99 );
  * @return string
  */
 function bpf_activity_get_permalink( $link, $activity ) {
-	if ( $activity->type == 'new_' . BPF_CPT ) {
+	if ( $activity->type == bpf_get_new_cpt_slug() ) {
 		$link = bp_get_root_domain() . '/' . bp_get_activity_root_slug() . '/p/' . $activity->id . '/';
 	}
 
@@ -92,7 +92,7 @@ function bpf_ajax_querystring( $bp_ajax_querystring, $object ) {
 		( bp_current_action() === BPF_SLUG || bp_current_component() === BPF_SLUG ) &&
 		$object == buddypress()->activity->id
 	) {
-		$query = 'object=members&action=new_' . BPF_CPT . '&user_id=' . bp_displayed_user_id();
+		$query = 'object=members&action=' . bpf_get_new_cpt_slug() . '&user_id=' . bp_displayed_user_id();
 
 		$bp_ajax_querystring .= '&' . $query;
 	}
@@ -101,3 +101,23 @@ function bpf_ajax_querystring( $bp_ajax_querystring, $object ) {
 }
 
 add_filter( 'bp_ajax_querystring', 'bpf_ajax_querystring', 999, 2 );
+
+/**
+ * Control the commenting ability of imported feed posts
+ *
+ * @param string $can_comment
+ * @param string $activity_action
+ *
+ * @return bool
+ */
+function bpf_allow_imported_feed_commenting( $can_comment, $activity_action ) {
+	$bpf = bp_get_option('bpf');
+
+	if ( $activity_action == bpf_get_new_cpt_slug() && !empty($bpf['allow_commenting']) && $bpf['allow_commenting'] == 'no' ) {
+		return false;
+	}
+
+	return $can_comment;
+}
+
+add_filter( 'bp_activity_can_comment', 'bpf_allow_imported_feed_commenting', 10, 2 );

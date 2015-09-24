@@ -244,6 +244,11 @@ function bpf_admin_page_save() {
 		$bpf['tabs']['profile_nav'] = 'top';
 	}
 
+	if ( ! empty( $_POST['bpf']['allow_commenting'] ) ) {
+		$bpf['allow_commenting'] = trim( htmlentities( wp_strip_all_tags( $_POST['bpf']['allow_commenting'] ) ) );
+	} else {
+		$bpf['allow_commenting'] = 'yes';
+	}
 
 	if ( ! empty( $_POST['bpf']['rss']['placeholder'] ) ) {
 		$bpf['rss']['placeholder'] = trim( htmlentities( wp_strip_all_tags( $_POST['bpf']['rss']['placeholder'] ) ) );

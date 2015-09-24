@@ -1,6 +1,15 @@
 <?php
 
 /**
+ * Get the CPT slug that is used everywhere
+ *
+ * @return string
+ */
+function bpf_get_new_cpt_slug() {
+	return apply_filters( 'bpf_get_new_cpt_slug', 'new_' . BPF_CPT );
+}
+
+/**
  * Get the lusg that is later used in urls, forms etc
  */
 function bpf_the_slug() {
