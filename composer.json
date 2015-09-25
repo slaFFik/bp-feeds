@@ -1,0 +1,35 @@
+{
+  "name": "WeFoster/buddypress-feeds",
+  "description": "Allow your members to import (RSS) feeds of their external blogs into Activity Directory",
+  "type": "wordpress-plugin",
+  "keywords": [
+    "buddypress",
+    "activity",
+    "members",
+    "feed",
+    "rss",
+    "groups",
+    "messages",
+    "forums",
+    "import"
+  ],
+  "homepage": "http://wefoster.co/",
+  "license": "GPL-2.0+",
+  "authors": [
+    {
+      "name": "Slava Abakumov",
+      "homepage": "https://ovirium.com"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/WeFoster/buddypress-feeds/issues",
+    "source": "https://github.com/WeFoster/buddypress-feeds"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "require": {
+    "php": ">=5.3.0",
+    "composer/installers": "~1.0",
+    "buddypress/buddypress": ">=2.2.0"
+  }
+}
