@@ -111,9 +111,9 @@ add_filter( 'bp_ajax_querystring', 'bpf_ajax_querystring', 999, 2 );
  * @return bool
  */
 function bpf_allow_imported_feed_commenting( $can_comment, $activity_action ) {
-	$bpf = bp_get_option('bpf');
+	$bpf = bp_get_option( 'bpf' );
 
-	if ( $activity_action == bpf_get_new_cpt_slug() && !empty($bpf['allow_commenting']) && $bpf['allow_commenting'] == 'no' ) {
+	if ( $activity_action == bpf_get_new_cpt_slug() && ! empty( $bpf['allow_commenting'] ) && $bpf['allow_commenting'] == 'no' ) {
 		return false;
 	}
 

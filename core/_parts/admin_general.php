@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-/** @var $bpf array */
+$bpf = bp_get_option( 'bpf' );
 ?>
 
 <p><?php _e( 'Below are several general options that you can use to change the plugin behaviour.', BPF_I18N ); ?></p>

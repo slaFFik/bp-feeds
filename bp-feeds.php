@@ -16,34 +16,68 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( 'BPF_VERSION', '1.0' );
 define( 'BPF_URL', plugins_url( '_inc', dirname( __FILE__ ) ) ); // link to all assets, with /
 define( 'BPF_PATH', dirname( __FILE__ ) . '/core' ); // without /
+define( 'BPF_BASE_PATH', plugin_basename( __FILE__ ) ); // without /
 define( 'BPF_MENU_POSITION', 15 );
 define( 'BPF_UPLOAD_DIR', 'bp-feeds' );
 define( 'BPF_ADMIN_SLUG', 'bp-feeds-admin' );
 define( 'BPF_I18N', 'buddypress-feeds' ); // should be the same as plugin folder name, otherwise auto-deliver of translations won't work
 define( 'BPF_SLUG', 'bp-feed' ); // can be redefined inside {@link bpf_get_slug()}
 
+// Requirements
+define( 'BPF_PHP_MIN_VER', 5.3);
+define( 'BPF_BP_MIN_VER', 2.2);
+
 // CPT & CT
 define( 'BPF_CPT', 'bp_feed' );
 define( 'BPF_TAX', 'bp_feed_component' );
 
+/**
+ * Check compatibility
+ */
+include_once( BPF_PATH . '/compatibility.php' );
+
+/**
+ * All the helpers functions used everywhere
+ */
+include_once( BPF_PATH . '/helpers.php' );
+/**
+ * All general filters
+ */
+include_once( BPF_PATH . '/filters.php' );
+/**
+ * All components code
+ */
+include_once( BPF_PATH . '/components.php' );
+
+/**
+ * Admin area
+ */
+if ( is_admin() ) {
+	include_once( BPF_PATH . '/admin.php' );
+}
 
 /**
  * What to do on activation
  */
 register_activation_hook( __FILE__, 'bpf_activation' );
 function bpf_activation() {
+	// Check that we actually can work on the current environment (php, BP etc)
+	if ( ! bpf_has_compatible_env() ) {
+		add_action( 'admin_notices', 'bpf_notice_check_requirements' );
+		return;
+	}
+
 	// some defaults
 	$bpf = array(
-		'uninstall'     => 'nothing',
-		'link_target'   => 'blank',
-		'link_nofollow' => 'yes',
-		'sites'         => 'yes',
-		'tabs'          => array(
+		'uninstall'        => 'nothing',
+		'link_target'      => 'blank',
+		'link_nofollow'    => 'yes',
+		'tabs'             => array(
 			'members'     => __( 'Feed', BPF_I18N ),
 			'profile_nav' => 'top', // possible values: top, sub
 		),
 		'allow_commenting' => 'yes',
-		'rss'           => array(
+		'rss'              => array(
 			//'excerpt'     => '45',     // words
 			'posts'       => '5',      // number of latest posts to import
 			'frequency'   => '43200',  // 12 hours
@@ -103,26 +137,6 @@ function bpf_load_textdomain() {
 add_action( 'plugins_loaded', 'bpf_load_textdomain' );
 
 /**
- * All the helpers functions used everywhere
- */
-include_once( BPF_PATH . '/helpers.php' );
-/**
- * All general filters
- */
-include_once( BPF_PATH . '/filters.php' );
-/**
- * All components code
- */
-include_once( BPF_PATH . '/components.php' );
-
-/**
- * Admin area
- */
-if ( is_admin() ) {
-	include_once( BPF_PATH . '/admin.php' );
-}
-
-/**
  * Include the front-end things
  */
 function bpf_front_init() {
@@ -175,8 +189,6 @@ function bpf_register_cpt() {
 	if ( ! bp_is_active( 'activity' ) ) {
 		return;
 	}
-
-	$bpf = bp_get_option( 'bpf' );
 
 	/** @noinspection PhpUndefinedFieldInspection */
 	register_post_type( BPF_CPT, array(
@@ -255,7 +267,7 @@ function bpf_register_cpt() {
 	do_action( 'bpf_register_cpts' );
 }
 
-add_action( 'init', 'bpf_register_cpt', 999 );
+add_action( 'bp_init', 'bpf_register_cpt', 999 );
 
 /**
  * Display additional Activity filter on Activity Directory page

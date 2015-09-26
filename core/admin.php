@@ -26,13 +26,29 @@ function bpf_admin_register_page() {
 	bpf_admin_page_save();
 
 	add_submenu_page(
-		'edit.php?post_type=bp_feed',
+		'edit.php?post_type=' . BPF_CPT,
 		__( 'BuddyPress Feeds', BPF_I18N ),
 		__( 'Settings', BPF_I18N ),
 		'manage_options',
 		BPF_ADMIN_SLUG, // slug
 		'bpf_admin_page'
 	);
+
+	add_filter( "plugin_action_links_" . BPF_BASE_PATH, 'bpf_plugin_action_settings_link', 10, 4 );
+	add_filter( "network_admin_plugin_action_links_" . BPF_BASE_PATH, 'bpf_plugin_action_settings_link', 10, 4 );
+}
+
+/**
+ * Add Settings link on Plugins page in admin area with a link to ...guess what... Settings page!
+ *
+ * @param array $actions
+ *
+ * @return array
+ */
+function bpf_plugin_action_settings_link( $actions ) {
+	$actions['settings'] = '<a href="' . bpf_get_admin_url() . '">' . __( 'Settings', BPF_I18N ) . '</a>';
+
+	return $actions;
 }
 
 function bpf_admin_url( $path = '' ) {
@@ -40,7 +56,7 @@ function bpf_admin_url( $path = '' ) {
 }
 
 function bpf_get_admin_url( $path = '' ) {
-	$page = 'edit.php?post_type=bp_feed&page=' . BPF_ADMIN_SLUG;
+	$page = 'edit.php?post_type=' . BPF_CPT . '&page=' . BPF_ADMIN_SLUG;
 
 	if ( ! empty( $path ) ) {
 		$path = '&' . $path;
@@ -48,11 +64,13 @@ function bpf_get_admin_url( $path = '' ) {
 
 	// Links belong in network admin
 	if ( bp_core_do_network_admin() ) {
+
 		$url = network_admin_url( $page . $path );
 
-		// Links belong in site admin
-	} else {
+	} else { // Links belong in site admin
+
 		$url = admin_url( $page . $path );
+
 	}
 
 	return $url;
@@ -178,6 +196,8 @@ function bpf_admin_page_notice() {
 		return;
 	}
 
+	do_action( 'bpf_admin_page_before_notice' );
+
 	switch ( $_GET['message'] ) {
 		case 'success':
 			echo '<div id="message" class="notice is-dismissible updated"><p>' . __( 'All options were successfully saved.', BPF_I18N ) . '</p></div>';
@@ -187,7 +207,7 @@ function bpf_admin_page_notice() {
 			echo '<div id="message" class="notice is-dismissible error"><p>' . __( 'Oops! Seems you either did not change anything or there was an error while saving options. Please try again.', BPF_I18N ) . '</p></div>';
 	}
 
-	do_action( 'bpf_admin_page_notice' );
+	do_action( 'bpf_admin_page_after_notice' );
 }
 
 add_action( 'bpf_admin_page_before_nav', 'bpf_admin_page_notice' );
@@ -196,11 +216,7 @@ add_action( 'bpf_admin_page_before_nav', 'bpf_admin_page_notice' );
  * Default admin page: General
  */
 function bpf_admin_page_general() {
-	$bpf = bp_get_option( 'bpf' );
-
-	bpf_the_template_part( 'admin_general', array(
-		'bpf' => $bpf
-	) );
+	bpf_the_template_part( 'admin_general' );
 }
 
 add_action( 'bpf_admin_page_content_general', 'bpf_admin_page_general' );
@@ -209,11 +225,7 @@ add_action( 'bpf_admin_page_content_general', 'bpf_admin_page_general' );
  * Default admin page: Members
  */
 function bpf_admin_page_members() {
-	$bpf = bp_get_option( 'bpf' );
-
-	bpf_the_template_part( 'admin_members', array(
-		'bpf' => $bpf
-	) );
+	bpf_the_template_part( 'admin_members' );
 }
 
 add_action( 'bpf_admin_page_content_members', 'bpf_admin_page_members' );

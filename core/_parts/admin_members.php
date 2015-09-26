@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-/** @var $bpf array */
+$bpf = bp_get_option( 'bpf' );
 ?>
 
 <p><?php _e( 'These are speficifc options for users profiles, settings and members activity.', BPF_I18N ); ?></p>

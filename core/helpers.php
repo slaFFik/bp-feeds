@@ -15,7 +15,8 @@ function bpf_get_new_cpt_slug() {
 function bpf_the_slug() {
 	echo bpf_get_slug();
 }
-function bpf_get_slug(){
+
+function bpf_get_slug() {
 	return apply_filters( 'bpf_get_slug', BPF_SLUG );
 }
 
@@ -52,8 +53,12 @@ function bpf_the_template_part( $template, $options = array() ) {
 	$path = apply_filters( 'bpf_the_template_part', BPF_PATH . '/_parts/' . $template . '.php', $template, $options );
 
 	if ( file_exists( $path ) ) {
+
 		// hate doing this
-		extract( $options );
+		if ( is_array( $options ) && ! empty( $options ) ) {
+			extract( $options );
+		}
+
 		/** @noinspection PhpIncludeInspection */
 		include_once( $path );
 	}
