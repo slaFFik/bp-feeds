@@ -1,0 +1,464 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: BuddyPress Feeds\n"
+"POT-Creation-Date: 2015-09-26 19:29+0200\n"
+"PO-Revision-Date: 2015-09-26 19:29+0200\n"
+"Last-Translator: slaFFik <slava.abakumov@gmail.com>\n"
+"Language-Team: \n"
+"Language: en_EN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.6.10\n"
+"X-Poedit-Basepath: W:\\OpenServer\\domains\\wf\\bpf\\wp-content\\plugins"
+"\\buddypress-feeds\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-SearchPath-0: W:\\OpenServer\\domains\\wf\\bpf\\wp-content\\plugins"
+"\\buddypress-feeds\n"
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/bp-feeds.php:42
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/bp-feeds.php:187
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/admin.php:238
+msgid "Feed"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/bp-feeds.php:61
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/admin.php:158
+msgid "Members"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/bp-feeds.php:62
+msgid ""
+"Give your members ability to import posts from other sources into their "
+"activity feed."
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/bp-feeds.php:184
+msgid "BP Feeds"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/bp-feeds.php:185
+msgid "Imported Items"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/bp-feeds.php:186
+msgid "New imported feed post"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/bp-feeds.php:189
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/filters.php:35
+#, php-format
+msgid "%1$s imported a new post, %2$s"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/bp-feeds.php:209
+msgid "Imported post"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/bp-feeds.php:217
+msgid "Components"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/bp-feeds.php:218
+msgid "Component"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/bp-feeds.php:219
+msgid "All Components"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/bp-feeds.php:220
+msgid "Popular Components"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/bp-feeds.php:221
+msgid "Search Components"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/bp-feeds.php:222
+msgid "No Components"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/bp-feeds.php:223
+msgid "Parent Component"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/bp-feeds.php:224
+msgid "Parent:"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/bp-feeds.php:225
+msgid "Edit Component"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/bp-feeds.php:226
+msgid "Update Component"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/bp-feeds.php:227
+#, fuzzy
+msgid "Add New Component"
+msgstr "%s: загружена новая обложка профиля"
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/bp-feeds.php:228
+#, fuzzy
+msgid "New Component Name"
+msgstr "%s: загружена новая обложка профиля"
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/bp-feeds.php:229
+msgid "No Components Found."
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/bp-feeds.php:230
+msgid "View Component"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/bp-feeds.php:231
+msgid "Separate components with commas"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/bp-feeds.php:232
+msgid "Add or remove components"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/bp-feeds.php:233
+msgid "Choose from the most used components"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/bp-feeds.php:235
+msgid "Registered components that imported feed item is associated with."
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/bp-feeds.php:265
+msgid "Members Feed"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:10
+msgid ""
+"Below are several general options that you can use to change the plugin "
+"behaviour."
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:16
+msgid "RSS item first image"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:21
+msgid "Grab, save locally and display"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:25
+msgid ""
+"This will create a copy of an image on your server. <br/>\n"
+"                            If that image is deleted from the RSS source "
+"site, you will still be able to display it."
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:31
+msgid "Display using hotlinking"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:33
+msgid "What is hotlinking?"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:37
+msgid ""
+"Image will not be downloaded to your server, saving you some bandwith. <br/"
+">\n"
+"                            If on RSS source site the image is deleted, it "
+"will not be displayed on your site. <br/>\n"
+"                            Generally it is a bad practice and you should "
+"avoid doing this, because you are creating a server load for external site."
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:44
+#, fuzzy
+msgid "Do not display image"
+msgstr "Загрузка не удалась. Картинка не была отправлена."
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:47
+msgid "Only RSS post title and excerpt will be displayed."
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:54
+msgid "RSS item link: add nofollow"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:56
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:88
+msgid "Applied only to newly imported feeds after saving"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:65
+msgid "Yes"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:69
+msgid ""
+"Link to a feed item will have an attribute <code>rel=\"nofollow\"</code>, so "
+"search engines should not open it and index."
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:74
+msgid "No"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:78
+msgid "Search engines will open that link and may index it."
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:86
+msgid "RSS item open links"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:97
+msgid "In a new tab"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:101
+msgid ""
+"Link to a feed item will have an attribute <code>target=\"_blank\"</code>, "
+"so on click a new tab will be opened."
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:106
+msgid "In the same tab"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:110
+msgid "Link will be opened in the same browser tab."
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:117
+msgid "RSS posts excerpt length"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:121
+msgid "words"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:122
+msgid ""
+"Three dots <code>...</code> will be used to identify the end of excerpt."
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:124
+msgid "Words will stay intact, sentences may be cut in the middle."
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:130
+msgid "Placeholder URL"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:136
+msgid ""
+"That is the URL users will see as an example of what is needed from them. "
+"Plugin will not parse it."
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:143
+msgid "Maximum amount of posts to import"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:147
+msgid "posts"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:149
+msgid "How many posts would you like to import when a RSS feed is added?"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:150
+msgid ""
+"This is useful if you do not want to fill the activity stream with older "
+"posts."
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:152
+msgid "By default this is set to only import the last 5 published posts."
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:160
+msgid "Allow activity feen commenting of imported posts?"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:166
+msgid "Yes, allow"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:170
+msgid ""
+"Commenting button will be displayed and members will be able to leave their "
+"comment under the activity item."
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:176
+msgid "No, deny"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:180
+msgid ""
+"Commenting button will not be displayed and thus commenting will be disabled."
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:187
+msgid "RSS feeds update frequency"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:191
+msgid "seconds"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:192
+msgid ""
+"This value defines how often you want the site to check users/groups RSS "
+"feeds for new posts."
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:194
+msgid ""
+"For reference: the bigger time is specified, the less overhead will be on "
+"your site."
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:196
+msgid "Recommended value: 43200 sec, or 12 hours."
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:203
+msgid "What to do on plugin deactivation?"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:207
+#, php-format
+msgid "More than %s of files stored"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:216
+msgid "Do not delete anything. Leave all the data and options in the DB"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:219
+msgid "Good option if you want to reactivate the plugin later."
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:222
+msgid ""
+"RSS data will be deleted, options (admin, users, groups) will be preserved"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:225
+msgid ""
+"If you want to cleanup the plugin's data, but preserve all settings - use "
+"this option."
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:228
+msgid "Completely delete all plugin-related data and options"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_general.php:231
+msgid "If you decided not to use this plugin, then check this option."
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_members.php:10
+msgid ""
+"These are speficifc options for users profiles, settings and members "
+"activity."
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_members.php:17
+msgid "Where to display RSS feed menu in user's profile?"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_members.php:23
+msgid "Profile Top Level"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_members.php:27
+msgid ""
+"You will see the menu on the same level as Activity, Profile, Messages, "
+"Settings etc."
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_members.php:32
+msgid "Activity Submenu"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_members.php:36
+msgid ""
+"You will see the menu under Activity on user profile, on the same level as "
+"Personal, Mentions, Favorites etc."
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/admin_members.php:43
+msgid "User profile RSS tab label"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/profile_settings.php:6
+msgid "External Feed URL"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/_parts/profile_settings.php:13
+msgid ""
+"Fill in the address to your personal website in the field above. If your "
+"website has a feed (most websites create it automatically) your published "
+"posts will automatically be imported to your profile stream for your friends "
+"to see."
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/admin.php:30
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/admin.php:69
+msgid "BuddyPress Feeds"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/admin.php:31
+msgid "Settings"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/admin.php:157
+msgid "General"
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/admin.php:183
+msgid "All options were successfully saved."
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/admin.php:187
+msgid ""
+"Oops! Seems you either did not change anything or there was an error while "
+"saving options. Please try again."
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/components.php:23
+msgid "A slug is required for registering this component."
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/components.php:31
+msgid "A component with the name provided already exists."
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/components.php:56
+msgid ""
+"There was an error while creating an associated term for this component."
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/members.php:161
+msgid "Your Feed URL has been saved."
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/members.php:165
+msgid "No changes were made."
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/members.php:226
+msgid ""
+"If you already have a blog, you can write here its URL and we will fetch "
+"your posts and display links to them on this site global activity stream."
+msgstr ""
+
+#: W:\OpenServer\domains\wf\bpf\wp-content\plugins\buddypress-feeds/core/members.php:228
+msgid "You can change this link later at any time"
+msgstr ""
