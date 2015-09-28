@@ -10,39 +10,41 @@ if ( ! defined( 'ABSPATH' ) ) {
 function bpf_profile_activity_submenu() {
 	$bpf = bp_get_option( 'bpf' );
 
-	if ( $bpf['tabs']['profile_nav'] == 'sub' ) {
-		$parent = bp_get_activity_slug();
+	if ( isset( $bpf['tabs'] ) && isset( $bpf['tabs']['profile_nav'] ) ) {
+		if ( $bpf['tabs']['profile_nav'] === 'sub' ) {
+			$parent = bp_get_activity_slug();
 
-		bp_core_new_subnav_item( array(
-			                         'name'            => $bpf['tabs']['members'],
-			                         'slug'            => BPF_SLUG,
-			                         'item_css_id'     => BPF_SLUG,
-			                         'parent_url'      => trailingslashit( bp_displayed_user_domain() . $parent ),
-			                         'parent_slug'     => $parent,
-			                         'screen_function' => 'bpf_profile_activity_submenu_page',
-			                         'position'        => BPF_MENU_POSITION,
-			                         'user_has_access' => true
-		                         ) );
+			bp_core_new_subnav_item( array(
+				                         'name'            => $bpf['tabs']['members'],
+				                         'slug'            => BPF_SLUG,
+				                         'item_css_id'     => BPF_SLUG,
+				                         'parent_url'      => trailingslashit( bp_displayed_user_domain() . $parent ),
+				                         'parent_slug'     => $parent,
+				                         'screen_function' => 'bpf_profile_activity_submenu_page',
+				                         'position'        => BPF_MENU_POSITION,
+				                         'user_has_access' => true
+			                         ) );
 
-	} else if ( $bpf['tabs']['profile_nav'] == 'top' ) {
-		bp_core_new_nav_item( array(
-			                      'name'                    => $bpf['tabs']['members'],
-			                      // Display name for the nav item
-			                      'slug'                    => BPF_SLUG,
-			                      // URL slug for the nav item
-			                      'item_css_id'             => BPF_SLUG,
-			                      // The CSS ID to apply to the HTML of the nav item
-			                      'show_for_displayed_user' => true,
-			                      // When viewing another user does this nav item show up?
-			                      'site_admin_only'         => false,
-			                      // Can only site admins see this nav item?
-			                      'position'                => BPF_MENU_POSITION,
-			                      // Index of where this nav item should be positioned
-			                      'screen_function'         => 'bpf_profile_activity_page',
-			                      // The name of the function to run when clicked
-			                      'default_subnav_slug'     => '/'
-			                      // The slug of the default subnav item to select when clicked
-		                      ) );
+		} else if ( $bpf['tabs']['profile_nav'] === 'top' ) {
+			bp_core_new_nav_item( array(
+				                      'name'                    => $bpf['tabs']['members'],
+				                      // Display name for the nav item
+				                      'slug'                    => BPF_SLUG,
+				                      // URL slug for the nav item
+				                      'item_css_id'             => BPF_SLUG,
+				                      // The CSS ID to apply to the HTML of the nav item
+				                      'show_for_displayed_user' => true,
+				                      // When viewing another user does this nav item show up?
+				                      'site_admin_only'         => false,
+				                      // Can only site admins see this nav item?
+				                      'position'                => BPF_MENU_POSITION,
+				                      // Index of where this nav item should be positioned
+				                      'screen_function'         => 'bpf_profile_activity_page',
+				                      // The name of the function to run when clicked
+				                      'default_subnav_slug'     => '/'
+				                      // The slug of the default subnav item to select when clicked
+			                      ) );
+		}
 	}
 }
 
@@ -297,7 +299,7 @@ function bpf_profile_admin_bar_activity_submenu( $wp_admin_nav ) {
 
 	$bpf = bp_get_option( 'bpf' );
 
-	if ( ! bp_is_active( 'settings' ) || $bpf['tabs']['profile_nav'] == 'top' ) {
+	if ( ! bp_is_active( 'settings' ) || $bpf['tabs']['profile_nav'] === 'top' ) {
 		return $wp_admin_nav;
 	}
 
@@ -331,7 +333,7 @@ function bpf_profile_admin_bar_topmenu() {
 
 	$bpf = bp_get_option( 'bpf' );
 
-	if ( $bpf['tabs']['profile_nav'] == 'sub' || ! bp_is_active( 'settings' ) ) {
+	if ( $bpf['tabs']['profile_nav'] === 'sub' || ! bp_is_active( 'settings' ) ) {
 		return;
 	}
 

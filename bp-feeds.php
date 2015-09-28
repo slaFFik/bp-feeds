@@ -14,8 +14,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 define( 'BPF_VERSION', '1.0' );
-define( 'BPF_URL', plugins_url( '_inc', dirname( __FILE__ ) ) ); // link to all assets, with /
-define( 'BPF_PATH', dirname( __FILE__ ) . '/core' ); // without /
+define( 'BPF_URL', plugins_url( '_inc', __DIR__ ) ); // link to all assets, with /
+define( 'BPF_PATH', __DIR__ . '/core' ); // without /
 define( 'BPF_BASE_PATH', plugin_basename( __FILE__ ) ); // without /
 define( 'BPF_MENU_POSITION', 15 );
 define( 'BPF_UPLOAD_DIR', 'bp-feeds' );

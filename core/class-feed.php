@@ -18,7 +18,7 @@ class BPF_Feed {
 	public $component_id;
 
 	/** @var SimplePie $rss */
-	public $rss = null;
+	public $rss;
 	public $maxitems;
 
 	public $meta  = array();
@@ -28,7 +28,7 @@ class BPF_Feed {
 
 	private $upload_dir;
 
-	function __construct( $component, $id = false ) {
+	public function __construct( $component, $id = false ) {
 
 		$this->_set_component( $component, $id = false );
 		$this->_set_save_path();
@@ -55,8 +55,6 @@ class BPF_Feed {
 		if ( $component === $default_slug ) {
 			$this->component    = $default_slug;
 			$this->component_id = is_numeric( $id ) ? (int) $id : bp_displayed_user_id();
-		} else {
-
 		}
 	}
 
@@ -83,7 +81,7 @@ class BPF_Feed {
 	 *
 	 * @return $this BPF_Feed
 	 */
-	function set_url( $url ) {
+	public function set_url( $url ) {
 		$this->rss_url = apply_filters( 'bpf_feed_set_url', esc_url_raw( $url ) );
 
 		return $this;
@@ -95,7 +93,7 @@ class BPF_Feed {
 	 *
 	 * @return BPF_Feed|WP_Error $this BPF_Feed
 	 */
-	function fetch() {
+	public function fetch() {
 		do_action( 'bpf_feed_before_fetch' );
 
 		include_once( ABSPATH . WPINC . '/feed.php' );
@@ -124,7 +122,7 @@ class BPF_Feed {
 	/**
 	 * Get and save the feed
 	 */
-	function pull() {
+	public function pull() {
 		// Get data
 		$this->fetch();
 		// Save data
@@ -134,9 +132,9 @@ class BPF_Feed {
 	/**
 	 * Save feed data into DB
 	 */
-	function save() {
+	protected function save() {
 		// return early in case we have problems while fetching data
-		if ( empty( $this->items ) ) {
+		if ( count( $this->items ) === 0 ) {
 			return $this;
 		}
 
@@ -192,13 +190,14 @@ class BPF_Feed {
 			                                ) );
 
 			// check that we successfully saved
-			if ( ! is_wp_error( $feed_item_id ) && ! empty( $feed_item_id ) ) {
+			/** @noinspection NotOptimalIfConditionsInspection */
+			if ( ! is_wp_error( $feed_item_id ) && $feed_item_id > 0 ) {
 				$nofollow = 'rel="nofollow"';
-				if ( ! empty( $bpf['link_nofollow'] ) && $bpf['link_nofollow'] == 'no' ) {
+				if ( ! empty( $bpf['link_nofollow'] ) && $bpf['link_nofollow'] === 'no' ) {
 					$nofollow = '';
 				}
 				$target = 'target="_blank"';
-				if ( ! empty( $bpf['link_target'] ) && $bpf['link_target'] == 'self' ) {
+				if ( ! empty( $bpf['link_target'] ) && $bpf['link_target'] === 'self' ) {
 					$target = '';
 				}
 
@@ -216,8 +215,7 @@ class BPF_Feed {
 				//if ( $bpf['rss']['image'] == 'display_local' ) {
 				//	$this->upload_featured_image( $item, $feed_item_id );
 				//}
-
-				array_push( $this->imported, $feed_item_id );
+				$this->imported[] = $feed_item_id;
 
 				do_action( 'bpf_feed_saved_item', $item, $feed_item_id );
 			} else {
@@ -242,7 +240,7 @@ class BPF_Feed {
 	protected function upload_featured_image( $item, $feed_item_id ) {
 		// We need http(s):// link to an image
 		$remote_img_url = $this->get_item_image_url( $item->get_content() );
-		if ( empty( $remote_img_url ) ) {
+		if ( $remote_img_url === '' ) {
 			return false;
 		}
 
@@ -314,12 +312,12 @@ class BPF_Feed {
 		return $attach_id;
 	}
 
-	function get_type() {
+	public function get_type() {
 		// for groups: $type = BPF_CPT_GROUP_ITEM;
 		return apply_filters( 'bpfr_feed_get_type', BPF_CPT, $this->component, $this->component_id );
 	}
 
-	function save_url( $url ) {
+	public function save_url( $url ) {
 		$this->set_url( esc_url_raw( $url ) );
 
 		/** @noinspection PhpUndefinedFieldInspection */
@@ -335,7 +333,7 @@ class BPF_Feed {
 	 * Save to meta title and link to this feed,
 	 * so it will be reused later easily
 	 */
-	function save_meta() {
+	protected function save_meta() {
 		$data = apply_filters( 'bpf_feed_before_save_meta', array(
 			'rss_title' => $this->rss->get_title(),
 			'rss_url'   => $this->rss->get_link()
@@ -357,26 +355,30 @@ class BPF_Feed {
 	 *
 	 * @return null
 	 */
-	function get_rss() {
+	public function get_rss() {
 		return $this->rss;
 	}
 
-	function get_meta() {
+	/**
+	 * @return array
+	 */
+	public function get_meta() {
 		$meta = array();
-		$bp   = buddypress();
 
 		/** @noinspection PhpUndefinedFieldInspection */
-		if ( $this->component === $bp->members->id ) {
+		if ( $this->component === buddypress()->members->id ) {
 			$meta = bp_get_user_meta( $this->component_id, 'bpf_feed_meta' );
 		}
 
 		// $meta = groups_get_groupmeta( bp_get_current_group_id(), 'bpf_feed_meta' );
 		$meta = apply_filters( 'bpf_feed_get_meta', $meta, $this->component, $this->component_id );
 
-		if ( empty( $meta['rss_title'] ) ) {
+		if ( ! array_key_exists( 'rss_title', $meta ) ) {
+			/** @noinspection OffsetOperationsInspection */
 			$meta['rss_title'] = '';
 		}
-		if ( empty( $meta['rss_url'] ) ) {
+		if ( ! array_key_exists( 'rss_url', $meta ) ) {
+			/** @noinspection OffsetOperationsInspection */
 			$meta['rss_url'] = '';
 		}
 
@@ -385,7 +387,7 @@ class BPF_Feed {
 		return apply_filters( 'bpf_feed_get_meta', $meta );
 	}
 
-	function set_meta( $data ) {
+	public function set_meta( $data ) {
 		$this->meta = apply_filters( 'bpf_feed_set_meta', $data );
 	}
 
@@ -395,44 +397,39 @@ class BPF_Feed {
 	 *
 	 * @param string $text Content of the RSS item
 	 *
-	 * @return string
+	 * @return false|string `<img` tag or false
 	 */
 	protected function get_item_IMG( $text ) {
-		$text = html_entity_decode( $text, ENT_QUOTES, 'UTF-8' );
+		preg_match( '~<img[^>]+\>~i', html_entity_decode( $text, ENT_QUOTES, 'UTF-8' ), $matches );
 
-		preg_match( '~<img[^>]+\>~i', $text, $matches );
+		$img = false; // no image tags by default
 
-		if ( ! empty( $matches ) && is_array( $matches ) ) {
-			$text = $matches[0];
-		} else {
-			$text = ''; // no image tags
+		if ( is_array( $matches ) && count( $matches ) > 0 ) {
+			$img = $matches[0];
 		}
 
-		return $text;
+		return $img;
 	}
 
 	/**
-	 * Extract image source from a string (basically, single <img> tag)
+	 * Extract image source from a string (basically, single `<img>` tag)
 	 *
-	 * @param string $text <img> tag
+	 * @param string $text HTML `img` tag
 	 *
 	 * @return string Image url or empty string
 	 */
-	function get_item_image_url( $text ) {
+	public function get_item_image_url( $text ) {
 		$img = $this->get_item_IMG( $text );
 
 		// no need to parse anything if no img tag in the text
-		if ( empty( $img ) ) {
+		if ( $img === false ) {
 			return '';
 		}
 
 		preg_match( '~src=[\'"]?([^\'" >]+)[\'" >]~', $img, $link );
 
-		if ( ! empty( $link ) && is_array( $link ) ) {
-			$link = $link[1];
-			$link = urldecode( $link );
-
-			return $link;
+		if ( is_array( $link ) && count( $link ) > 0 ) {
+			return urldecode( $link[1] );
 		}
 
 		return '';
@@ -446,7 +443,7 @@ class BPF_Feed {
 	 *
 	 * @return array|null|WP_Post
 	 */
-	static function get_item( $item_id ) {
+	public static function get_item( $item_id ) {
 		return get_post( $item_id );
 	}
 }

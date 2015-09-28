@@ -34,8 +34,8 @@ function bpf_admin_register_page() {
 		'bpf_admin_page'
 	);
 
-	add_filter( "plugin_action_links_" . BPF_BASE_PATH, 'bpf_plugin_action_settings_link', 10, 4 );
-	add_filter( "network_admin_plugin_action_links_" . BPF_BASE_PATH, 'bpf_plugin_action_settings_link', 10, 4 );
+	add_filter( 'plugin_action_links_' . BPF_BASE_PATH, 'bpf_plugin_action_settings_link', 10, 4 );
+	add_filter( 'network_admin_plugin_action_links_' . BPF_BASE_PATH, 'bpf_plugin_action_settings_link', 10, 4 );
 }
 
 /**
@@ -51,15 +51,28 @@ function bpf_plugin_action_settings_link( $actions ) {
 	return $actions;
 }
 
+/**
+ * URL that is used in plugin admin area to own pages
+ *
+ * @param string $path
+ */
 function bpf_admin_url( $path = '' ) {
 	echo esc_url( bpf_get_admin_url( $path ) );
 }
 
+/**
+ * Get the URL that is used in plugin admin area to own pages
+ *
+ * @param string $path
+ *
+ * @return string
+ */
 function bpf_get_admin_url( $path = '' ) {
 	$page = 'edit.php?post_type=' . BPF_CPT . '&page=' . BPF_ADMIN_SLUG;
 
+	/** @noinspection IsEmptyFunctionUsageInspection */
 	if ( ! empty( $path ) ) {
-		$path = '&' . $path;
+		$path = '&' . (string) $path;
 	}
 
 	// Links belong in network admin
@@ -98,11 +111,11 @@ function bpf_admin_page() { ?>
 				$active_tab = '';
 
 				if ( ! empty( $_GET['section'] ) ) {
-					if ( $_GET['section'] == $section_id ) {
+					if ( $_GET['section'] === $section_id ) {
 						$active_tab = 'nav-tab-active';
 					}
 				} else {
-					if ( $section_id == 'general' ) {
+					if ( $section_id === 'general' ) {
 						$active_tab = 'nav-tab-active';
 					}
 				}
@@ -184,7 +197,7 @@ function bpf_admin_get_sections() {
  * @return string
  */
 function bpf_admin_get_current_section() {
-	return apply_filters( 'bpf_admin_get_current_section', ( ! empty( $_GET['page'] ) && $_GET['page'] == BPF_ADMIN_SLUG && ! empty( $_GET['section'] ) ) ? (string) $_GET['section'] : 'general' );
+	return apply_filters( 'bpf_admin_get_current_section', ( ! empty( $_GET['page'] ) && $_GET['page'] === BPF_ADMIN_SLUG && ! empty( $_GET['section'] ) ) ? (string) $_GET['section'] : 'general' );
 }
 
 /**
@@ -235,7 +248,7 @@ add_action( 'bpf_admin_page_content_members', 'bpf_admin_page_members' );
  */
 function bpf_admin_page_save() {
 
-	if ( ! isset( $_POST['bpf-admin-submit'] ) || ! isset( $_POST['bpf'] ) ) {
+	if ( ! array_key_exists( 'bpf-admin-submit', $_POST ) || ! array_key_exists( 'bpf', $_POST ) ) {
 		return;
 	}
 
@@ -319,6 +332,4 @@ function bpf_admin_page_save() {
 
 		wp_redirect( add_query_arg( 'message', 'error' ) );
 	}
-
-	return;
 }

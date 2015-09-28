@@ -80,11 +80,11 @@ function bpf_empty_dir( $dir ) {
 		$objects = scandir( $dir );
 
 		foreach ( $objects as $object ) {
-			if ( $object != "." && $object != ".." ) {
-				if ( filetype( $dir . "/" . $object ) == "dir" ) {
-					bpf_empty_dir( $dir . "/" . $object );
+			if ( $object !== '.' && $object !== '..' ) {
+				if ( filetype( $dir . '/' . $object ) === 'dir' ) {
+					bpf_empty_dir( $dir . '/' . $object );
 				} else {
-					unlink( $dir . "/" . $object );
+					unlink( $dir . '/' . $object );
 				}
 			}
 		}

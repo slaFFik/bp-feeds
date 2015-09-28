@@ -1,11 +1,11 @@
 <?php
 /**
- * 	Do not forget to use this in register_activation_hook'ed function:
+ *    Do not forget to use this in register_activation_hook'ed function:
  *
- * 	if ( ! bpf_has_compatible_env() ) {
- * 	    add_action( 'admin_notices', 'bpf_notice_check_requirements' );
- * 	    return;
- * 	}
+ *    if ( ! bpf_has_compatible_env() ) {
+ *        add_action( 'admin_notices', 'bpf_notice_check_requirements' );
+ *        return;
+ *    }
  */
 
 /**
@@ -32,18 +32,16 @@ function bpf_has_compatible_env() {
  * Check in admin area everytime that we have compatible environment
  */
 function bpf_check_environment() {
-	if ( ! bpf_has_compatible_env() ) {
+	if ( ! bpf_has_compatible_env() && is_plugin_active( BPF_BASE_PATH ) ) {
 
-		if ( is_plugin_active( BPF_BASE_PATH ) ) {
+		deactivate_plugins( BPF_BASE_PATH, true );
 
-			deactivate_plugins( BPF_BASE_PATH, true );
+		add_action( 'admin_notices', 'bpf_notice_check_requirements' );
 
-			add_action( 'admin_notices', 'bpf_notice_check_requirements' );
-
-			if ( isset( $_GET['activate'] ) ) {
-				unset( $_GET['activate'] );
-			}
+		if ( isset( $_GET['activate'] ) ) {
+			unset( $_GET['activate'] );
 		}
+
 	}
 }
 

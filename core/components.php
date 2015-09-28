@@ -16,10 +16,12 @@ function bpf_members_get_component_slug() {
  * @param string $slug Slug of a new component
  * @param array $args Includes slug, description
  *
- * @return object|WP_Error
+ * @return null|object|WP_Error
  */
-function bpf_register_component( $slug, $args = array() ) {
-	if ( '' == trim( $slug ) ) {
+function bpf_register_component( $slug, Array $args = array() ) {
+	$slug = trim( $slug );
+
+	if ( $slug === '' ) {
 		return new WP_Error( 'bpf_empty_component_slug', __( 'A slug is required for registering this component.' ) );
 	}
 

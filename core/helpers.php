@@ -49,13 +49,13 @@ function bpf_get_count_folder_size() {
  * @param $template string Template file from /core/_part/ fodler without file extension
  * @param $options  array  Variables that we need to use inside that template
  */
-function bpf_the_template_part( $template, $options = array() ) {
+function bpf_the_template_part( $template, Array $options = array() ) {
 	$path = apply_filters( 'bpf_the_template_part', BPF_PATH . '/_parts/' . $template . '.php', $template, $options );
 
 	if ( file_exists( $path ) ) {
 
 		// hate doing this
-		if ( is_array( $options ) && ! empty( $options ) ) {
+		if ( is_array( $options ) && !count( $options ) > 0 ) {
 			extract( $options );
 		}
 
@@ -73,23 +73,23 @@ function bpf_the_template_part( $template, $options = array() ) {
  */
 function bpf_get_file_extension_by_type( $type ) {
 	$extensions = array(
-		IMAGETYPE_GIF     => "gif",
-		IMAGETYPE_JPEG    => "jpg",
-		IMAGETYPE_PNG     => "png",
-		IMAGETYPE_SWF     => "swf",
-		IMAGETYPE_PSD     => "psd",
-		IMAGETYPE_BMP     => "bmp",
-		IMAGETYPE_TIFF_II => "tiff",
-		IMAGETYPE_TIFF_MM => "tiff",
-		IMAGETYPE_JPC     => "jpc",
-		IMAGETYPE_JP2     => "jp2",
-		IMAGETYPE_JPX     => "jpx",
-		IMAGETYPE_JB2     => "jb2",
-		IMAGETYPE_SWC     => "swc",
-		IMAGETYPE_IFF     => "iff",
-		IMAGETYPE_WBMP    => "wbmp",
-		IMAGETYPE_XBM     => "xbm",
-		IMAGETYPE_ICO     => "ico"
+		IMAGETYPE_GIF     => 'gif',
+		IMAGETYPE_JPEG    => 'jpg',
+		IMAGETYPE_PNG     => 'png',
+		IMAGETYPE_SWF     => 'swf',
+		IMAGETYPE_PSD     => 'psd',
+		IMAGETYPE_BMP     => 'bmp',
+		IMAGETYPE_TIFF_II => 'tiff',
+		IMAGETYPE_TIFF_MM => 'tiff',
+		IMAGETYPE_JPC     => 'jpc',
+		IMAGETYPE_JP2     => 'jp2',
+		IMAGETYPE_JPX     => 'jpx',
+		IMAGETYPE_JB2     => 'jb2',
+		IMAGETYPE_SWC     => 'swc',
+		IMAGETYPE_IFF     => 'iff',
+		IMAGETYPE_WBMP    => 'wbmp',
+		IMAGETYPE_XBM     => 'xbm',
+		IMAGETYPE_ICO     => 'ico'
 	);
 
 	return isset( $extensions[ $type ] ) ? $extensions[ $type ] : IMAGETYPE_JPEG;
