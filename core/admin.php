@@ -5,8 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Init the function, that will inin admin page
- * LOL
+ * Init the function, that will init admin page
  */
 function bpf_admin_init() {
 	add_action( bp_core_admin_hook(), 'bpf_admin_register_page', 99 );

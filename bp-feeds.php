@@ -52,7 +52,7 @@ include_once( BPF_PATH . '/components.php' );
 /**
  * Admin area
  */
-if ( is_admin() ) {
+if ( is_admin() && (!defined( 'DOING_AJAX' ) || !DOING_AJAX ) ) {
 	include_once( BPF_PATH . '/admin.php' );
 }
 

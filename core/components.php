@@ -22,7 +22,7 @@ function bpf_register_component( $slug, Array $args = array() ) {
 	$slug = trim( $slug );
 
 	if ( $slug === '' ) {
-		return new WP_Error( 'bpf_empty_component_slug', __( 'A slug is required for registering this component.' ) );
+		return new WP_Error( 'bpf_empty_component_slug', __( 'A slug is required for registering this component.' ), array($slug, $args) );
 	}
 
 	$name        = $slug;
