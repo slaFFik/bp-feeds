@@ -16,16 +16,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( 'BPF_VERSION', '1.0' );
 define( 'BPF_URL', plugins_url( '_inc', __DIR__ ) ); // link to all assets, with /
 define( 'BPF_PATH', __DIR__ . '/core' ); // without /
+define( 'BPF_LIBS_PATH', __DIR__ . '/libs' ); // without /
 define( 'BPF_BASE_PATH', plugin_basename( __FILE__ ) ); // without /
 define( 'BPF_MENU_POSITION', 15 );
 define( 'BPF_UPLOAD_DIR', 'bp-feeds' );
 define( 'BPF_ADMIN_SLUG', 'bp-feeds-admin' );
-define( 'BPF_I18N', 'buddypress-feeds' ); // should be the same as plugin folder name, otherwise auto-deliver of translations won't work
+define( 'BPF_I18N', 'bp-feeds' ); // should be the same as plugin folder name, otherwise auto-deliver of translations won't work
 define( 'BPF_SLUG', 'bp-feed' ); // can be redefined inside {@link bpf_get_slug()}
-
-// Requirements
-define( 'BPF_PHP_MIN_VER', 5.3);
-define( 'BPF_BP_MIN_VER', 2.2);
 
 // CPT & CT
 define( 'BPF_CPT', 'bp_feed' );
@@ -34,7 +31,7 @@ define( 'BPF_TAX', 'bp_feed_component' );
 /**
  * Check compatibility
  */
-include_once( BPF_PATH . '/compatibility.php' );
+include_once( BPF_LIBS_PATH . '/wp-requirements/wp-requirements.php' );
 
 /**
  * All the helpers functions used everywhere
@@ -52,7 +49,7 @@ include_once( BPF_PATH . '/components.php' );
 /**
  * Admin area
  */
-if ( is_admin() && (!defined( 'DOING_AJAX' ) || !DOING_AJAX ) ) {
+if ( is_admin() && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {
 	include_once( BPF_PATH . '/admin.php' );
 }
 
@@ -62,9 +59,10 @@ if ( is_admin() && (!defined( 'DOING_AJAX' ) || !DOING_AJAX ) ) {
 register_activation_hook( __FILE__, 'bpf_activation' );
 function bpf_activation() {
 	// Check that we actually can work on the current environment (php, BP etc)
-	if ( ! bpf_has_compatible_env() ) {
-		add_action( 'admin_notices', 'bpf_notice_check_requirements' );
-		return;
+	$requirements = new WP_Requirements();
+
+	if ( ! $requirements->valid() ) {
+		$requirements->process_failure();
 	}
 
 	// some defaults
@@ -96,6 +94,19 @@ function bpf_activation() {
 		'description' => __( 'Give your members ability to import posts from other sources into their activity feed.', BPF_I18N ),
 	) );
 }
+
+/**
+ * Check all the time in admin area that nothing is broken
+ */
+function bpf_check_requirements() {
+	$requirements = new WP_Requirements();
+
+	if ( ! $requirements->valid() ) {
+		$requirements->process_failure();
+	}
+}
+
+add_action( 'admin_init', 'bpf_check_requirements' );
 
 /**
  * What to do on deactivation
