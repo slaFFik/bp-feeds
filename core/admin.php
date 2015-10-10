@@ -5,7 +5,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Check all the time in admin area that nothing is broken
+ * Check in admin area that nothing is broken
+ * Be default this check will deactivate the plugin and display a notice with reasons
  */
 function bpf_check_requirements() {
 	$requirements = new WP_Requirements();

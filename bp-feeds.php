@@ -29,11 +29,6 @@ define( 'BPF_CPT', 'bp_feed' );
 define( 'BPF_TAX', 'bp_feed_component' );
 
 /**
- * Check compatibility
- */
-include_once( BPF_LIBS_PATH . '/wp-requirements/wp-requirements.php' );
-
-/**
  * All the helpers functions used everywhere
  */
 include_once( BPF_PATH . '/helpers.php' );
@@ -50,6 +45,9 @@ include_once( BPF_PATH . '/components.php' );
  * Admin area
  */
 if ( is_admin() && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {
+	// Library to check plugin requirements
+	include_once( BPF_LIBS_PATH . '/wp-requirements/wp-requirements.php' );
+	// General admin area code (menu, pages etc)
 	include_once( BPF_PATH . '/admin.php' );
 }
 
@@ -59,11 +57,7 @@ if ( is_admin() && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {
 register_activation_hook( __FILE__, 'bpf_activation' );
 function bpf_activation() {
 	// Check that we actually can work on the current environment (php, BP etc)
-	$requirements = new WP_Requirements();
-
-	if ( ! $requirements->valid() ) {
-		$requirements->process_failure();
-	}
+	bpf_check_requirements();
 
 	// some defaults
 	$bpf = array(
