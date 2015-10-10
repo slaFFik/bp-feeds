@@ -96,19 +96,6 @@ function bpf_activation() {
 }
 
 /**
- * Check all the time in admin area that nothing is broken
- */
-function bpf_check_requirements() {
-	$requirements = new WP_Requirements();
-
-	if ( ! $requirements->valid() ) {
-		$requirements->process_failure();
-	}
-}
-
-add_action( 'admin_init', 'bpf_check_requirements' );
-
-/**
  * What to do on deactivation
  */
 register_deactivation_hook( __FILE__, 'bpf_deactivation' );

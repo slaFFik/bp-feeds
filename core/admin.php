@@ -5,6 +5,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Check all the time in admin area that nothing is broken
+ */
+function bpf_check_requirements() {
+	$requirements = new WP_Requirements();
+
+	if ( ! $requirements->valid() ) {
+		$requirements->process_failure();
+	}
+}
+
+add_action( 'admin_init', 'bpf_check_requirements' );
+
+/**
  * Init the function, that will init admin page
  */
 function bpf_admin_init() {
