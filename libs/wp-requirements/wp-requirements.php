@@ -15,9 +15,9 @@
  */
 
 // Do not load the class twice. Although there might be compatibility issues.
-if ( ! class_exists( 'WP_Requirements' ) ) :
+if ( ! class_exists( 'BPF_Requirements' ) ) :
 
-	class WP_Requirements {
+	class BPF_Requirements {
 
 		const VERSION = '1.1';
 

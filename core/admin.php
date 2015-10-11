@@ -9,10 +9,14 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Be default this check will deactivate the plugin and display a notice with reasons
  */
 function bpf_check_requirements() {
-	$requirements = new WP_Requirements();
+	// Make suse we have this file
+	include_once( BPF_LIBS_PATH . '/wp-requirements/wp-requirements.php' );
 
-	if ( ! $requirements->valid() ) {
-		$requirements->process_failure();
+	/** @noinspection PhpUndefinedClassInspection */
+	$bpf_requirements = new BPF_Requirements();
+
+	if ( ! $bpf_requirements->valid() ) {
+		$bpf_requirements->process_failure();
 	}
 }
 

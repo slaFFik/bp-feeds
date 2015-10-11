@@ -45,8 +45,6 @@ include_once( BPF_PATH . '/components.php' );
  * Admin area
  */
 if ( is_admin() && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {
-	// Library to check plugin requirements
-	include_once( BPF_LIBS_PATH . '/wp-requirements/wp-requirements.php' );
 	// General admin area code (menu, pages etc)
 	include_once( BPF_PATH . '/admin.php' );
 }
@@ -57,7 +55,13 @@ if ( is_admin() && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {
 register_activation_hook( __FILE__, 'bpf_activation' );
 function bpf_activation() {
 	// Check that we actually can work on the current environment (php, BP etc)
-	bpf_check_requirements();
+	include_once( BPF_LIBS_PATH . '/wp-requirements/wp-requirements.php' );
+	$requirements = new BPF_Requirements();
+
+	if ( ! $requirements->valid() ) {
+		$requirements->process_failure();
+		return;
+	}
 
 	// some defaults
 	$bpf = array(
