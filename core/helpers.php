@@ -50,7 +50,6 @@ function bpf_get_count_folder_size() {
  */
 function bpf_the_template_part( $template, Array $options = array() ) {
 	$template = wp_strip_all_tags( trim( $template ) );
-	//$path = apply_filters( 'bpf_the_template_part', BPF_PATH . '/_parts/' . $template . '.php', $template, $options );
 
 	$paths = bpf_get_template_paths();
 
@@ -60,7 +59,7 @@ function bpf_the_template_part( $template, Array $options = array() ) {
 		if ( file_exists( $file_path ) ) {
 
 			// hate doing this
-			if ( is_array( $options ) && ! count( $options ) > 0 ) {
+			if ( is_array( $options ) && count( $options ) > 0 ) {
 				extract( $options );
 			}
 
