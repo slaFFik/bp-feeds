@@ -135,17 +135,17 @@ add_action( 'plugins_loaded', 'bpf_load_textdomain' );
 /**
  * Include the front-end things
  */
-function bpf_front_init() {
+function bpf_init() {
 	$bpf = bp_get_option( 'bpf' );
 
 	require_once( BPF_PATH . '/class-feed.php' );
 
 	require_once( BPF_PATH . '/members.php' );
 
-	do_action( 'bpf_front_init', $bpf );
+	do_action( 'bpf_init', $bpf );
 }
 
-add_action( 'bp_loaded', 'bpf_front_init' );
+add_action( 'bp_loaded', 'bpf_init' );
 
 /**
  * Modify the caching period to the specified value in seconds by admin

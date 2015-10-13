@@ -31,8 +31,7 @@ function bpf_get_count_folder_size() {
 	$bytestotal = 0;
 
 	$upload_dir = wp_upload_dir();
-	$path       = $upload_dir['basedir'] . '/' . BPF_UPLOAD_DIR;
-	$path       = realpath( $path );
+	$path       = realpath( $upload_dir['basedir'] . '/' . BPF_UPLOAD_DIR );
 
 	if ( $path !== false ) {
 		foreach ( new RecursiveIteratorIterator( new RecursiveDirectoryIterator( $path, FilesystemIterator::SKIP_DOTS ) ) as $object ) {
@@ -46,22 +45,56 @@ function bpf_get_count_folder_size() {
 /**
  * Include template files for the plugin
  *
- * @param $template string Template file from /core/_part/ fodler without file extension
- * @param $options  array  Variables that we need to use inside that template
+ * @param string $template Template file from /core/_part/ fodler without file extension
+ * @param array $options Variables that we need to use inside that template
  */
 function bpf_the_template_part( $template, Array $options = array() ) {
-	$path = apply_filters( 'bpf_the_template_part', BPF_PATH . '/_parts/' . $template . '.php', $template, $options );
+	$template = wp_strip_all_tags( trim( $template ) );
+	//$path = apply_filters( 'bpf_the_template_part', BPF_PATH . '/_parts/' . $template . '.php', $template, $options );
 
-	if ( file_exists( $path ) ) {
+	$paths = bpf_get_template_paths();
 
-		// hate doing this
-		if ( is_array( $options ) && !count( $options ) > 0 ) {
-			extract( $options );
+	foreach ( $paths as $path ) {
+		$file_path = $path . $template . '.php';
+
+		if ( file_exists( $file_path ) ) {
+
+			// hate doing this
+			if ( is_array( $options ) && ! count( $options ) > 0 ) {
+				extract( $options );
+			}
+
+			/** @noinspection PhpIncludeInspection */
+			include_once( apply_filters( 'bpf_include_template_part', $file_path, $template, $options ) );
+
+			return;
 		}
-
-		/** @noinspection PhpIncludeInspection */
-		include_once( $path );
 	}
+}
+
+/**
+ * Registering places where to search for templates
+ * TODO: add grouping (use array key for that)
+ *
+ * @param string $path
+ */
+function bpf_register_template_path( $path ) {
+	global $bp_feeds_template_paths;
+
+	$bp_feeds_template_paths[] = BPF_PATH . '/_parts/';
+
+	array_push( $bp_feeds_template_paths, wp_normalize_path( wp_strip_all_tags( trim( $path ) ) ) );
+}
+
+/**
+ * Wrapper around global var to get the list of paths to templates
+ *
+ * @return array
+ */
+function bpf_get_template_paths() {
+	global $bp_feeds_template_paths;
+
+	return (array) apply_filters( 'bpf_get_template_paths', $bp_feeds_template_paths );
 }
 
 /**
