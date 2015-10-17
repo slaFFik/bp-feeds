@@ -13,23 +13,27 @@ function bpf_record_cpt_activity_content( $activity ) {
 	if ( bpf_get_new_cpt_slug() === $activity['type'] ) {
 		$bpf = bp_get_option( 'bpf' );
 
-		$item = BPF_Feed::get_item( $activity['secondary_item_id'] );
+		$item = BPF_Member_Feed::get_item( $activity['secondary_item_id'] );
 
-		$nofollow = 'rel="nofollow"';
-		if ( ! empty( $bpf['link_nofollow'] ) && $bpf['link_nofollow'] === 'no' ) {
-			$nofollow = '';
+		$link_attrs = array();
+
+		if ( ! empty( $bpf['link_nofollow'] ) && $bpf['link_nofollow'] === 'yes' ) {
+			$link_attrs['nofollow'] = 'rel="nofollow"';
 		}
 
-		$target = 'target="_blank"';
-		if ( ! empty( $bpf['link_target'] ) && $bpf['link_target'] === 'self' ) {
-			$target = '';
+		if ( ! empty( $bpf['link_target'] ) && $bpf['link_target'] === 'blank' ) {
+			$link_attrs['target'] = 'target="_blank"';
 		}
 
-		$post_link = '<a href="' . esc_url( $item->guid ) . '" ' . $nofollow . ' ' . $target . ' class="bpf-feed-item bpf-feed-member-item">'
+		$link_attrs['class'] = 'class="bpf-feed-item bpf-feed-member-item"';
+
+		$link_attrs = apply_filters( 'bpf_record_cpt_activity_content_link_attrs', $link_attrs );
+
+		$post_link = '<a href="' . esc_url( $item->guid ) . '" ' . implode( ' ', $link_attrs ) . '>'
 		             . apply_filters( 'the_title', $item->post_title, $item->ID ) .
 		             '</a>';
 
-		$activity['component']    = 'members';
+		$activity['component']    = bpf_members_get_component_slug();
 		$activity['primary_link'] = $item->guid;
 		$activity['action']       = sprintf(
 			__( '%1$s imported a new post, %2$s', BPF_I18N ),

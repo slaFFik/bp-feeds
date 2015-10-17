@@ -97,7 +97,7 @@ function bpf_get_component_id( $slug ) {
 /**
  * Delete the Component associated term_id bu slug of term_id
  *
- * @param $slug_or_id
+ * @param string|int $slug_or_id
  *
  * @return bool|int|WP_Error
  */

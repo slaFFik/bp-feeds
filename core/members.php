@@ -59,20 +59,11 @@ add_action( 'bp_setup_nav', 'bpf_profile_activity_submenu', 100 );
  */
 function bpf_profile_activity_submenu_page() {
 	if ( bp_is_user() && ( bp_current_action() === BPF_SLUG || bp_current_component() === BPF_SLUG ) ) {
-		// Get a SimplePie feed object from the specified feed source.
-		$feed_url = bpf_get_user_rss_feed_url();
+		echo '<style>#activity-filter-select{display:none}</style>';
 
-		if ( ! empty( $feed_url ) ) {
-			echo '<style>#activity-filter-select{display:none}</style>';
-
-			// do the import
-			if ( ! empty( $feed_url ) ) {
-
-				$feed = new BPF_Feed( 'members' ); // displayed user id by default
-
-				$feed->pull(); // got data and saved into DB
-			}
-		}
+		// do the import
+		$feed = new BPF_Member_Feed( bp_displayed_user_id() );
+		$feed->pull(); // get data from $feed_url and saved it into DB
 	}
 
 	do_action( 'bpf_profile_activity_submenu_page' );
@@ -90,21 +81,19 @@ function bpf_profile_activity_page() {
 }
 
 function bpf_profile_activity_page_content() {
-	if ( bp_current_component() !== BPF_SLUG ) {
-		do_action( 'bpf_no_page_message' );
-
+	if ( bp_is_user() && bp_current_component() !== BPF_SLUG ) {
 		return;
 	}
 
+	$feed = new BPF_Member_Feed( bp_displayed_user_id() );
+
+	$feed->pull(); // get data from $feed_url and saved it into DB
+
 	// Get a SimplePie feed url from the specified feed source.
-	$feed_url = bpf_get_user_rss_feed_url();
+	$feed_url = bpf_get_member_feed_url();
 
+	// do the import
 	if ( ! empty( $feed_url ) ) {
-
-		$feed = new BPF_Feed( bpf_members_get_component_slug() ); // displayed user id by default
-
-		$feed->pull(); // we just got data from $feed_url and saved it into DB
-
 		bpf_the_template_part( 'menu_feed_title', array(
 			'feed' => $feed
 		) );
@@ -159,7 +148,7 @@ function bpf_profile_settings_submenu_page() {
 	do_action( 'bpf_profile_settings_submenu_page' );
 
 	if ( isset( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'bp_settings_bpf' ) ) {
-		if ( bp_update_user_meta( bp_displayed_user_id(), 'bpf_rss_feed', wp_strip_all_tags( $_POST['bpf_rss_feed'] ) ) ) {
+		if ( bp_update_user_meta( bp_displayed_user_id(), 'bpf_feed_url', wp_strip_all_tags( $_POST['bpf_feed_url'] ) ) ) {
 			$message = __( 'Your Feed URL has been saved.', BPF_I18N );
 			$type    = 'success';
 			wp_cache_delete( 'bpf_blogs_get_blogs_count', BPF_I18N );
@@ -220,8 +209,8 @@ function bpf_signup_rss_feed_field() {
 	$bpf = bp_get_option( 'bpf' ); ?>
 
 	<div class="editfield">
-		<label for="bpf_rss_feed"><?php echo $bpf['tabs']['members']; ?></label>
-		<input id="bpf_rss_feed" name="bpf_rss_feed" type="text"
+		<label for="bpf_feed_url"><?php echo $bpf['tabs']['members']; ?></label>
+		<input id="bpf_feed_url" name="bpf_feed_url" type="text"
 		       placeholder="<?php echo $bpf['rss']['placeholder']; ?>"/>
 
 		<p class="description">
@@ -248,7 +237,7 @@ function bpf_signup_rss_feed_field_pre_save( $usermeta ) {
 		return $usermeta;
 	}
 
-	$usermeta['bpf_rss_feed'] = wp_strip_all_tags( $_POST['bpf_rss_feed'] );
+	$usermeta['bpf_feed_url'] = wp_strip_all_tags( $_POST['bpf_feed_url'] );
 
 	return $usermeta;
 }
@@ -273,7 +262,7 @@ function bpf_signup_rss_feed_field_save(
 	}
 
 	if ( is_numeric( $user_id ) ) {
-		return bp_update_user_meta( $user_id, 'bpf_rss_feed', $user['meta']['bpf_rss_feed'] );
+		return bp_update_user_meta( $user_id, 'bpf_feed_url', $user['meta']['bpf_feed_url'] );
 	}
 
 	return false;

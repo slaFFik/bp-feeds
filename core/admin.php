@@ -87,7 +87,6 @@ function bpf_admin_url( $path = '' ) {
 function bpf_get_admin_url( $path = '' ) {
 	$page = 'edit.php?post_type=' . BPF_CPT . '&page=' . BPF_ADMIN_SLUG;
 
-	/** @noinspection IsEmptyFunctionUsageInspection */
 	if ( ! empty( $path ) ) {
 		$path = '&' . (string) $path;
 	}
@@ -195,19 +194,6 @@ function bpf_admin_page() { ?>
 }
 
 /**
- * Get the array of sections. Filtarable.
- * Used for both navigation and page content.
- *
- * @return array
- */
-function bpf_admin_get_sections() {
-	return apply_filters( 'bpf_admin_page_sections', array(
-		'general' => __( 'General', BPF_I18N ),
-		'members' => __( 'Members', BPF_I18N ),
-	) );
-}
-
-/**
  * Get the current BP Feeds admin area section slug
  * Defaults to 'genera'
  *
@@ -242,6 +228,23 @@ function bpf_admin_page_notice() {
 
 add_action( 'bpf_admin_page_before_nav', 'bpf_admin_page_notice' );
 
+/*****************************************************
+ * Defining default admin sections and their content *
+ *****************************************************/
+
+/**
+ * Get the array of sections. Filtarable.
+ * Used for both navigation and page content.
+ *
+ * @return array
+ */
+function bpf_admin_get_sections() {
+	return apply_filters( 'bpf_admin_page_sections', array(
+		'general' => __( 'General', BPF_I18N ),
+		'members' => __( 'Members', BPF_I18N ),
+	) );
+}
+
 /**
  * Default admin page: General
  */
@@ -261,10 +264,9 @@ function bpf_admin_page_members() {
 add_action( 'bpf_admin_page_content_members', 'bpf_admin_page_members' );
 
 /**
- * Process saving of all settings
+ * Process saving of all the settings
  */
 function bpf_admin_page_save() {
-
 	if ( ! array_key_exists( 'bpf-admin-submit', $_POST ) || ! array_key_exists( 'bpf', $_POST ) ) {
 		return;
 	}

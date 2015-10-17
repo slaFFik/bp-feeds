@@ -157,7 +157,7 @@ $bpf = bp_get_option( 'bpf' );
 	<!-- Allow commenting? -->
 	<tr valign="top">
 		<th scope="row">
-			<?php _e( 'Allow activity feen commenting of imported posts?', BPF_I18N ); ?>
+			<?php _e( 'Allow activity feed commenting of imported posts?', BPF_I18N ); ?>
 		</th>
 		<td>
 			<label>
@@ -184,7 +184,7 @@ $bpf = bp_get_option( 'bpf' );
 
 	<!-- Cron frequency -->
 	<tr valign="top">
-		<th scope="row"><label for="bpf_rss_frequency"><?php _e( 'RSS feeds update frequency', BPF_I18N ); ?></label>
+		<th scope="row"><label for="bpf_rss_frequency"><?php _e( 'Feeds update frequency', BPF_I18N ); ?></label>
 		</th>
 		<td>
 			<input name="bpf[rss][frequency]" id="bpf_rss_frequency" type="text" required="required"
@@ -219,7 +219,7 @@ $bpf = bp_get_option( 'bpf' );
 			<p class="description bpf-option-desc"><?php _e( 'Good option if you want to reactivate the plugin later.', BPF_I18N ); ?></p>
 			<label>
 				<input name="bpf[uninstall]" type="radio" value="data" <?php checked( 'data', $bpf['uninstall'] ); ?>>&nbsp;
-				<?php _e( 'RSS data will be deleted, options (admin, users, groups) will be preserved', BPF_I18N ); ?>
+				<?php _e( 'Feeds data will be deleted, all options will stay intact', BPF_I18N ); ?>
 			</label>
 
 			<p class="description bpf-option-desc"><?php _e( 'If you want to cleanup the plugin\'s data, but preserve all settings - use this option.', BPF_I18N ); ?></p>

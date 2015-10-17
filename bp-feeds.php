@@ -138,7 +138,7 @@ add_action( 'plugins_loaded', 'bpf_load_textdomain' );
 function bpf_init() {
 	$bpf = bp_get_option( 'bpf' );
 
-	require_once( BPF_PATH . '/class-feed.php' );
+	require_once( BPF_PATH . '/class-feed-member.php' );
 
 	require_once( BPF_PATH . '/members.php' );
 
@@ -270,7 +270,7 @@ add_action( 'bp_init', 'bpf_register_cpt', 999 );
  */
 function bpf_activity_filter_options() {
 	if ( bp_is_active( 'settings' ) ) {
-		echo '<option value="' . bpf_get_new_cpt_slug() . '">' . __( 'Members Feed', BPF_I18N ) . '</option>';
+		echo '<option value="' . bpf_get_new_cpt_slug() . '">' . __( 'Members Feeds', BPF_I18N ) . '</option>';
 	}
 
 	do_action( 'bpf_activity_filter_options' );

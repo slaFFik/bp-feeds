@@ -53,7 +53,7 @@ function bpf_the_template_part( $template, Array $options = array() ) {
 
 	$paths = bpf_get_template_paths();
 
-	foreach ( $paths as $path ) {
+	foreach ( $paths as $type => $path ) {
 		$file_path = $path . $template . '.php';
 
 		if ( file_exists( $file_path ) ) {
@@ -72,26 +72,12 @@ function bpf_the_template_part( $template, Array $options = array() ) {
 }
 
 /**
- * Registering places where to search for templates
- * TODO: add grouping (use array key for that)
- *
- * @param string $path
- */
-function bpf_register_template_path( $path ) {
-	global $bp_feeds_template_paths;
-
-	$bp_feeds_template_paths[] = BPF_PATH . '/_parts/';
-
-	array_push( $bp_feeds_template_paths, wp_normalize_path( wp_strip_all_tags( trim( $path ) ) ) );
-}
-
-/**
  * Wrapper around global var to get the list of paths to templates
  *
  * @return array
  */
 function bpf_get_template_paths() {
-	global $bp_feeds_template_paths;
+	$bp_feeds_template_paths['default'] = wp_normalize_path( BPF_PATH . '/_parts/' );
 
 	return (array) apply_filters( 'bpf_get_template_paths', $bp_feeds_template_paths );
 }
@@ -160,10 +146,29 @@ function bpf_get_href( $link ) {
  *
  * @return string Feed URL
  */
-function bpf_get_user_rss_feed_url( $user_id = false ) {
+function bpf_get_member_feed_url( $user_id = false ) {
 	if ( empty( $user_id ) ) {
 		$user_id = bp_displayed_user_id();
 	}
 
-	return bp_get_user_meta( $user_id, 'bpf_rss_feed', true );
+	return bp_get_user_meta( (int) $user_id, 'bpf_feed_url', true );
+}
+
+/**
+ * Check that we are in debug mode
+ *
+ * @return bool True if WordPress site debug mode is enabled,
+ */
+function bpf_is_debug() {
+	/**
+	 * Using == intentionaly, as someone may use this (or similar) approach:
+	 *     define('WP_DEBUG', 1);
+	 *
+	 * Boo on that people.
+	 */
+	if ( defined( 'WP_DEBUG' ) && WP_DEBUG == true ) {
+		return true;
+	}
+
+	return false;
 }
