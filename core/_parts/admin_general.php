@@ -11,43 +11,6 @@ $bpf = bp_get_option( 'bpf' );
 
 <table class="form-table">
 
-	<!-- RSS first image -->
-	<tr valign="top" style="display: none">
-		<th scope="row"><?php _e( 'RSS item first image', BPF_I18N ); ?></th>
-		<td>
-			<label>
-				<input name="bpf[rss][image]" type="radio"
-				       value="display_local" <?php checked( 'display_local', $bpf['rss']['image'] ); ?>>&nbsp;
-				<?php _e( 'Grab, save locally and display', BPF_I18N ); ?>
-			</label>
-
-			<p class="description option_desc">
-				<?php _e( 'This will create a copy of an image on your server. <br/>
-                            If that image is deleted from the RSS source site, you will still be able to display it.', BPF_I18N ); ?>
-			</p>
-			<label>
-				<input name="bpf[rss][image]" type="radio"
-				       value="display_remote" <?php checked( 'display_remote', $bpf['rss']['image'] ); ?>>&nbsp;
-				<?php _e( 'Display using hotlinking', BPF_I18N ); ?> <a href="http://en.wikipedia.org/wiki/Inline_linking"
-				                                                     target="_blank"
-				                                                     title="<?php _e( 'What is hotlinking?', BPF_I18N ); ?>">#</a>
-			</label>
-
-			<p class="description option_desc">
-				<?php _e( 'Image will not be downloaded to your server, saving you some bandwith. <br/>
-                            If on RSS source site the image is deleted, it will not be displayed on your site. <br/>
-                            Generally it is a bad practice and you should avoid doing this, because you are creating a server load for external site.', BPF_I18N ); ?>
-			</p>
-			<label>
-				<input name="bpf[rss][image]" type="radio"
-				       value="none" <?php checked( 'none', $bpf['rss']['image'] ); ?> />&nbsp;
-				<?php _e( 'Do not display image', BPF_I18N ); ?>
-			</label>
-
-			<p class="description option_desc"><?php _e( 'Only RSS post title and excerpt will be displayed.', BPF_I18N ); ?></p>
-		</td>
-	</tr>
-
 	<!-- RSS Nofollow link -->
 	<tr valign="top">
 		<th scope="row">
@@ -146,10 +109,9 @@ $bpf = bp_get_option( 'bpf' );
 			<input name="bpf[rss][posts]" id="bpf_rss_posts" type="text" class="small-text" required="required"
 			       value="<?php esc_attr_e( $bpf['rss']['posts'] ); ?>"> <?php _e( 'posts', BPF_I18N ); ?>
 			<p class="description">
-				<?php _e( 'How many posts would you like to import when a RSS feed is added?', BPF_I18N ); ?><br/>
-				<?php _e( 'This is useful if you do not want to fill the activity stream with older posts.', BPF_I18N ); ?>
+				<?php _e( 'How many posts would you like to import when a feed is added?', BPF_I18N ); ?>
 				<br/>
-				<?php _e( 'By default this is set to only import the last 5 published posts.', BPF_I18N ); ?>
+				<?php _e( 'By default this is set to only import the last 10 published posts, but the number of actually imported depends on each feed. Plugin can not import more, than the feed provides.', BPF_I18N ); ?>
 			</p>
 		</td>
 	</tr>
