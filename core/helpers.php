@@ -172,3 +172,13 @@ function bpf_is_debug() {
 
 	return false;
 }
+
+/**
+ * Sometimes we will need to remove feed meta.
+ * Example - wheb empty feed_url is saved.
+ *
+ * @param $user_id
+ */
+function bpf_member_clean_feed_meta( $user_id ) {
+	bp_update_user_meta( $user_id, 'bpf_feed_meta', '' );
+}

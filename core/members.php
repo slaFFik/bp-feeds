@@ -148,10 +148,14 @@ function bpf_profile_settings_submenu_page() {
 	do_action( 'bpf_profile_settings_submenu_page' );
 
 	if ( isset( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'bp_settings_bpf' ) ) {
-		if ( bp_update_user_meta( bp_displayed_user_id(), 'bpf_feed_url', wp_strip_all_tags( $_POST['bpf_feed_url'] ) ) ) {
+		$feed_url = trim( wp_strip_all_tags( $_POST['bpf_feed_url'] ) );
+
+		if ( bp_update_user_meta( bp_displayed_user_id(), 'bpf_feed_url', $feed_url ) ) {
+			if ( empty( $feed_url ) ) {
+				bpf_member_clean_feed_meta( bp_displayed_user_id() );
+			}
 			$message = __( 'Your Feed URL has been saved.', BPF_I18N );
 			$type    = 'success';
-			wp_cache_delete( 'bpf_blogs_get_blogs_count', BPF_I18N );
 		} else {
 			$message = __( 'No changes were made.', BPF_I18N );
 			$type    = 'updated';
@@ -161,7 +165,7 @@ function bpf_profile_settings_submenu_page() {
 		bp_core_add_message( $message, $type );
 
 		// Execute additional code
-		do_action( 'bpf_profile_rss_feed_settings_after_save' );
+		do_action( 'bpf_profile_feed_settings_after_save' );
 
 		// Redirect to prevent issues with browser back button
 		bp_core_redirect( trailingslashit( bp_displayed_user_domain() . bp_get_settings_slug() . '/' . BPF_SLUG ) );
@@ -262,7 +266,7 @@ function bpf_signup_rss_feed_field_save(
 	}
 
 	if ( is_numeric( $user_id ) ) {
-		return bp_update_user_meta( $user_id, 'bpf_feed_url', $user['meta']['bpf_feed_url'] );
+		return bp_update_user_meta( $user_id, 'bpf_feed_url', esc_url_raw( $user['meta']['bpf_feed_url'] ) );
 	}
 
 	return false;
