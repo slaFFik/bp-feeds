@@ -46,8 +46,8 @@ class BPF_Member_Feed extends BPF_Feed {
 	 */
 	public function save_meta() {
 		$meta = apply_filters( 'bpf_member_feed_before_save_meta', array(
-			'feed_title' => $this->feed->get_title(),
-			'feed_url'   => $this->feed->get_link() // URL to a site of that feed
+			'site_title' => $this->feed->get_title(),
+			'site_url'   => $this->feed->get_link() // URL to a site of that feed
 		) );
 
 		bp_update_user_meta( $this->component_id, 'bpf_feed_meta', $meta );
@@ -61,7 +61,7 @@ class BPF_Member_Feed extends BPF_Feed {
 	 * @return array
 	 */
 	public function get_meta() {
-		$meta = apply_filters( 'bpf_member_feed_get_meta', bp_get_user_meta( $this->component_id, 'bpf_feed_meta' ), $this->component, $this->component_id );
+		$meta = apply_filters( 'bpf_member_feed_get_meta', (array) bp_get_user_meta( $this->component_id, 'bpf_feed_meta', true ), $this->component, $this->component_id );
 
 		if ( ! array_key_exists( 'feed_title', $meta ) ) {
 			$meta['feed_title'] = '';

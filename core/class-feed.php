@@ -39,6 +39,11 @@ abstract class BPF_Feed implements BPF_Feed_Interface {
 	public $imported = array();
 
 	/**
+	 * Extra feed data saved into component meta for future reference
+	 */
+	public $meta = array();
+
+	/**
 	 * BPF_Feed constructor.
 	 *
 	 * @param string $component Basically, component slug
@@ -48,6 +53,8 @@ abstract class BPF_Feed implements BPF_Feed_Interface {
 		$this->bpf = bp_get_option( 'bpf' );
 
 		$this->_set_component( $component, $component_id );
+
+		$this->get_meta();
 
 		do_action( 'bpf_feed_construct', $this );
 	}
@@ -140,6 +147,8 @@ abstract class BPF_Feed implements BPF_Feed_Interface {
 
 		$this->items = apply_filters( 'bpf_feed_items_before_save', $this->items, $this->component, $this->component_id );
 
+		do_action( 'bpf_feed_before_save', $this );
+
 		foreach ( $this->items as $item ) {
 			/** @var $item SimplePie_Item */
 
@@ -183,7 +192,7 @@ abstract class BPF_Feed implements BPF_Feed_Interface {
 			}
 		}
 
-		do_action( 'bpf_feed_save', $this );
+		do_action( 'bpf_feed_after_save', $this );
 
 		return $this->imported;
 	}

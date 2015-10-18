@@ -6,7 +6,7 @@
 		<label for="<?php echo BPF_SLUG; ?>-member-url"><?php _e( 'External Feed URL', BPF_I18N ); ?></label>
 
 		<input type="text" name="bpf_feed_url" id="<?php echo BPF_SLUG; ?>-member-url"
-		       placeholder="<?php bpf_the_rss_placeholder(); ?>" value="<?php echo bpf_get_member_feed_url(); ?>"
+		       placeholder="<?php bpf_the_feed_placeholder(); ?>" value="<?php echo bpf_get_member_feed_url(); ?>"
 		       class="settings-input">
 
 		<p class="description">

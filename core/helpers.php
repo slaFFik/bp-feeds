@@ -116,14 +116,14 @@ function bpf_get_file_extension_by_type( $type ) {
 /**
  * Get the global $bpf option - placeholder url
  */
-function bpf_the_rss_placeholder() {
-	echo bpf_get_rss_placeholder();
+function bpf_the_feed_placeholder() {
+	echo bpf_get_feed_placeholder();
 }
 
-function bpf_get_rss_placeholder() {
+function bpf_get_feed_placeholder() {
 	$bpf = bp_get_option( 'bpf' );
 
-	return isset( $bpf['rss']['placeholder'] ) ? apply_filters( 'bpf_get_rss_placeholder', $bpf['rss']['placeholder'], $bpf ) : '';
+	return apply_filters( 'bpf_get_feed_placeholder', isset( $bpf['rss']['placeholder'] ) ? $bpf['rss']['placeholder'] : '', $bpf );
 }
 
 /**
@@ -175,9 +175,9 @@ function bpf_is_debug() {
 
 /**
  * Sometimes we will need to remove feed meta.
- * Example - wheb empty feed_url is saved.
+ * Example - when empty feed_url is saved.
  *
- * @param $user_id
+ * @param int $user_id
  */
 function bpf_member_clean_feed_meta( $user_id ) {
 	bp_update_user_meta( $user_id, 'bpf_feed_meta', '' );
