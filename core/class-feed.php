@@ -253,7 +253,16 @@ abstract class BPF_Feed implements BPF_Feed_Interface {
 	 * @return array|null|WP_Post
 	 */
 	public static function get_item( $item_id ) {
-		return get_post( $item_id );
+		$post = get_post( $item_id );
+
+		$terms = wp_get_object_terms( $item_id, BPF_TAX );
+
+		if ( ! is_wp_error($terms) && count($terms) == 1 ) {
+			/** @noinspection PhpUndefinedFieldInspection */
+			$post->component = $terms[0];
+		}
+
+		return $post;
 	}
 }
 

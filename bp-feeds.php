@@ -268,7 +268,7 @@ add_action( 'bp_init', 'bpf_register_cpt', 999 );
 /**
  * Display additional Activity filter on Activity Directory page
  */
-function bpf_activity_filter_options() {
+function bpf_members_activity_filter_options() {
 	if ( bp_is_active( 'settings' ) ) {
 		echo '<option value="' . bpf_get_new_cpt_slug() . '">' . __( 'Members Feeds', BPF_I18N ) . '</option>';
 	}
@@ -276,4 +276,4 @@ function bpf_activity_filter_options() {
 	do_action( 'bpf_activity_filter_options' );
 }
 
-add_action( 'bp_activity_filter_options', 'bpf_activity_filter_options' );
+add_action( 'bp_activity_filter_options', 'bpf_members_activity_filter_options' );

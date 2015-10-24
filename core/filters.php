@@ -7,13 +7,18 @@
  *
  * @return array $activity
  */
-function bpf_record_cpt_activity_content( $activity ) {
+function bpf_members_record_cpt_activity_content( $activity ) {
 	// $activity['secondary_item_id'] is CPT ID
 
 	if ( bpf_get_new_cpt_slug() === $activity['type'] ) {
 		$bpf = bp_get_option( 'bpf' );
 
 		$item = BPF_Member_Feed::get_item( $activity['secondary_item_id'] );
+
+		/** @noinspection PhpUndefinedFieldInspection */
+		if ( empty($item->component->slug) || $item->component->slug !== bpf_members_get_component_slug() ) {
+			return $activity;
+		}
 
 		$link_attrs = array();
 
@@ -27,7 +32,7 @@ function bpf_record_cpt_activity_content( $activity ) {
 
 		$link_attrs['class'] = 'class="bpf-feed-item bpf-feed-member-item"';
 
-		$link_attrs = apply_filters( 'bpf_record_cpt_activity_content_link_attrs', $link_attrs );
+		$link_attrs = apply_filters( 'bpf_record_cpt_activity_content_link_attrs', $link_attrs, $item );
 
 		$post_link = '<a href="' . esc_url( $item->guid ) . '" ' . implode( ' ', $link_attrs ) . '>'
 		             . apply_filters( 'the_title', $item->post_title, $item->ID ) .
@@ -42,10 +47,10 @@ function bpf_record_cpt_activity_content( $activity ) {
 		);
 	}
 
-	return apply_filters( 'bpf_record_cpt_activity_content', $activity );
+	return apply_filters( 'bpf_member_record_cpt_activity_content', $activity );
 }
 
-add_filter( 'bp_after_activity_add_parse_args', 'bpf_record_cpt_activity_content' );
+add_filter( 'bp_after_activity_add_parse_args', 'bpf_members_record_cpt_activity_content' );
 
 /**
  * Allow specific a[target] attribute for activity
@@ -89,7 +94,7 @@ add_filter( 'bp_activity_get_permalink', 'bpf_activity_get_permalink', 10, 2 );
  *
  * @return string
  */
-function bpf_ajax_querystring( $bp_ajax_querystring, $object ) {
+function bpf_members_ajax_querystring( $bp_ajax_querystring, $object ) {
 	/** @noinspection PhpUndefinedFieldInspection */
 	if (
 		bp_is_user() &&
@@ -104,7 +109,7 @@ function bpf_ajax_querystring( $bp_ajax_querystring, $object ) {
 	return apply_filters( 'bpf_ajax_querystring', $bp_ajax_querystring, $object );
 }
 
-add_filter( 'bp_ajax_querystring', 'bpf_ajax_querystring', 999, 2 );
+add_filter( 'bp_ajax_querystring', 'bpf_members_ajax_querystring', 999, 2 );
 
 /**
  * Control the commenting ability of imported feed posts
