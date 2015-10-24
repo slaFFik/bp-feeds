@@ -191,9 +191,9 @@ function bpf_register_cpt() {
 		'labels'              => array(
 			'name'                     => __( 'BP Feeds', BPF_I18N ),
 			'all_items'                => __( 'Imported Items', BPF_I18N ),
-			'bp_activity_admin_filter' => __( 'New imported feed post', BPF_I18N ),
-			'bp_activity_front_filter' => __( 'Feed', BPF_I18N ), // This is used on Member Activity page
-			// overriden in {@link bpf_record_cpt_activity_content()}
+			'bp_activity_admin_filter' => __( 'Imported posts from feed', BPF_I18N ),
+			'bp_activity_front_filter' => __( 'Imported Feeds', BPF_I18N ), // This is used on Member Activity page
+			// overriden in {@link bpf_members_srecord_cpt_activity_content_link_attrs()}
 			'bp_activity_new_post'     => __( '%1$s imported a new post, %2$s', BPF_I18N ),
 		),
 		'public'              => true,
@@ -264,16 +264,3 @@ function bpf_register_cpt() {
 }
 
 add_action( 'bp_init', 'bpf_register_cpt', 999 );
-
-/**
- * Display additional Activity filter on Activity Directory page
- */
-function bpf_members_activity_filter_options() {
-	if ( bp_is_active( 'settings' ) ) {
-		echo '<option value="' . bpf_get_new_cpt_slug() . '">' . __( 'Members Feeds', BPF_I18N ) . '</option>';
-	}
-
-	do_action( 'bpf_activity_filter_options' );
-}
-
-add_action( 'bp_activity_filter_options', 'bpf_members_activity_filter_options' );

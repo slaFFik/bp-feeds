@@ -3,10 +3,17 @@
 /**
  * Get the CPT slug that is used everywhere
  *
+ * @param string $postfix Postfix, that will be added to the end of the slug
+ *
  * @return string
  */
-function bpf_get_new_cpt_slug() {
-	return apply_filters( 'bpf_get_new_cpt_slug', 'new_' . BPF_CPT );
+function bpf_get_new_cpt_slug( $postfix = '' ) {
+	if ( ! empty( $postfix ) ) {
+		// we use double underscore __ for easier parsing later
+		$postfix = '__' . $postfix;
+	}
+
+	return apply_filters( 'bpf_get_new_cpt_slug', 'new_' . BPF_CPT . $postfix );
 }
 
 /**

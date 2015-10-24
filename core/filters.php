@@ -32,7 +32,7 @@ function bpf_members_record_cpt_activity_content( $activity ) {
 
 		$link_attrs['class'] = 'class="bpf-feed-item bpf-feed-member-item"';
 
-		$link_attrs = apply_filters( 'bpf_record_cpt_activity_content_link_attrs', $link_attrs, $item );
+		$link_attrs = apply_filters( 'bpf_members_srecord_cpt_activity_content_link_attrs', $link_attrs, $item );
 
 		$post_link = '<a href="' . esc_url( $item->guid ) . '" ' . implode( ' ', $link_attrs ) . '>'
 		             . apply_filters( 'the_title', $item->post_title, $item->ID ) .
