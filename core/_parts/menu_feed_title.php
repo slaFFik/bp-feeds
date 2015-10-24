@@ -2,7 +2,7 @@
 /** @var $feed BPF_Feed */
 ?>
 <?php
-if ( ! empty( $feed->meta['site_url'] ) ) : ?>
+if ( ! empty( $feed->meta['site_title'] ) ) : ?>
 	<div class="item-list-tabs no-ajax" id="subnav">
 		<ul class="bpf_feed_title">
 			<li class="feed">
