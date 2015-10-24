@@ -184,13 +184,13 @@ abstract class BPF_Feed implements BPF_Feed_Interface {
 
 				$this->imported[] = $feed_item_id;
 
-				$this->save_meta();
-
 				do_action( 'bpf_feed_saved_item', $this->feed, $item, $feed_item_id );
 			} else {
 				do_action( 'bpf_feed_not_saved_item', $this->feed, $item, $feed_item_id );
 			}
 		}
+
+		$this->save_meta();
 
 		do_action( 'bpf_feed_after_save', $this );
 

@@ -107,8 +107,8 @@ function bpf_deactivation() {
 
 	switch ( $bpf['uninstall'] ) {
 		case 'all':
-			bpf_delete_options();
 			bpf_delete_data();
+			bpf_delete_options();
 
 			do_action( 'bpf_delete_all' );
 			break;

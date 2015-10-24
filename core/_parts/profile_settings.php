@@ -16,7 +16,7 @@
 		<?php do_action( 'bpf_member_settings_template_before_submit' ); ?>
 
 		<div class="submit">
-			<input type="submit" name="submit" value="<?php esc_attr_e( 'Save', BPF_I18N ); ?>" id="submit"
+			<input type="submit" name="submit" value="<?php esc_attr_e( 'Save Changes', BPF_I18N ); ?>" id="submit"
 			       class="auto"/>
 		</div>
 

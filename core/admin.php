@@ -17,6 +17,8 @@ function bpf_check_requirements() {
 
 	if ( ! $bpf_requirements->valid() ) {
 		$bpf_requirements->process_failure();
+
+		return;
 	}
 }
 

@@ -36,15 +36,6 @@ function bpf_delete_options() {
 	global $wpdb;
 	$bp = buddypress();
 
-	// plugins options
-	bp_delete_option( 'bpf' );
-
-	// groups feeds urls
-	if ( bp_is_active( 'groups' ) && defined( 'BPF_CPT_GROUP_ITEM' ) ) {
-		/** @noinspection PhpUndefinedFieldInspection */
-		$wpdb->query( "DELETE FROM {$bp->groups->table_name_groupmeta} WHERE `meta_key` LIKE 'bpf_%'" );
-	}
-
 	// activity feed meta
 	if ( bp_is_active( 'activity' ) ) {
 		/** @noinspection PhpUndefinedFieldInspection */
@@ -54,4 +45,7 @@ function bpf_delete_options() {
 	// users feeds urls
 	/** @noinspection PhpUndefinedFieldInspection */
 	$wpdb->query( "DELETE FROM {$wpdb->usermeta} WHERE `meta_key` LIKE 'bpf_%'" );
+
+	// plugins options
+	bp_delete_option( 'bpf' );
 }
