@@ -352,3 +352,52 @@ function bpf_admin_page_save() {
 		wp_redirect( add_query_arg( 'message', 'error' ) );
 	}
 }
+
+/**
+ * Add ability to filter imported posts by component
+ */
+function bpf_admin_add_component_filter() {
+	$screen = get_current_screen();
+
+	if ( $screen->id == 'edit-'.BPF_CPT ) {
+		wp_dropdown_categories( array(
+			                        'show_option_all' => __( "Show All Components", BPF_I18N ),
+			                        'taxonomy'        => BPF_TAX,
+			                        'name'            => BPF_TAX,
+			                        'orderby'         => 'name',
+			                        'selected'        => ! empty( $_GET[ BPF_TAX ] ) ? $_GET[ BPF_TAX ] : '',
+			                        'show_count'      => true,
+			                        'hide_empty'      => true,
+			                        'depth'           => 0,
+			                        'hierarchical'    => true,
+			                        'value_field'     => 'term_id'
+		                        ) );
+	};
+}
+
+add_action( 'restrict_manage_posts', 'bpf_admin_add_component_filter' );
+
+/**
+ * Filter imported posts by components in wp-admin
+ *
+ * @param WP_Query $query
+ */
+function bpf_admin_filter_by_component( $query ) {
+	$screen = get_current_screen();
+
+	if (
+		$screen->id == 'edit-' . BPF_CPT &&
+		! empty( $_GET['post_type'] ) && $_GET['post_type'] == BPF_CPT &&
+		! empty( $_GET[ BPF_TAX ] )
+	) {
+		$query->set( 'tax_query', array(
+			array(
+				'taxonomy' => BPF_TAX,
+				'field'    => 'term_id',
+				'terms'    => $_GET[ BPF_TAX ],
+			)
+		) );
+	}
+}
+
+add_filter( 'parse_query', 'bpf_admin_filter_by_component' );
