@@ -132,7 +132,7 @@ function bpf_delete_components() {
 /**
  * Do not allow manually create components in wp-admin area
  */
-function bpf_components_custom_styles() {
+function bpf_admin_components_custom_styles() {
 	$screen = get_current_screen();
 
 	if ( 'edit-' . BPF_TAX == $screen->id ) { ?>
@@ -156,4 +156,4 @@ function bpf_components_custom_styles() {
 	}
 }
 
-add_action( 'admin_head', 'bpf_components_custom_styles' );
+add_action( 'admin_head', 'bpf_admin_components_custom_styles' );
