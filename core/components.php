@@ -22,7 +22,7 @@ function bpf_register_component( $slug, Array $args = array() ) {
 	$slug = trim( $slug );
 
 	if ( $slug === '' ) {
-		return new WP_Error( 'bpf_empty_component_slug', __( 'A slug is required for registering this component.' ), array($slug, $args) );
+		return new WP_Error( 'bpf_empty_component_slug', __( 'A slug is required for registering this component.' ), array( $slug, $args ) );
 	}
 
 	$name        = $slug;
@@ -128,3 +128,32 @@ function bpf_delete_components() {
 
 	return true;
 }
+
+/**
+ * Do not allow manually create components in wp-admin area
+ */
+function bpf_components_custom_styles() {
+	$screen = get_current_screen();
+
+	if ( 'edit-' . BPF_TAX == $screen->id ) { ?>
+		<style>
+			#col-right {
+				width: 100% !important;
+			}
+
+			#col-left, .row-actions, .bulkactions, .check-column, .submit {
+				display: none;
+			}
+		</style>
+		<script>
+			jQuery(document).ready(function () {
+				jQuery("#edittag").submit(function (event) {
+					event.preventDefault();
+				});
+			});
+		</script>
+		<?php
+	}
+}
+
+add_action( 'admin_head', 'bpf_components_custom_styles' );
