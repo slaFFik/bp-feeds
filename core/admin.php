@@ -321,7 +321,7 @@ function bpf_admin_page_save() {
 	if ( ! empty( $_POST['bpf']['rss']['posts'] ) ) {
 		$bpf['rss']['posts'] = (int) $_POST['bpf']['rss']['posts'];
 	} else {
-		$bpf['rss']['posts'] = '5';
+		$bpf['rss']['posts'] = '10';
 	}
 
 	if ( ! empty( $_POST['bpf']['rss']['frequency'] ) ) {

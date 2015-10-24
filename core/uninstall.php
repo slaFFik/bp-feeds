@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Delete all generated content (DB and FS)
+ * Delete all generated content
  */
 function bpf_delete_data() {
 	global $wpdb;
@@ -26,18 +26,6 @@ function bpf_delete_data() {
 	}
 
 	$wpdb->query( "DELETE FROM {$wpdb->postmeta} WHERE `meta_key` LIKE 'bpf_%'" );
-
-	//if ( bp_is_active( 'groups' ) && defined( 'BPF_CPT_GROUP_ITEM' ) ) {
-	//	$cpt_group = BPF_CPT;
-	//
-	//	if ( bp_is_active( 'activity' ) ) {
-	//		bp_activity_delete( array(
-	//			                    'type' => 'new_' . $cpt_group
-	//		                    ) );
-	//	}
-	//
-	//	$wpdb->query( "DELETE FROM {$wpdb->posts} WHERE post_type = '{$cpt_group}'" );
-	//}
 }
 
 /**
