@@ -50,6 +50,8 @@ class BPF_Member_Feed extends BPF_Feed {
 			'site_url'   => $this->feed->get_link() // URL to a site of that feed
 		) );
 
+		$this->meta = $meta;
+
 		bp_update_user_meta( $this->component_id, 'bpf_feed_meta', $meta );
 
 		do_action( 'bpf_member_feed_save_meta', $this );

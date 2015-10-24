@@ -76,7 +76,9 @@ abstract class BPF_Feed implements BPF_Feed_Interface {
 	public function pull() {
 		// Get data
 		if ( $this->fetch() ) {
-			// Save data
+			// Save feed meta
+			$this->save_meta();
+			// Save feed data
 			$this->save();
 		}
 	}
@@ -108,6 +110,8 @@ abstract class BPF_Feed implements BPF_Feed_Interface {
 
 			// Build an array of all the items, starting with element 0 (first element).
 			$this->items = $this->feed->get_items( 0, $this->maxitems );
+		} else {
+			return false;
 		}
 
 		do_action( 'bpf_feed_after_fetch' );
@@ -140,12 +144,13 @@ abstract class BPF_Feed implements BPF_Feed_Interface {
 	 * @return array Array of imported posts IDs
 	 */
 	public function save() {
+
+		$this->items = apply_filters( 'bpf_feed_items_before_save', $this->items, $this->component, $this->component_id );
+
 		// return early in case we have problems while fetching data
 		if ( count( $this->items ) === 0 ) {
 			return $this;
 		}
-
-		$this->items = apply_filters( 'bpf_feed_items_before_save', $this->items, $this->component, $this->component_id );
 
 		do_action( 'bpf_feed_before_save', $this );
 
@@ -189,8 +194,6 @@ abstract class BPF_Feed implements BPF_Feed_Interface {
 				do_action( 'bpf_feed_not_saved_item', $this->feed, $item, $feed_item_id );
 			}
 		}
-
-		$this->save_meta();
 
 		do_action( 'bpf_feed_after_save', $this );
 
