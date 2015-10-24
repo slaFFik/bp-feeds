@@ -60,6 +60,7 @@ function bpf_activation() {
 
 	if ( ! $requirements->valid() ) {
 		$requirements->process_failure();
+
 		return;
 	}
 

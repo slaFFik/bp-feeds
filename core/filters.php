@@ -16,7 +16,7 @@ function bpf_members_record_cpt_activity_content( $activity ) {
 		$item = BPF_Member_Feed::get_item( $activity['secondary_item_id'] );
 
 		/** @noinspection PhpUndefinedFieldInspection */
-		if ( empty($item->component->slug) || $item->component->slug !== bpf_members_get_component_slug() ) {
+		if ( empty( $item->component->slug ) || $item->component->slug !== bpf_members_get_component_slug() ) {
 			return $activity;
 		}
 
