@@ -108,6 +108,24 @@ function bpf_delete_component( $slug_or_id ) {
 }
 
 /**
+ * Get all the components
+ *
+ * @return array|bool|int|WP_Error
+ */
+function bpf_get_components() {
+	$terms = get_terms( BPF_TAX, array(
+		'hide_empty' => false,
+		'fields'     => 'all'
+	) );
+
+	if ( is_wp_error( $terms ) ) {
+		return false;
+	}
+
+	return $terms;
+}
+
+/**
  * Delete all components from DB
  *
  * @return bool

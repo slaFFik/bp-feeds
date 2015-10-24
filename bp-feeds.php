@@ -192,7 +192,7 @@ function bpf_register_cpt() {
 		'labels'              => array(
 			'name'                     => __( 'BP Feeds', BPF_I18N ),
 			'all_items'                => __( 'Imported Items', BPF_I18N ),
-			'bp_activity_admin_filter' => __( 'Imported posts from feed', BPF_I18N ),
+			'bp_activity_admin_filter' => __( 'Imported posts from feeds', BPF_I18N ),
 			'bp_activity_front_filter' => __( 'Imported Feeds', BPF_I18N ), // This is used on Member Activity page
 			// overriden in {@link bpf_members_srecord_cpt_activity_content_link_attrs()}
 			'bp_activity_new_post'     => __( '%1$s imported a new post, %2$s', BPF_I18N ),

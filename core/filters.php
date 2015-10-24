@@ -42,7 +42,7 @@ function bpf_members_record_cpt_activity_content( $activity ) {
 		$activity['primary_link'] = $item->guid;
 		$activity['action']       = sprintf(
 			__( '%1$s imported a new post, %2$s', BPF_I18N ),
-			bp_core_get_userlink( $activity['user_id'] ),
+			bp_core_get_userlink( $item->post_parent ),
 			$post_link
 		);
 	}
