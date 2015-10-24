@@ -15,7 +15,7 @@ function bpf_profile_activity_submenu() {
 			$parent = bp_get_activity_slug();
 
 			bp_core_new_subnav_item( array(
-				                         'name'            => $bpf['tabs']['members'],
+				                         'name'            => __( 'Feed', BPF_I18N ),
 				                         'slug'            => bpf_get_slug(),
 				                         'item_css_id'     => bpf_get_slug(),
 				                         'parent_url'      => trailingslashit( bp_displayed_user_domain() . $parent ),
@@ -27,7 +27,7 @@ function bpf_profile_activity_submenu() {
 
 		} else if ( $bpf['tabs']['profile_nav'] === 'top' ) {
 			bp_core_new_nav_item( array(
-				                      'name'                    => $bpf['tabs']['members'],
+				                      'name'                    => __( 'Feed', BPF_I18N ),
 				                      // Display name for the nav item
 				                      'slug'                    => bpf_get_slug(),
 				                      // URL slug for the nav item
@@ -124,13 +124,11 @@ add_action( 'bp_template_content', 'bpf_profile_activity_page_content' );
  * Add a user settings submenu BPF_SLUG
  */
 function bpf_profile_settings_submenu() {
-	$bpf = bp_get_option( 'bpf' );
-
 	$parent     = bp_get_settings_slug(); // bp_get_groups_slug()
 	$parent_url = trailingslashit( bp_displayed_user_domain() . $parent );
 
 	$sub_nav = array(
-		'name'            => $bpf['tabs']['members'],
+		'name'            => __( 'Feed', BPF_I18N ),
 		'slug'            => bpf_get_slug(),
 		'parent_url'      => $parent_url,
 		'parent_slug'     => $parent,
@@ -217,7 +215,7 @@ function bpf_signup_rss_feed_field() {
 	$bpf = bp_get_option( 'bpf' ); ?>
 
 	<div class="editfield">
-		<label for="bpf_feed_url"><?php echo $bpf['tabs']['members']; ?></label>
+		<label for="bpf_feed_url"><?php echo __( 'Feed', BPF_I18N ); ?></label>
 		<input id="bpf_feed_url" name="bpf_feed_url" type="text"
 		       placeholder="<?php echo $bpf['rss']['placeholder']; ?>"/>
 
@@ -303,8 +301,8 @@ function bpf_profile_admin_bar_activity_submenu( $wp_admin_nav ) {
 	$feed = array(
 		'parent' => 'my-account-activity',
 		'id'     => 'my-account-activity-' . bpf_get_slug(),
-		'title'  => $bpf['tabs']['members'],
-		'href'   => trailingslashit( bp_loggedin_user_domain() . bp_get_activity_slug() . '/' . bpf_get_slug() )
+		'title'  => __( 'Feed', BPF_I18N ),
+		'href'   => trailingslashit( bp_loggedin_user_domain() . bp_get_activity_slug() . ' / ' . bpf_get_slug() )
 	);
 
 	$new_nav = array();
@@ -336,7 +334,7 @@ function bpf_profile_admin_bar_topmenu() {
 
 	$wp_admin_bar->add_menu( array(
 		                         'href'   => trailingslashit( bp_loggedin_user_domain() . bpf_get_slug() ),
-		                         'title'  => $bpf['tabs']['members'],
+		                         'title'  => __( 'Feed', BPF_I18N ),
 		                         'parent' => 'my-account-buddypress',
 		                         'id'     => 'my-account-' . bpf_get_slug(),
 		                         'meta'   => array( 'class' => 'menupop' )
@@ -353,13 +351,11 @@ add_action( 'bp_setup_admin_bar', 'bpf_profile_admin_bar_topmenu', BPF_MENU_POSI
  * @return array Modified admin nav
  */
 function bpf_profile_admin_bar_settings_menu( $wp_admin_nav ) {
-	$bpf = bp_get_option( 'bpf' );
-
 	$settings = array(
 		'parent' => 'my-account-settings',
 		'id'     => 'my-account-settings-' . bpf_get_slug(),
-		'title'  => $bpf['tabs']['members'],
-		'href'   => trailingslashit( bp_loggedin_user_domain() . bp_get_settings_slug() . '/' . bpf_get_slug() )
+		'title'  => __( 'Feed', BPF_I18N ),
+		'href'   => trailingslashit( bp_loggedin_user_domain() . bp_get_settings_slug() . ' / ' . bpf_get_slug() )
 	);
 
 	$new_nav = array();

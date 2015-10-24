@@ -70,8 +70,10 @@ function bpf_activation() {
 		'link_target'      => 'blank',
 		'link_nofollow'    => 'yes',
 		'tabs'             => array(
-			'members'     => __( 'Feed', BPF_I18N ),
 			'profile_nav' => 'top', // possible values: top, sub
+		),
+		'members' => array(
+			'activity_on_post_delete' => 'delete'
 		),
 		'allow_commenting' => 'yes',
 		'rss'              => array(

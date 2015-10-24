@@ -130,3 +130,30 @@ function bpf_allow_imported_feed_commenting( $can_comment, $activity_action ) {
 }
 
 add_filter( 'bp_activity_can_comment', 'bpf_allow_imported_feed_commenting', 10, 2 );
+
+/**
+ * Delete all activity feed records if the post is permanently deleted
+ *
+ * @param int $post_id Imported post id
+ */
+function bpf_members_delete_feed_items( $post_id ) {
+	$bpf = bp_get_option( 'bpf' );
+
+	if ( $bpf['members']['activity_on_post_delete'] === 'delete' ) {
+		bp_activity_delete( array(
+			                    'secondary_item_id' => $post_id
+		                    ) );
+	}
+}
+
+add_action( 'after_delete_post', 'bpf_members_delete_feed_items' );
+
+/**
+ * Currently we can't trash activity items, so ignoring them
+ *
+ * @param int $post_id Imported post id
+ */
+function bpf_members_trash_feed_items( $post_id ) {
+}
+
+//add_action( 'trashed_post', 'bpf_members_trash_feed_items' );

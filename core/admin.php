@@ -276,16 +276,16 @@ function bpf_admin_page_save() {
 		return;
 	}
 
-	if ( ! empty( $_POST['bpf']['tabs']['members'] ) ) {
-		$bpf['tabs']['members'] = trim( htmlentities( wp_strip_all_tags( $_POST['bpf']['tabs']['members'] ) ) );
-	} else {
-		$bpf['tabs']['members'] = __( 'Feed', BPF_I18N );
-	}
-
 	if ( ! empty( $_POST['bpf']['tabs']['profile_nav'] ) ) {
 		$bpf['tabs']['profile_nav'] = trim( htmlentities( wp_strip_all_tags( $_POST['bpf']['tabs']['profile_nav'] ) ) );
 	} else {
 		$bpf['tabs']['profile_nav'] = 'top';
+	}
+
+	if ( ! empty( $_POST['bpf']['members']['activity_on_post_delete'] ) ) {
+		$bpf['members']['activity_on_post_delete'] = trim( htmlentities( wp_strip_all_tags( $_POST['bpf']['members']['activity_on_post_delete'] ) ) );
+	} else {
+		$bpf['members']['activity_on_post_delete'] = 'delete';
 	}
 
 	if ( ! empty( $_POST['bpf']['allow_commenting'] ) ) {
