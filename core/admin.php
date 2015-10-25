@@ -403,3 +403,26 @@ function bpf_admin_filter_by_component( $query ) {
 }
 
 add_filter( 'parse_query', 'bpf_admin_filter_by_component' );
+
+/**
+ * Modify the View link on Imported Posts list in wp-admin area,
+ * so it will be linked to associated activity item
+ *
+ * @param array $actions
+ * @param WP_Post $post
+ *
+ * @return array
+ */
+function bpf_admin_filter_row_actions( $actions, $post ) {
+	if ( $post->post_type === BPF_CPT && $post->post_status === 'publish' ) {
+		global $wpdb, $bp;
+
+		$activity = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$bp->activity->table_name} WHERE secondary_item_id = %d", $post->ID ) );
+
+		$actions['view'] = '<a href="' . bp_activity_get_permalink( $activity->id, $activity ) . '" title="' . sprintf( __( 'View %s', BPF_I18N ), esc_html( get_the_title( $post ) ) ) . '">' . __( 'View', BPF_I18N ) . '</a>';
+	}
+
+	return $actions;
+}
+
+add_action( 'post_row_actions', 'bpf_admin_filter_row_actions', 99, 2 );
