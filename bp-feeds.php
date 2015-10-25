@@ -72,7 +72,7 @@ function bpf_activation() {
 		'tabs'             => array(
 			'profile_nav' => 'top', // possible values: top, sub
 		),
-		'members' => array(
+		'members'          => array(
 			'activity_on_post_delete' => 'delete'
 		),
 		'allow_commenting' => 'yes',

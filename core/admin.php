@@ -361,7 +361,7 @@ function bpf_admin_page_save() {
 function bpf_admin_add_component_filter() {
 	$screen = get_current_screen();
 
-	if ( $screen->id == 'edit-'.BPF_CPT ) {
+	if ( $screen->id == 'edit-' . BPF_CPT ) {
 		wp_dropdown_categories( array(
 			                        'show_option_all' => __( "Show All Components", BPF_I18N ),
 			                        'taxonomy'        => BPF_TAX,
