@@ -75,19 +75,6 @@ $bpf = bp_get_option( 'bpf' );
 		</td>
 	</tr>
 
-	<!-- RSS Excerpt Length -->
-	<tr valign="top" style="display: none">
-		<th scope="row"><label for="bpf_rss_excerpts_length"><?php _e( 'RSS posts excerpt length', BPF_I18N ); ?></label>
-		</th>
-		<td>
-			<input name="bpf[rss][excerpt]" id="bpf_rss_excerpts_length" type="text" required="required"
-			       value="<?php esc_attr_e( $bpf['rss']['excerpt'] ); ?>"> <?php _e( 'words', BPF_I18N ); ?>
-			<p class="description"><?php _e( 'Three dots <code>...</code> will be used to identify the end of excerpt.', BPF_I18N ); ?></p>
-
-			<p class="description"><?php _e( 'Words will stay intact, sentences may be cut in the middle.', BPF_I18N ); ?></p>
-		</td>
-	</tr>
-
 	<!-- Placeholder for RSS feed URL -->
 	<tr valign="top">
 		<th scope="row"><label for="bpf_rss_placeholder"><?php _e( 'Placeholder URL', BPF_I18N ); ?></label></th>
