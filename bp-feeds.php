@@ -136,6 +136,20 @@ function bpf_load_textdomain() {
 add_action( 'plugins_loaded', 'bpf_load_textdomain' );
 
 /**
+ * WeFoster Updater
+ */
+function bpf_wf_updater() {
+	// Load fallback file when without WeFoster Dashboard
+	if ( ! function_exists( 'wefoster' ) ) {
+		require_once( BPF_LIBS_PATH. '/wefoster-updater/class-wefoster-updater-fallback.php' );
+	}
+
+	// Add Plugin
+	wefoster_updater()->add_plugin( __FILE__ );
+}
+add_action( 'plugins_loaded', 'bpf_wf_updater' );
+
+/**
  * Include the front-end things
  */
 function bpf_init() {
