@@ -425,7 +425,11 @@ function bpf_admin_filter_row_actions( $actions, $post ) {
 
 		$activity = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$bp->activity->table_name} WHERE secondary_item_id = %d", $post->ID ) );
 
-		$actions['view'] = '<a href="' . bp_activity_get_permalink( $activity->id, $activity ) . '" title="' . sprintf( __( 'View %s', BPF_I18N ), esc_html( get_the_title( $post ) ) ) . '">' . __( 'View', BPF_I18N ) . '</a>';
+		if ( ! empty( $activity ) ) {
+			$actions['view'] = '<a href="' . bp_activity_get_permalink( $activity->id, $activity ) . '" title="' . sprintf( __( 'View %s', BPF_I18N ), esc_html( get_the_title( $post ) ) ) . '">' . __( 'View', BPF_I18N ) . '</a>';
+		} else {
+			unset( $actions['view'] );
+		}
 	}
 
 	return $actions;
