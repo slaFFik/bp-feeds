@@ -95,19 +95,6 @@ function bpf_get_component_id( $slug ) {
 }
 
 /**
- * Delete the Component associated term_id bu slug of term_id
- *
- * @param string|int $slug_or_id
- *
- * @return bool|int|WP_Error
- */
-function bpf_delete_component( $slug_or_id ) {
-	$term = term_exists( (int) $slug_or_id, BPF_TAX );
-
-	return wp_delete_term( $term['term_id'], BPF_TAX );
-}
-
-/**
  * Get all the components
  *
  * @return array|bool|int|WP_Error
@@ -145,6 +132,19 @@ function bpf_delete_components() {
 	}
 
 	return true;
+}
+
+/**
+ * Delete the Component associated term_id bu slug of term_id
+ *
+ * @param string|int $slug_or_id
+ *
+ * @return bool|int|WP_Error
+ */
+function bpf_delete_component( $slug_or_id ) {
+	$term = term_exists( (int) $slug_or_id, BPF_TAX );
+
+	return wp_delete_term( $term['term_id'], BPF_TAX );
 }
 
 /**

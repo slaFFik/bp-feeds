@@ -147,6 +147,7 @@ function bpf_wf_updater() {
 	// Add Plugin
 	wefoster_updater()->add_plugin( __FILE__ );
 }
+
 add_action( 'plugins_loaded', 'bpf_wf_updater' );
 
 /**

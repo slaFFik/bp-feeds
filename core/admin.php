@@ -385,6 +385,12 @@ add_action( 'restrict_manage_posts', 'bpf_admin_add_component_filter' );
  * @param WP_Query $query
  */
 function bpf_admin_filter_by_component( $query ) {
+	global $pagenow;
+
+	if ( $pagenow === 'customize.php' ) {
+		return;
+	}
+
 	$screen = get_current_screen();
 
 	if (
