@@ -302,7 +302,7 @@ function bpf_profile_admin_bar_activity_submenu( $wp_admin_nav ) {
 		'parent' => 'my-account-activity',
 		'id'     => 'my-account-activity-' . bpf_get_slug(),
 		'title'  => __( 'Feed', BPF_I18N ),
-		'href'   => trailingslashit( bp_loggedin_user_domain() . bp_get_activity_slug() . ' / ' . bpf_get_slug() )
+		'href'   => trailingslashit( bp_loggedin_user_domain() . bp_get_activity_slug() . '/' . bpf_get_slug() )
 	);
 
 	$new_nav = array();
@@ -355,7 +355,7 @@ function bpf_profile_admin_bar_settings_menu( $wp_admin_nav ) {
 		'parent' => 'my-account-settings',
 		'id'     => 'my-account-settings-' . bpf_get_slug(),
 		'title'  => __( 'Feed', BPF_I18N ),
-		'href'   => trailingslashit( bp_loggedin_user_domain() . bp_get_settings_slug() . ' / ' . bpf_get_slug() )
+		'href'   => trailingslashit( bp_loggedin_user_domain() . bp_get_settings_slug() . '/' . bpf_get_slug() )
 	);
 
 	$new_nav = array();
