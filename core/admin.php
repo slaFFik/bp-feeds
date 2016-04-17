@@ -44,14 +44,27 @@ function bpf_admin_register_page() {
 	// Process all the saving separately, just for the sake of clean code
 	bpf_admin_page_save();
 
-	add_submenu_page(
-		'edit.php?post_type=' . BPF_CPT,
-		__( 'BuddyPress Feeds', BPF_I18N ),
-		__( 'Settings', BPF_I18N ),
-		'manage_options',
-		BPF_ADMIN_SLUG, // slug
-		'bpf_admin_page'
-	);
+	// If plugin is network activated we need to have settings page be available in Network->Settings
+	// If plugin is activated on a special site - make it available as usual
+	if ( is_network_admin() ) {
+		add_submenu_page(
+			'settings.php',
+			__( 'BuddyPress Feeds', BPF_I18N ),
+			__( 'BuddyPress Feeds', BPF_I18N ),
+			'manage_options',
+			BPF_ADMIN_SLUG, // slug
+			'bpf_admin_page'
+		);
+	} else {
+		add_submenu_page(
+			'edit.php?post_type=' . BPF_CPT,
+			__( 'BuddyPress Feeds', BPF_I18N ),
+			__( 'Settings', BPF_I18N ),
+			'manage_options',
+			BPF_ADMIN_SLUG, // slug
+			'bpf_admin_page'
+		);
+	}
 
 	add_filter( 'plugin_action_links_' . BPF_BASE_PATH, 'bpf_plugin_action_settings_link', 10, 4 );
 	add_filter( 'network_admin_plugin_action_links_' . BPF_BASE_PATH, 'bpf_plugin_action_settings_link', 10, 4 );
@@ -87,7 +100,11 @@ function bpf_admin_url( $path = '' ) {
  * @return string
  */
 function bpf_get_admin_url( $path = '' ) {
-	$page = 'edit.php?post_type=' . BPF_CPT . '&page=' . BPF_ADMIN_SLUG;
+	if ( is_network_admin() ) {
+		$page = 'settings.php?page=' . BPF_ADMIN_SLUG;
+	}else{
+		$page = 'edit.php?post_type=' . BPF_CPT . '&page=' . BPF_ADMIN_SLUG;
+	}
 
 	if ( ! empty( $path ) ) {
 		$path = '&' . (string) $path;
