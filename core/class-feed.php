@@ -162,11 +162,13 @@ abstract class BPF_Feed implements BPF_Feed_Interface {
 				continue;
 			}
 
+			$item_content = $item->get_content();
+			$item_excerpt = $item->get_description();
 			$feed_params = apply_filters( 'bpf_feed_params_before_save', array(
 				'post_type'    => $this->get_type(),
 				'post_title'   => $item->get_title(),
-				'post_content' => $item->get_content(),
-				'post_excerpt' => $item->get_description(),
+				'post_content' => empty( $item_content ) ? $item->get_title() : $item_content,
+				'post_excerpt' => empty( $item_excerpt ) ? $item->get_title() : $item_excerpt,
 				'post_date'    => $item->get_date( 'Y-m-d h:i:s' ),
 				'guid'         => $item->get_permalink(),
 				'post_status'  => 'publish',
