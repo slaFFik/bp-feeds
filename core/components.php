@@ -22,7 +22,7 @@ function bpf_register_component( $slug, Array $args = array() ) {
 	$slug = trim( $slug );
 
 	if ( $slug === '' ) {
-		return new WP_Error( 'bpf_empty_component_slug', __( 'A slug is required for registering this component.' ), array($slug, $args) );
+		return new WP_Error( 'bpf_empty_component_slug', __( 'A slug is required for registering this component.' ), array( $slug, $args ) );
 	}
 
 	$name        = $slug;
@@ -95,16 +95,21 @@ function bpf_get_component_id( $slug ) {
 }
 
 /**
- * Delete the Component associated term_id bu slug of term_id
+ * Get all the components
  *
- * @param $slug_or_id
- *
- * @return bool|int|WP_Error
+ * @return array|bool|int|WP_Error
  */
-function bpf_delete_component( $slug_or_id ) {
-	$term = term_exists( (int) $slug_or_id, BPF_TAX );
+function bpf_get_components() {
+	$terms = get_terms( BPF_TAX, array(
+		'hide_empty' => false,
+		'fields'     => 'all'
+	) );
 
-	return wp_delete_term( $term['term_id'], BPF_TAX );
+	if ( is_wp_error( $terms ) ) {
+		return false;
+	}
+
+	return $terms;
 }
 
 /**
@@ -128,3 +133,45 @@ function bpf_delete_components() {
 
 	return true;
 }
+
+/**
+ * Delete the Component associated term_id bu slug of term_id
+ *
+ * @param string|int $slug_or_id
+ *
+ * @return bool|int|WP_Error
+ */
+function bpf_delete_component( $slug_or_id ) {
+	$term = term_exists( (int) $slug_or_id, BPF_TAX );
+
+	return wp_delete_term( $term['term_id'], BPF_TAX );
+}
+
+/**
+ * Do not allow manually create components in wp-admin area
+ */
+function bpf_admin_components_custom_styles() {
+	$screen = get_current_screen();
+
+	if ( 'edit-' . BPF_TAX == $screen->id ) { ?>
+		<style>
+			#col-right {
+				width: 100% !important;
+			}
+
+			#col-left, .row-actions, .bulkactions, .check-column, .submit {
+				display: none;
+			}
+		</style>
+		<script>
+			jQuery(document).ready(function () {
+				jQuery("#edittag").submit(function (event) {
+					event.preventDefault();
+				});
+			});
+		</script>
+		<?php
+	}
+}
+
+add_action( 'admin_head', 'bpf_admin_components_custom_styles' );

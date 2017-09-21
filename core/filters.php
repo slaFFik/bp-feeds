@@ -7,41 +7,50 @@
  *
  * @return array $activity
  */
-function bpf_record_cpt_activity_content( $activity ) {
+function bpf_members_record_cpt_activity_content( $activity ) {
 	// $activity['secondary_item_id'] is CPT ID
 
 	if ( bpf_get_new_cpt_slug() === $activity['type'] ) {
 		$bpf = bp_get_option( 'bpf' );
 
-		$item = BPF_Feed::get_item( $activity['secondary_item_id'] );
+		$item = BPF_Member_Feed::get_item( $activity['secondary_item_id'] );
 
-		$nofollow = 'rel="nofollow"';
-		if ( ! empty( $bpf['link_nofollow'] ) && $bpf['link_nofollow'] === 'no' ) {
-			$nofollow = '';
+		/** @noinspection PhpUndefinedFieldInspection */
+		if ( empty( $item->component->slug ) || $item->component->slug !== bpf_members_get_component_slug() ) {
+			return $activity;
 		}
 
-		$target = 'target="_blank"';
-		if ( ! empty( $bpf['link_target'] ) && $bpf['link_target'] === 'self' ) {
-			$target = '';
+		$link_attrs = array();
+
+		if ( ! empty( $bpf['link_nofollow'] ) && $bpf['link_nofollow'] === 'yes' ) {
+			$link_attrs['nofollow'] = 'rel="nofollow"';
 		}
 
-		$post_link = '<a href="' . esc_url( $item->guid ) . '" ' . $nofollow . ' ' . $target . ' class="bpf-feed-item bpf-feed-member-item">'
+		if ( ! empty( $bpf['link_target'] ) && $bpf['link_target'] === 'blank' ) {
+			$link_attrs['target'] = 'target="_blank"';
+		}
+
+		$link_attrs['class'] = 'class="bpf-feed-item bpf-feed-member-item"';
+
+		$link_attrs = apply_filters( 'bpf_members_srecord_cpt_activity_content_link_attrs', $link_attrs, $item );
+
+		$post_link = '<a href="' . esc_url( $item->guid ) . '" ' . implode( ' ', $link_attrs ) . '>'
 		             . apply_filters( 'the_title', $item->post_title, $item->ID ) .
 		             '</a>';
 
-		$activity['component']    = 'members';
+		$activity['component']    = bpf_members_get_component_slug();
 		$activity['primary_link'] = $item->guid;
 		$activity['action']       = sprintf(
 			__( '%1$s imported a new post, %2$s', BPF_I18N ),
-			bp_core_get_userlink( $activity['user_id'] ),
+			bp_core_get_userlink( $item->post_parent ),
 			$post_link
 		);
 	}
 
-	return apply_filters( 'bpf_record_cpt_activity_content', $activity );
+	return apply_filters( 'bpf_member_record_cpt_activity_content', $activity );
 }
 
-add_filter( 'bp_after_activity_add_parse_args', 'bpf_record_cpt_activity_content' );
+add_filter( 'bp_after_activity_add_parse_args', 'bpf_members_record_cpt_activity_content' );
 
 /**
  * Allow specific a[target] attribute for activity
@@ -85,7 +94,7 @@ add_filter( 'bp_activity_get_permalink', 'bpf_activity_get_permalink', 10, 2 );
  *
  * @return string
  */
-function bpf_ajax_querystring( $bp_ajax_querystring, $object ) {
+function bpf_members_ajax_querystring( $bp_ajax_querystring, $object ) {
 	/** @noinspection PhpUndefinedFieldInspection */
 	if (
 		bp_is_user() &&
@@ -100,7 +109,7 @@ function bpf_ajax_querystring( $bp_ajax_querystring, $object ) {
 	return apply_filters( 'bpf_ajax_querystring', $bp_ajax_querystring, $object );
 }
 
-add_filter( 'bp_ajax_querystring', 'bpf_ajax_querystring', 999, 2 );
+add_filter( 'bp_ajax_querystring', 'bpf_members_ajax_querystring', 999, 2 );
 
 /**
  * Control the commenting ability of imported feed posts
@@ -121,3 +130,30 @@ function bpf_allow_imported_feed_commenting( $can_comment, $activity_action ) {
 }
 
 add_filter( 'bp_activity_can_comment', 'bpf_allow_imported_feed_commenting', 10, 2 );
+
+/**
+ * Delete all activity feed records if the post is permanently deleted
+ *
+ * @param int $post_id Imported post id
+ */
+function bpf_members_delete_feed_items( $post_id ) {
+	$bpf = bp_get_option( 'bpf' );
+
+	if ( $bpf['members']['activity_on_post_delete'] === 'delete' ) {
+		bp_activity_delete( array(
+			                    'secondary_item_id' => $post_id
+		                    ) );
+	}
+}
+
+add_action( 'after_delete_post', 'bpf_members_delete_feed_items' );
+
+/**
+ * Currently we can't trash activity items, so ignoring them
+ *
+ * @param int $post_id Imported post id
+ */
+function bpf_members_trash_feed_items( $post_id ) {
+}
+
+//add_action( 'trashed_post', 'bpf_members_trash_feed_items' );

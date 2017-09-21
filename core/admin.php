@@ -5,6 +5,26 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Check in admin area that nothing is broken
+ * Be default this check will deactivate the plugin and display a notice with reasons
+ */
+function bpf_check_requirements() {
+	// Make suse we have this file
+	include_once( BPF_LIBS_PATH . '/wp-requirements/wp-requirements.php' );
+
+	/** @noinspection PhpUndefinedClassInspection */
+	$bpf_requirements = new BPF_Requirements();
+
+	if ( ! $bpf_requirements->valid() ) {
+		$bpf_requirements->process_failure();
+
+		return;
+	}
+}
+
+add_action( 'admin_init', 'bpf_check_requirements' );
+
+/**
  * Init the function, that will init admin page
  */
 function bpf_admin_init() {
@@ -24,14 +44,27 @@ function bpf_admin_register_page() {
 	// Process all the saving separately, just for the sake of clean code
 	bpf_admin_page_save();
 
-	add_submenu_page(
-		'edit.php?post_type=' . BPF_CPT,
-		__( 'BuddyPress Feeds', BPF_I18N ),
-		__( 'Settings', BPF_I18N ),
-		'manage_options',
-		BPF_ADMIN_SLUG, // slug
-		'bpf_admin_page'
-	);
+	// If plugin is network activated we need to have settings page be available in Network->Settings
+	// If plugin is activated on a special site - make it available as usual
+	if ( is_network_admin() ) {
+		add_submenu_page(
+			'settings.php',
+			__( 'BuddyPress Feeds', BPF_I18N ),
+			__( 'BuddyPress Feeds', BPF_I18N ),
+			'manage_options',
+			BPF_ADMIN_SLUG, // slug
+			'bpf_admin_page'
+		);
+	} else {
+		add_submenu_page(
+			'edit.php?post_type=' . BPF_CPT,
+			__( 'BuddyPress Feeds', BPF_I18N ),
+			__( 'Settings', BPF_I18N ),
+			'manage_options',
+			BPF_ADMIN_SLUG, // slug
+			'bpf_admin_page'
+		);
+	}
 
 	add_filter( 'plugin_action_links_' . BPF_BASE_PATH, 'bpf_plugin_action_settings_link', 10, 4 );
 	add_filter( 'network_admin_plugin_action_links_' . BPF_BASE_PATH, 'bpf_plugin_action_settings_link', 10, 4 );
@@ -67,9 +100,12 @@ function bpf_admin_url( $path = '' ) {
  * @return string
  */
 function bpf_get_admin_url( $path = '' ) {
-	$page = 'edit.php?post_type=' . BPF_CPT . '&page=' . BPF_ADMIN_SLUG;
+	if ( is_network_admin() ) {
+		$page = 'settings.php?page=' . BPF_ADMIN_SLUG;
+	}else{
+		$page = 'edit.php?post_type=' . BPF_CPT . '&page=' . BPF_ADMIN_SLUG;
+	}
 
-	/** @noinspection IsEmptyFunctionUsageInspection */
 	if ( ! empty( $path ) ) {
 		$path = '&' . (string) $path;
 	}
@@ -177,19 +213,6 @@ function bpf_admin_page() { ?>
 }
 
 /**
- * Get the array of sections. Filtarable.
- * Used for both navigation and page content.
- *
- * @return array
- */
-function bpf_admin_get_sections() {
-	return apply_filters( 'bpf_admin_page_sections', array(
-		'general' => __( 'General', BPF_I18N ),
-		'members' => __( 'Members', BPF_I18N ),
-	) );
-}
-
-/**
  * Get the current BP Feeds admin area section slug
  * Defaults to 'genera'
  *
@@ -224,6 +247,23 @@ function bpf_admin_page_notice() {
 
 add_action( 'bpf_admin_page_before_nav', 'bpf_admin_page_notice' );
 
+/*****************************************************
+ * Defining default admin sections and their content *
+ *****************************************************/
+
+/**
+ * Get the array of sections. Filtarable.
+ * Used for both navigation and page content.
+ *
+ * @return array
+ */
+function bpf_admin_get_sections() {
+	return apply_filters( 'bpf_admin_page_sections', array(
+		'general' => __( 'General', BPF_I18N ),
+		'members' => __( 'Members', BPF_I18N ),
+	) );
+}
+
 /**
  * Default admin page: General
  */
@@ -243,10 +283,9 @@ function bpf_admin_page_members() {
 add_action( 'bpf_admin_page_content_members', 'bpf_admin_page_members' );
 
 /**
- * Process saving of all settings
+ * Process saving of all the settings
  */
 function bpf_admin_page_save() {
-
 	if ( ! array_key_exists( 'bpf-admin-submit', $_POST ) || ! array_key_exists( 'bpf', $_POST ) ) {
 		return;
 	}
@@ -256,16 +295,16 @@ function bpf_admin_page_save() {
 		return;
 	}
 
-	if ( ! empty( $_POST['bpf']['tabs']['members'] ) ) {
-		$bpf['tabs']['members'] = trim( htmlentities( wp_strip_all_tags( $_POST['bpf']['tabs']['members'] ) ) );
-	} else {
-		$bpf['tabs']['members'] = __( 'Feed', BPF_I18N );
-	}
-
 	if ( ! empty( $_POST['bpf']['tabs']['profile_nav'] ) ) {
 		$bpf['tabs']['profile_nav'] = trim( htmlentities( wp_strip_all_tags( $_POST['bpf']['tabs']['profile_nav'] ) ) );
 	} else {
 		$bpf['tabs']['profile_nav'] = 'top';
+	}
+
+	if ( ! empty( $_POST['bpf']['members']['activity_on_post_delete'] ) ) {
+		$bpf['members']['activity_on_post_delete'] = trim( htmlentities( wp_strip_all_tags( $_POST['bpf']['members']['activity_on_post_delete'] ) ) );
+	} else {
+		$bpf['members']['activity_on_post_delete'] = 'delete';
 	}
 
 	if ( ! empty( $_POST['bpf']['allow_commenting'] ) ) {
@@ -301,7 +340,7 @@ function bpf_admin_page_save() {
 	if ( ! empty( $_POST['bpf']['rss']['posts'] ) ) {
 		$bpf['rss']['posts'] = (int) $_POST['bpf']['rss']['posts'];
 	} else {
-		$bpf['rss']['posts'] = '5';
+		$bpf['rss']['posts'] = '10';
 	}
 
 	if ( ! empty( $_POST['bpf']['rss']['frequency'] ) ) {
@@ -332,3 +371,85 @@ function bpf_admin_page_save() {
 		wp_redirect( add_query_arg( 'message', 'error' ) );
 	}
 }
+
+/**
+ * Add ability to filter imported posts by component
+ */
+function bpf_admin_add_component_filter() {
+	$screen = get_current_screen();
+
+	if ( $screen->id == 'edit-' . BPF_CPT ) {
+		wp_dropdown_categories( array(
+			                        'show_option_all' => __( "Show All Components", BPF_I18N ),
+			                        'taxonomy'        => BPF_TAX,
+			                        'name'            => BPF_TAX,
+			                        'orderby'         => 'name',
+			                        'selected'        => ! empty( $_GET[ BPF_TAX ] ) ? $_GET[ BPF_TAX ] : '',
+			                        'show_count'      => true,
+			                        'hide_empty'      => true,
+			                        'depth'           => 0,
+			                        'hierarchical'    => true,
+			                        'value_field'     => 'term_id'
+		                        ) );
+	};
+}
+
+add_action( 'restrict_manage_posts', 'bpf_admin_add_component_filter' );
+
+/**
+ * Filter imported posts by components in wp-admin
+ *
+ * @param WP_Query $query
+ */
+function bpf_admin_filter_by_component( $query ) {
+	global $pagenow;
+
+	if ( $pagenow === 'customize.php' ) {
+		return;
+	}
+
+	$screen = get_current_screen();
+
+	if (
+		$screen->id == 'edit-' . BPF_CPT &&
+		! empty( $_GET['post_type'] ) && $_GET['post_type'] == BPF_CPT &&
+		! empty( $_GET[ BPF_TAX ] )
+	) {
+		$query->set( 'tax_query', array(
+			array(
+				'taxonomy' => BPF_TAX,
+				'field'    => 'term_id',
+				'terms'    => $_GET[ BPF_TAX ],
+			)
+		) );
+	}
+}
+
+add_filter( 'parse_query', 'bpf_admin_filter_by_component' );
+
+/**
+ * Modify the View link on Imported Posts list in wp-admin area,
+ * so it will be linked to associated activity item
+ *
+ * @param array $actions
+ * @param WP_Post $post
+ *
+ * @return array
+ */
+function bpf_admin_filter_row_actions( $actions, $post ) {
+	if ( $post->post_type === BPF_CPT && $post->post_status === 'publish' ) {
+		global $wpdb, $bp;
+
+		$activity = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$bp->activity->table_name} WHERE secondary_item_id = %d", $post->ID ) );
+
+		if ( ! empty( $activity ) ) {
+			$actions['view'] = '<a href="' . bp_activity_get_permalink( $activity->id, $activity ) . '" title="' . sprintf( __( 'View %s', BPF_I18N ), esc_html( get_the_title( $post ) ) ) . '">' . __( 'View', BPF_I18N ) . '</a>';
+		} else {
+			unset( $actions['view'] );
+		}
+	}
+
+	return $actions;
+}
+
+add_action( 'post_row_actions', 'bpf_admin_filter_row_actions', 99, 2 );

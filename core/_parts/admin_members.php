@@ -38,13 +38,30 @@ $bpf = bp_get_option( 'bpf' );
 		</td>
 	</tr>
 
-	<!-- Profile nav feed Label -->
+	<!-- Activity Items on Post Delete -->
 	<tr valign="top">
-		<th scope="row"><label for="bpf_tabs_members"><?php _e( 'User profile RSS tab label', BPF_I18N ); ?></label>
+		<th scope="row">
+			<?php _e( 'What to do on deletion of imported posts in wp-admin area?', BPF_I18N ); ?>
 		</th>
 		<td>
-			<input name="bpf[tabs][members]" id="bpf_tabs_members" type="text" required="required"
-			       value="<?php esc_attr_e( $bpf['tabs']['members'] ); ?>">
+			<label>
+				<input name="bpf[members][activity_on_post_delete]" type="radio"
+				       value="delete" <?php checked( 'delete', $bpf['members']['activity_on_post_delete'] ); ?>>&nbsp;
+				<?php _e( 'Delete activity entry', BPF_I18N ); ?>
+			</label>
+
+			<p class="description bpf-option-desc">
+				<?php _e( 'Activity entry will be completely deleted from the database, and not available anywhere.', BPF_I18N ); ?>
+			</p>
+			<label>
+				<input name="bpf[members][activity_on_post_delete]" type="radio"
+				       value="leave" <?php checked( 'leave', $bpf['members']['activity_on_post_delete'] ); ?>>&nbsp;
+				<?php _e( 'Leave activity entry', BPF_I18N ); ?>
+			</label>
+
+			<p class="description bpf-option-desc">
+				<?php _e( 'It will still be available in activity directory, through activity search and in member activity filters.', BPF_I18N ); ?>
+			</p>
 		</td>
 	</tr>
 

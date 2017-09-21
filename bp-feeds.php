@@ -16,25 +16,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( 'BPF_VERSION', '1.0' );
 define( 'BPF_URL', plugins_url( '_inc', __DIR__ ) ); // link to all assets, with /
 define( 'BPF_PATH', __DIR__ . '/core' ); // without /
+define( 'BPF_LIBS_PATH', __DIR__ . '/libs' ); // without /
 define( 'BPF_BASE_PATH', plugin_basename( __FILE__ ) ); // without /
 define( 'BPF_MENU_POSITION', 15 );
 define( 'BPF_UPLOAD_DIR', 'bp-feeds' );
 define( 'BPF_ADMIN_SLUG', 'bp-feeds-admin' );
-define( 'BPF_I18N', 'buddypress-feeds' ); // should be the same as plugin folder name, otherwise auto-deliver of translations won't work
+define( 'BPF_I18N', 'bp-feeds' ); // should be the same as plugin folder name, otherwise auto-deliver of translations won't work
 define( 'BPF_SLUG', 'bp-feed' ); // can be redefined inside {@link bpf_get_slug()}
-
-// Requirements
-define( 'BPF_PHP_MIN_VER', 5.3);
-define( 'BPF_BP_MIN_VER', 2.2);
 
 // CPT & CT
 define( 'BPF_CPT', 'bp_feed' );
 define( 'BPF_TAX', 'bp_feed_component' );
-
-/**
- * Check compatibility
- */
-include_once( BPF_PATH . '/compatibility.php' );
 
 /**
  * All the helpers functions used everywhere
@@ -52,7 +44,8 @@ include_once( BPF_PATH . '/components.php' );
 /**
  * Admin area
  */
-if ( is_admin() && (!defined( 'DOING_AJAX' ) || !DOING_AJAX ) ) {
+if ( is_admin() && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {
+	// General admin area code (menu, pages etc)
 	include_once( BPF_PATH . '/admin.php' );
 }
 
@@ -62,8 +55,12 @@ if ( is_admin() && (!defined( 'DOING_AJAX' ) || !DOING_AJAX ) ) {
 register_activation_hook( __FILE__, 'bpf_activation' );
 function bpf_activation() {
 	// Check that we actually can work on the current environment (php, BP etc)
-	if ( ! bpf_has_compatible_env() ) {
-		add_action( 'admin_notices', 'bpf_notice_check_requirements' );
+	include_once( BPF_LIBS_PATH . '/wp-requirements/wp-requirements.php' );
+	$requirements = new BPF_Requirements();
+
+	if ( ! $requirements->valid() ) {
+		$requirements->process_failure();
+
 		return;
 	}
 
@@ -73,13 +70,15 @@ function bpf_activation() {
 		'link_target'      => 'blank',
 		'link_nofollow'    => 'yes',
 		'tabs'             => array(
-			'members'     => __( 'Feed', BPF_I18N ),
 			'profile_nav' => 'top', // possible values: top, sub
+		),
+		'members'          => array(
+			'activity_on_post_delete' => 'delete'
 		),
 		'allow_commenting' => 'yes',
 		'rss'              => array(
 			//'excerpt'     => '45',     // words
-			'posts'       => '5',      // number of latest posts to import
+			'posts'       => '10',      // number of latest posts to import
 			'frequency'   => '43200',  // 12 hours
 			'image'       => 'none',   // do not dislay it all
 			'nofollow'    => 'yes',    // add rel="nofollow"
@@ -108,8 +107,8 @@ function bpf_deactivation() {
 
 	switch ( $bpf['uninstall'] ) {
 		case 'all':
-			bpf_delete_options();
 			bpf_delete_data();
+			bpf_delete_options();
 
 			do_action( 'bpf_delete_all' );
 			break;
@@ -137,19 +136,34 @@ function bpf_load_textdomain() {
 add_action( 'plugins_loaded', 'bpf_load_textdomain' );
 
 /**
+ * WeFoster Updater
+ */
+function bpf_wf_updater() {
+	// Load fallback file when without WeFoster Dashboard
+	if ( ! function_exists( 'wefoster' ) ) {
+		require_once( BPF_LIBS_PATH. '/wefoster-updater/class-wefoster-updater-fallback.php' );
+	}
+
+	// Add Plugin
+	wefoster_updater()->add_plugin( __FILE__ );
+}
+
+add_action( 'plugins_loaded', 'bpf_wf_updater' );
+
+/**
  * Include the front-end things
  */
-function bpf_front_init() {
+function bpf_init() {
 	$bpf = bp_get_option( 'bpf' );
 
-	require_once( BPF_PATH . '/class-feed.php' );
+	require_once( BPF_PATH . '/class-feed-member.php' );
 
 	require_once( BPF_PATH . '/members.php' );
 
-	do_action( 'bpf_front_init', $bpf );
+	do_action( 'bpf_init', $bpf );
 }
 
-add_action( 'bp_loaded', 'bpf_front_init' );
+add_action( 'bp_loaded', 'bpf_init' );
 
 /**
  * Modify the caching period to the specified value in seconds by admin
@@ -195,9 +209,9 @@ function bpf_register_cpt() {
 		'labels'              => array(
 			'name'                     => __( 'BP Feeds', BPF_I18N ),
 			'all_items'                => __( 'Imported Items', BPF_I18N ),
-			'bp_activity_admin_filter' => __( 'New imported feed post', BPF_I18N ),
-			'bp_activity_front_filter' => __( 'Feed', BPF_I18N ), // This is used on Member Activity page
-			// overriden in {@link bpf_record_cpt_activity_content()}
+			'bp_activity_admin_filter' => __( 'Imported posts from feeds', BPF_I18N ),
+			'bp_activity_front_filter' => __( 'Imported Feeds', BPF_I18N ), // This is used on Member Activity page
+			// overriden in {@link bpf_members_srecord_cpt_activity_content_link_attrs()}
 			'bp_activity_new_post'     => __( '%1$s imported a new post, %2$s', BPF_I18N ),
 		),
 		'public'              => true,
@@ -268,16 +282,3 @@ function bpf_register_cpt() {
 }
 
 add_action( 'bp_init', 'bpf_register_cpt', 999 );
-
-/**
- * Display additional Activity filter on Activity Directory page
- */
-function bpf_activity_filter_options() {
-	if ( bp_is_active( 'settings' ) ) {
-		echo '<option value="' . bpf_get_new_cpt_slug() . '">' . __( 'Members Feed', BPF_I18N ) . '</option>';
-	}
-
-	do_action( 'bpf_activity_filter_options' );
-}
-
-add_action( 'bp_activity_filter_options', 'bpf_activity_filter_options' );
